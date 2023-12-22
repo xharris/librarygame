@@ -9,14 +9,14 @@ local layer = require('src.layer')
 local zOrdering = require('src.zOrdering')
 
 local STRUCTURES = {
-    [0]={
+    [1]={
         path='tile.png',
         scale=1,
         anchorX=32,
         anchorY=32,
         isFloor=true
     },
-    [1]={
+    [2]={
         path='box.png',
         -- h=1,
         anchorX=32,
@@ -33,11 +33,11 @@ local ACTORS = {
 }
 
 local map = {
-    {0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0},
-    {0, 0, 1, 0, 0},
-    {0, 0, 0, 0, 0},
-    {0, 0, 0, 0, 0}
+    {1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1},
+    {1, 1, 2, 1, 1},
+    {1, 1, 1, 1, 1},
+    {1, 1, 1, 1, 1}
 }
 
 local layerMap = xd.ent.new{ layer=layer.LAYER_TYPE.INPUT_PAN, layerFollow=nil }
@@ -51,9 +51,9 @@ function M.load()
     for y, yval in pairs(map) do
         for x, xval in pairs(yval) do
             local info = STRUCTURES[xval]
-            local imgW, imgH = image.getImage(info.path):getWidth(), image.getImage(info.path):getHeight()
 
-            local tileInfo = STRUCTURES[0]
+            -- add floor
+            local tileInfo = STRUCTURES[1]
             local floor = xd.ent.new{
                 image=tileInfo.path,
                 sx=tileInfo.scale, sy=tileInfo.scale,
@@ -74,6 +74,7 @@ function M.load()
                 layerMap.layerFollow = floor
             end
 
+            -- add structure at this cell in map
             if not info.isFloor then
                 local struct = xd.ent.new{
                     image=info.path,
@@ -91,24 +92,23 @@ function M.load()
 
     -- add a bird
     local actorInfo = ACTORS[0]
-    local imgW, imgH = image.getImage(actorInfo.path):getWidth(), image.getImage(actorInfo.path):getHeight()
     local actor = xd.ent.new{
         image=actorInfo.path,
         ox=actorInfo.anchorX, oy=actorInfo.anchorY,
-        followMouse=true,
         zOrdering=zOrdering.MODE.Y
     }
-    actor.x, actor.y = isometric.toIso(5, 1)
+    actor.x, actor.y = isometric.toIso(1, 0)
     xd.sce.addTo(layerMap, actor)
-
-    xd.sys.add(function(dt, entity)
-        if xd.ent.has(entity, 'followMouse') then
-            local mx, my = love.mouse.getPosition()
-
-            entity.x = mx - layerMap.x
-            entity.y = my - layerMap.y
-        end
-    end)
 end
+
+
+-- xd.sys.add(function(dt, entity)
+--     if xd.ent.has(entity, 'followMouse') then
+--         local mx, my = love.mouse.getPosition()
+
+--         entity.x = mx - layerMap.x
+--         entity.y = my - layerMap.y
+--     end
+-- end)
 
 return M

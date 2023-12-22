@@ -3,6 +3,8 @@ local xd = require('engine')
 local input = require('input')
 
 M.LAYER_TYPE = {STATIC=0, INPUT_PAN=1}
+M.MIN_ZOOM = 0.75
+M.MAX_ZOOM = 1.5
 
 local get, put = xd.sto.new()
 
@@ -36,13 +38,17 @@ xd.sys.add(function(dt, entity)
             if moved then
                 local tx, ty = entity.x, entity.y
                 local scale = entity.sx
-                local newScale = math.max(1, scale + wheely * 5 * dt)
+                local newScale = math.min(M.MAX_ZOOM, math.max(M.MIN_ZOOM, scale + wheely * 5 * dt))
 
                 entity.sx = newScale
                 entity.sy = newScale
 
-                entity.x = (mx-((mx-tx)/scale)*newScale)
-                entity.y = (my-((my-ty)/scale)*newScale)
+                -- zoom to mouse
+                -- TODO should layerFollow be unset here?
+                if not entity.layerFollow then
+                    entity.x = (mx-((mx-tx)/scale)*newScale)
+                    entity.y = (my-((my-ty)/scale)*newScale)
+                end
             end
         end
     end
