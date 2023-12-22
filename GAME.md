@@ -16,10 +16,10 @@ shop:
 - pets?
 - structures
 
-entity:
+actor:
 - ALL
     - happiness
-        - will cause entity to leave/quit if low enough
+        - will cause actor to leave/quit if low enough
     - likes
         - peforming this increases happiness
         - book genres

@@ -13,6 +13,35 @@ function M.log(...)
     end
 end
 
+local Storage = {}
+M.Storage = Storage
+
+function Storage.new()
+    ---@type table<number, table<string, any>>
+    local store = {}
+
+    ---get
+    ---@param entity entity
+    ---@param key string
+    return function(entity, key)
+        -- get
+        if store[entity.id] then
+            return store[entity.id][key]
+        end
+    end, 
+    ---set
+    ---@param entity entity
+    ---@param key string
+    ---@param value? any
+    function(entity, key, value)
+        -- put
+        if not store[entity.id] then
+            store[entity.id] = {}
+        end
+        store[entity.id][key] = value
+    end
+end
+
 ---@class entity
 ---@field id number Unique ID
 ---@field z number Z index used for Scene sorting
@@ -49,6 +78,9 @@ local function sortEntities(entities)
         if not b.z then
             b.z = 0
         end
+        if a.z == b.z then
+            return a.id < b.id
+        end
         return a.z < b.z
     end
     table.sort(entities, zsort)
@@ -84,10 +116,9 @@ function Entity.destroy(...)
     end
 end
 
----@type table<number, number>
-local lastZ = {}
+local getZ, setZ = M.Storage.new()
 function Entity.update()
-    local resort = false
+    local resort = 0
     ---@type entity
     local entity
     for e = #Entity.entities, 1, -1 do 
@@ -97,13 +128,13 @@ function Entity.update()
             break
         end
         -- z index changed?
-        if lastZ[entity.id] ~= entity.z then
-            resort = true
-            lastZ[entity.id] = entity.z
+        if getZ(entity, 'z') ~= entity.z then
+            resort = resort + 1
+            setZ(entity, 'z', entity.z)
         end
     end
-    if resort then
-        resort = false
+    if resort > 0 then
+        resort = 0
         sortEntities(Entity.entities)
     end
 end
@@ -292,33 +323,6 @@ function Scene.draw()
             love.graphics.pop()
         end
     end)
-end
-
-local Storage = {}
-M.Storage = Storage
-
-function Storage.new()
-    ---@type table<number, table<string, any>>
-    local store = {}
-
-    ---@param entity entity
-    ---@param key string
-    return function(entity, key)
-        -- get
-        if store[entity.id] then
-            return store[entity.id][key]
-        end
-    end, 
-    ---@param entity entity
-    ---@param key string
-    ---@param value? any
-    function(entity, key, value)
-        -- put
-        if not store[entity.id] then
-            store[entity.id] = {}
-        end
-        store[entity.id][key] = value
-    end
 end
 
 ---@param dt number

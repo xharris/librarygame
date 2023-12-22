@@ -11,16 +11,12 @@ end
 
 xd.sys.add(function(dt, entity)
     if xd.ent.has(entity, 'isoX', 'isoY') then
-        local h = entity.isoH or 0
+        -- local h = entity.isoH or 0
         local isoX, isoY = entity.isoX, entity.isoY
         local tw, th = M.TILE_SIZE, M.TILE_SIZE / 2
         local xPos, yPos = M.toIso(isoX, isoY)
-        local isoOX, isoOY = entity.isoOX or 0, entity.isoOY or 0
-        entity.x = xPos + isoOX
-        entity.y = yPos + isoOY - (th/2 * h)
-        entity.ox = tw/2
-        entity.oy = th/2
-        entity.z = yPos + (h * th)
+        entity.x = xPos - (tw/2)
+        entity.y = yPos - (th/2)
     end
 end)
 
