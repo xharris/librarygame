@@ -13,6 +13,8 @@ xd.sys.add(function(dt, entity)
     if xd.ent.has(entity, 'layer') then
         local gw, gh = love.graphics.getDimensions()
         local mx, my = love.mouse.getPosition()
+        entity.ox = -gw/2
+        entity.oy = -gh/2
         -- follow an entity
         if entity.layerFollow then
             entity.x = -entity.layerFollow.x + (gw/2)
@@ -57,26 +59,15 @@ xd.sys.add(function(dt, entity)
     end
 end)
 
-local transform = love.math.newTransform()
-
---[[
-    local c, s = math.cos(self.rotation), math.sin(self.rotation)
-    x, y = (x - self.w/2)/self.scale, (y - self.h/2)/self.scale
-    x, y = c*x - s*y, s*x + c*y
-    return x + self.x, y + self.y
-]]
-
 ---@param layer entity
 ---@param x number
 ---@param y number
-function M.toScreen(layer, x, y)
-    transform:setTransformation(layer.x, layer.y, layer.r, layer.sx, layer.sy, layer.ox, layer.oy, layer.kx, layer.ky)
-    return transform:transformPoint(x, y)
-    -- local c, s = math.cos(layer.r), math.sin(layer.r)
-    -- local gw, gh = 0, 0 -- love.graphics.getDimensions()
-    -- x, y = (x - gw/2) / layer.sx, (y - gh/2) / layer.sy
-    -- x, y = c*x - s*y, s*x + c*y
-    -- return x + layer.x, y + layer.y
+function M.toWorld(layer, x, y)
+    local transform = xd.sce.transforms[layer.id]
+    if transform then
+        return transform:inverseTransformPoint(x, y)
+    end
+    return x, y
 end
 
 return M

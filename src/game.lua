@@ -111,10 +111,7 @@ function M.load()
     ---@type entity
     local lastNode
     xd.sys.add(function(dt, entity)
-        local mx, my = love.mouse.getPosition()
-        print('before', mx, my)
-        mx, my = layer.toScreen(layerMap, mx, my)
-        print('after', mx, my)
+        local mx, my = layer.toWorld(layerMap, love.mouse.getPosition())
         if xd.ent.has(entity, 'pathGrid') then
             -- find a path from actor to clicked tile
             if love.mouse.isDown(1) and lastNode ~= entity and xd.lume.distance(mx, my, entity.x, entity.y) < 16 then

@@ -72,4 +72,5 @@ making it fun:
     - sleeps in a chair for a long time
     - stealing
 
-    
+polish:
+- https://www.gamedeveloper.com/programming/toward-more-realistic-pathfinding
