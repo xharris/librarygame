@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "start": ".\\love-11.4-win64\\lovec.exe ."
+    "start": ".\\love-11.4-win64\\lovec.exe .",
+    "test": ".\\love-11.4-win64\\lovec.exe test"
   },
   "author": "",
   "license": "ISC"

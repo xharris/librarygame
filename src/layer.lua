@@ -2,9 +2,10 @@ local M = {}
 local xd = require('engine')
 local input = require('input')
 
-M.LAYER_TYPE = {STATIC=0, INPUT_PAN=1}
+M.TYPE = {STATIC=0, INPUT_PAN=1}
 M.MIN_ZOOM = 0.75
 M.MAX_ZOOM = 1.5
+M.ZOOM_RESET_FOLLOW = false
 
 local get, put = xd.sto.new()
 
@@ -17,7 +18,7 @@ xd.sys.add(function(dt, entity)
             entity.x = -entity.layerFollow.x + (gw/2)
             entity.y = -entity.layerFollow.y + (gh/2)
         end
-        if entity.layer == M.LAYER_TYPE.INPUT_PAN then
+        if entity.layer == M.TYPE.INPUT_PAN then
             local dragstart = get(entity, 'dragstart')
             -- drag start
             if input.down('mouse1') and not dragstart then
@@ -36,6 +37,9 @@ xd.sys.add(function(dt, entity)
             -- zoom https://love2d.org/forums/viewtopic.php?p=253786#p253786
             local moved, wheely = input.down('wheely')
             if moved then
+                if M.ZOOM_RESET_FOLLOW then
+                    entity.layerFollow = nil
+                end
                 local tx, ty = entity.x, entity.y
                 local scale = entity.sx
                 local newScale = math.min(M.MAX_ZOOM, math.max(M.MIN_ZOOM, scale + wheely * 5 * dt))
@@ -44,7 +48,6 @@ xd.sys.add(function(dt, entity)
                 entity.sy = newScale
 
                 -- zoom to mouse
-                -- TODO should layerFollow be unset here?
                 if not entity.layerFollow then
                     entity.x = (mx-((mx-tx)/scale)*newScale)
                     entity.y = (my-((my-ty)/scale)*newScale)
@@ -53,5 +56,27 @@ xd.sys.add(function(dt, entity)
         end
     end
 end)
+
+local transform = love.math.newTransform()
+
+--[[
+    local c, s = math.cos(self.rotation), math.sin(self.rotation)
+    x, y = (x - self.w/2)/self.scale, (y - self.h/2)/self.scale
+    x, y = c*x - s*y, s*x + c*y
+    return x + self.x, y + self.y
+]]
+
+---@param layer entity
+---@param x number
+---@param y number
+function M.toScreen(layer, x, y)
+    transform:setTransformation(layer.x, layer.y, layer.r, layer.sx, layer.sy, layer.ox, layer.oy, layer.kx, layer.ky)
+    return transform:transformPoint(x, y)
+    -- local c, s = math.cos(layer.r), math.sin(layer.r)
+    -- local gw, gh = 0, 0 -- love.graphics.getDimensions()
+    -- x, y = (x - gw/2) / layer.sx, (y - gh/2) / layer.sy
+    -- x, y = c*x - s*y, s*x + c*y
+    -- return x + layer.x, y + layer.y
+end
 
 return M

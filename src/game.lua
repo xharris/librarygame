@@ -1,12 +1,12 @@
 local M = {}
 local xd = require('engine')
-local inspect = require('inspect')
 local input = require('input')
 
 local image = require('src.image')
 local isometric = require('src.isometric')
 local layer = require('src.layer')
 local zOrdering = require('src.zOrdering')
+local pathing = require('src.pathing')
 
 local STRUCTURES = {
     [1]={
@@ -18,7 +18,6 @@ local STRUCTURES = {
     },
     [2]={
         path='box.png',
-        -- h=1,
         anchorX=32,
         anchorY=44
     }
@@ -32,16 +31,19 @@ local ACTORS = {
     }
 }
 
+local PATH_GRID = {FLOOR=0}
+
 local map = {
     {1, 1, 1, 1, 1},
     {1, 1, 1, 1, 1},
-    {1, 1, 2, 1, 1},
-    {1, 1, 1, 1, 1},
+    {1, 1, 2, 2, 1},
+    {1, 1, 1, 2, 1},
     {1, 1, 1, 1, 1}
 }
 
-local layerMap = xd.ent.new{ layer=layer.LAYER_TYPE.INPUT_PAN, layerFollow=nil }
+local layerMap = xd.ent.new{ layer=layer.TYPE.INPUT_PAN, layerFollow=nil }
 xd.sce.addToWorld(layerMap)
+
 
 function M.load()
     input.bind_callbacks()
@@ -59,8 +61,8 @@ function M.load()
                 sx=tileInfo.scale, sy=tileInfo.scale,
                 ox=tileInfo.anchorX, oy=tileInfo.anchorY,
                 isoX=x, isoY=y,
-                isoH=tileInfo.h,
-                zOrdering=zOrdering.MODE.Y
+                zOrdering=zOrdering.MODE.Y,
+                pathX=x, pathY=y,
             }
             xd.sce.addTo(layerMap, floor)
 
@@ -71,22 +73,25 @@ function M.load()
 
             -- set camera on center tile
             if y == math.floor(#map / 2) and x == math.floor(#yval / 2) then
-                layerMap.layerFollow = floor
+                -- layerMap.layerFollow = floor
             end
 
             -- add structure at this cell in map
-            if not info.isFloor then
+            if info and not info.isFloor then
                 local struct = xd.ent.new{
                     image=info.path,
                     sx=info.scale, sy=info.scale,
                     ox=info.anchorX, oy=info.anchorY,
                     isoX=x, isoY=y,
-                    isoH=info.h,
                     zOrdering=zOrdering.MODE.Y
                 }
                 xd.sce.addTo(layerMap, struct)
             end
 
+            -- add to pathfinding map
+            if not info or info.isFloor then
+                floor.pathGrid = PATH_GRID.FLOOR
+            end
         end
     end
 
@@ -95,10 +100,38 @@ function M.load()
     local actor = xd.ent.new{
         image=actorInfo.path,
         ox=actorInfo.anchorX, oy=actorInfo.anchorY,
-        zOrdering=zOrdering.MODE.Y
+        zOrdering=zOrdering.MODE.Y,
+        pathGrid=PATH_GRID.FLOOR
     }
-    actor.x, actor.y = isometric.toIso(1, 0)
+    actor.x, actor.y = isometric.toIso(0, 0)
+    actor.pathX = 0
+    actor.pathY = 0
     xd.sce.addTo(layerMap, actor)
+
+    ---@type entity
+    local lastNode
+    xd.sys.add(function(dt, entity)
+        local mx, my = love.mouse.getPosition()
+        print('before', mx, my)
+        mx, my = layer.toScreen(layerMap, mx, my)
+        print('after', mx, my)
+        if xd.ent.has(entity, 'pathGrid') then
+            -- find a path from actor to clicked tile
+            if love.mouse.isDown(1) and lastNode ~= entity and xd.lume.distance(mx, my, entity.x, entity.y) < 16 then
+                if lastNode then
+                    lastNode.pathColor = nil
+                end
+                lastNode = entity
+                entity.pathColor = {0,1,0}
+                actor.pathList = pathing.getPath(actor, entity)
+                if actor.pathList then
+                    xd.lume.each(actor.pathList, function(node)
+                        xd.log({node.x, node.y})
+                    end)
+                end
+            end
+        end
+    end)
 end
 
 

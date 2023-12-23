@@ -13,6 +13,10 @@ function M.log(...)
     end
 end
 
+function M.warn(...)
+    print(table.concat({'[WARN]', ...}, ' '))
+end
+
 local Storage = {}
 M.Storage = Storage
 
@@ -63,6 +67,9 @@ Entity._id = 0
 ---@type entity[]
 Entity.entities = {}
 
+---@type table<number, entity>
+Entity.entityIDMap = {}
+
 ---@type table<number, boolean>
 Entity.remove = {}
 
@@ -100,6 +107,7 @@ function Entity.new(props)
     props.oy = props.oy or 0
 
     table.insert(Entity.entities, props)
+    Entity.entityIDMap[props.id] = props
     Entity.remove[props.id] = false
     -- increment count
     Entity._id = Entity._id + 1
@@ -108,10 +116,15 @@ function Entity.new(props)
     return props
 end
 
+---@param id integer
+function Entity.get(id)
+    return Entity.entityIDMap[id]
+end
+
 function Entity.destroy(...)
     for _, id in ipairs({...}) do
         if id ~= M.Scene.world.id then
-            Entity.remove[id] = true 
+            Entity.remove[id] = true
         end
     end
 end
@@ -125,6 +138,7 @@ function Entity.update()
         entity = Entity.entities[e]
         if Entity.remove[entity.id] then
             table.remove(Entity.entities, e)
+            Entity.entityIDMap[entity.id] = nil
             break
         end
         -- z index changed?
@@ -139,6 +153,8 @@ function Entity.update()
     end
 end
 
+---@param entity entity
+---@param ... string
 function Entity.has(entity, ...)
     if not entity then return false end
     for _, key in ipairs({...}) do
@@ -330,6 +346,35 @@ function M.update(dt)
     System.update(dt)
     Entity.update()
     Scene.update()
+end
+
+local Test = {}
+M.Test = Test
+
+---Not to be used for development
+---@param description string
+---@param fn fun()
+function Test.it(description, fn)
+    local status, err = pcall(fn)
+    if not status then
+        print(lume.format('\27[41mFAIL\27[0m \t{desc} \t({err})', { desc=description, err=err }))
+    else
+        print(lume.format('\27[42mPASS\27[0m \t{desc}', { desc=description }))
+    end
+end
+
+---@param expr any
+---@param expected any
+function Test.expect(expr, expected)
+    if expr then
+        if type(expr) == 'table' and type(expected) == 'table' then
+            expr = inspect.inspect(expr)
+            expected = inspect.inspect(expected)
+        end
+        if expr ~= expected then
+            error(tostring(expr)..' ~= '..tostring(expected), 2)
+        end
+    end
 end
 
 -- shorthand

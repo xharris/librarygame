@@ -5,8 +5,8 @@ M.TILE_SIZE = 64
 
 function M.toIso(x, y)
     local w, h = M.TILE_SIZE, M.TILE_SIZE / 2
-    return  (x * w / 2) + (y * w / 2),
-            (y * h / 2) - (x * h / 2)
+    return  (x + y) * (w / 2),
+            (y - x) * (h / 2)
 end
 
 xd.sys.add(function(dt, entity)
