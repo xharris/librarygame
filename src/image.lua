@@ -21,11 +21,12 @@ xd.sce.addDrawFn(function(entity)
         if xd.ent.has(entity, 'image') then
             local imageObj = M.getImage(entity.image)
             if imageObj then
+                love.graphics.setColor(1,1,1,entity.a or 1)
                 love.graphics.draw(imageObj)
             end
             if M.debug then
                 love.graphics.push('all')
-                love.graphics.setColor(0,0,0)
+                love.graphics.setColor(0,0,0,1)
                 love.graphics.circle('fill',0,0,4)
                 love.graphics.rectangle('line',0,0,imageObj:getWidth(),imageObj:getHeight())
                 love.graphics.pop()

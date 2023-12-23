@@ -94,7 +94,10 @@ function lume.sign(x)
   return x < 0 and -1 or 1
 end
 
-
+---@param a number
+---@param b number
+---@param amount number [0,1] range
+---@return number
 function lume.lerp(a, b, amount)
   return a + (b - a) * lume.clamp(amount, 0, 1)
 end

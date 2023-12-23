@@ -1,3 +1,4 @@
+--[[ xhh 2023 ]]
 local lume = require('lume')
 local inspect = require('inspect')
 local M = {}
@@ -252,15 +253,39 @@ Scene.children = { [Scene.world.id]={} }
 ---@type table<number, number>
 Scene.childToParent = {}
 
----@type table<number, function>
+---@class DrawingFnOptions
+---@field z number
+
+---@class DrawingFnObj
+---@field fn function
+---@field options DrawingFnOptions
+
+---@type table<number, DrawingFnObj>
 Scene.drawingFns = {}
 
 ---@type table<number, love.Transform>
 Scene.transforms = {}
 
+local function sortDrawingFns()
+    ---@param a DrawingFnObj
+    ---@param b DrawingFnObj
+    local function zsort(a, b)
+        if not a.options.z then
+            a.options.z = 0
+        end
+        if not b.options.z then
+            b.options.z = 0
+        end
+        return a.options.z < b.options.z
+    end
+    table.sort(Scene.drawingFns, zsort)
+end
+
 ---@param fn fun(entity: entity)
-function Scene.addDrawFn(fn)
-    table.insert(Scene.drawingFns, fn)
+---@param options? DrawingFnOptions
+function Scene.addDrawFn(fn, options)
+    table.insert(Scene.drawingFns, { fn=fn, options=options or {} })
+    sortDrawingFns()
 end
 
 ---@param parent entity
@@ -331,11 +356,11 @@ function Scene.draw()
         local transform = Scene.transforms[entity.id]
         if not transform then return end
         -- draw entity
-        for _, fn in pairs(Scene.drawingFns) do
+        for _, obj in pairs(Scene.drawingFns) do
             love.graphics.push('all')
             -- transform
             love.graphics.replaceTransform(transform)
-            fn(entity)
+            obj.fn(entity)
             love.graphics.pop()
         end
     end)

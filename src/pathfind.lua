@@ -2,10 +2,15 @@ local M = {}
 local xd = require('engine')
 local astar = require('astar')
 
+M.MAX_WEIGHT = 100
+
 ---@class node
 ---@field pathGrid number
 ---@field pathX integer
 ---@field pathY integer
+---@field pathWeight? number
+---@field pathNoDiagonal? boolean
+---@field pathSolid? boolean
 
 local getNode, setNode = xd.sto.new()
 
@@ -17,11 +22,12 @@ xd.sce.addDrawFn(function(entity)
         if entity.pathColor then
             love.graphics.setColor(entity.pathColor)
         else
-            love.graphics.setColor(1,0,0)
+            local wt = entity.pathWeight or 1
+            love.graphics.setColor(xd.lume.lerp(0, 1, wt/M.MAX_WEIGHT), 0, xd.lume.lerp(1, 0, wt/M.MAX_WEIGHT))
         end
-        love.graphics.circle('fill',entity.ox,entity.oy,16)
+        love.graphics.circle('fill',entity.ox,entity.oy,8)
     end
-end)
+end, { z=99 })
 
 xd.sce.addDrawFn(function(entity)
     if xd.ent.has(entity, 'pathList') then
@@ -49,11 +55,19 @@ local function newGrid(pathGrid)
     -- add_neighbor_cb: function(new_node, cost)
     --    cost is optional, call map:get_cost to get cost if no cost value
     function map:get_neighbors(node, from, addNeighbor, userdata)
-        for x = node.pathX - 1, node.pathX + 1 do
-            for y = node.pathY - 1, node.pathY + 1 do
+        local dx, dy
+        for x = -1, 1 do
+            for y = -1, 1 do
+                dx, dy = node.pathX + x, node.pathY + y
                 ---@type entity
-                local neighbor = getNode(grid, getKey({pathGrid=pathGrid, pathX=x, pathY=y}))
-                if neighbor and not xd.ent.remove[neighbor.id] and neighbor.id ~= node.id then
+                local neighbor = getNode(grid, getKey({pathGrid=pathGrid, pathX=dx, pathY=dy}))
+                if
+                    neighbor and 
+                    not xd.ent.remove[neighbor.id] and
+                    neighbor.id ~= node.id and
+                    (not neighbor.pathNoDiagonal or x == 0 or y == 0) and
+                    ((neighbor.pathWeight or 1) < M.MAX_WEIGHT or userdata.to.id == neighbor.id)
+                then
                     addNeighbor(neighbor)
                 end
             end
@@ -64,7 +78,13 @@ local function newGrid(pathGrid)
     ---@param from node
     ---@param to node
     function map:get_cost(from, to, userdata)
-        return xd.lume.distance(from.pathX, from.pathY, to.pathX, to.pathY)
+        if from.pathWeight == nil then
+            from.pathWeight = 1
+        end
+        if to.pathWeight == nil then
+            to.pathWeight = 1
+        end
+        return xd.lume.distance(from.pathX, from.pathY, to.pathX, to.pathY) * math.max(1, (to.pathWeight))
     end
     -- For heuristic. Estimate cost of current node to goal node
     -- As close to the real cost as possible
@@ -108,7 +128,7 @@ function M.getPath(from, to)
         xd.warn("grid not found")
         return {}
     end
-    return grid.pathFinder:find(from, to)
+    return grid.pathFinder:find(from, to, { to=to })
 end
 
 return M

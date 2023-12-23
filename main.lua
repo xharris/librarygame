@@ -1,18 +1,15 @@
 
 
-local engine = require('engine')
-local State = engine.State
-
+local xd = require('engine')
 
 function love.load()
-    State.load('src.game')
+    xd.sta.load('src.game')
 end
 
 function love.update(dt)
-    engine.update(dt)
+    xd.update(dt)
 end
 
 function love.draw()
-    State.call('draw')
-    engine.sce.draw()
+    xd.sce.draw()
 end

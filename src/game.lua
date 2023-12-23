@@ -6,7 +6,9 @@ local image = require('src.image')
 local isometric = require('src.isometric')
 local layer = require('src.layer')
 local zOrdering = require('src.zOrdering')
-local pathing = require('src.pathing')
+local pathing = require('src.pathfind')
+
+local STRUCTURE_TYPE = {WALL=0,TILE=1,STORAGE=2}
 
 local STRUCTURES = {
     [1]={
@@ -19,7 +21,8 @@ local STRUCTURES = {
     [2]={
         path='box.png',
         anchorX=32,
-        anchorY=44
+        anchorY=44,
+        type=STRUCTURE_TYPE.STORAGE
     }
 }
 
@@ -37,8 +40,8 @@ local map = {
     {1, 1, 1, 1, 1},
     {1, 1, 1, 1, 1},
     {1, 1, 2, 2, 1},
-    {1, 1, 1, 2, 1},
-    {1, 1, 1, 1, 1}
+    {1, 1, 2, 2, 1},
+    {1, 1, 1, 2, 1}
 }
 
 local layerMap = xd.ent.new{ layer=layer.TYPE.INPUT_PAN, layerFollow=nil }
@@ -83,14 +86,18 @@ function M.load()
                     sx=info.scale, sy=info.scale,
                     ox=info.anchorX, oy=info.anchorY,
                     isoX=x, isoY=y,
-                    zOrdering=zOrdering.MODE.Y
+                    zOrdering=zOrdering.MODE.Y,
+                    a=0.75
                 }
                 xd.sce.addTo(layerMap, struct)
             end
 
             -- add to pathfinding map
-            if not info or info.isFloor then
-                floor.pathGrid = PATH_GRID.FLOOR
+            floor.pathGrid = PATH_GRID.FLOOR
+
+            if info.type == STRUCTURE_TYPE.STORAGE then
+                floor.pathNoDiagonal = true
+                floor.pathWeight = pathing.MAX_WEIGHT
             end
         end
     end
