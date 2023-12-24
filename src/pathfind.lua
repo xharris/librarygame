@@ -113,16 +113,30 @@ xd.sys.add(function(dt, entity)
     end
     -- move entity on a path
     if xd.ent.has(entity, 'pathList') then
+        if entity.pathLength == nil then
+            -- get length of path
+            entity.pathLength = 0
+            local prev
+            for n, node in ipairs(entity.pathList) do
+                if n > 1 then
+                    prev = entity.pathList[n-1]
+                    entity.pathLength = entity.pathLength + xd.lume.distance(prev.x, prev.y, node.x, node.y)
+                end
+            end
+        end
         if #entity.pathList > 1 and not entity.pathMove then
             table.remove(entity.pathList, 1)
             local to = entity.pathList[1]
             if to.pathWeight == M.MAX_WEIGHT then
-                entity.pathList = {}
+                -- stop moving on path
+                entity.pathList = nil
+                entity.pathLength = nil
             else
+                -- move to next point in path
                 entity.pathMove = {
                     i=0,
                     t=0,
-                    from={x=entity.x, y=entity.y}, 
+                    from={x=entity.x, y=entity.y},
                     to={x=to.x, y=to.y, pathX=to.pathX, pathY=to.pathY}
                 }
             end
@@ -131,7 +145,8 @@ xd.sys.add(function(dt, entity)
     if xd.ent.has(entity, 'pathMove', 'pathList') then
         local pm = entity.pathMove
         local speed = entity.pathSpeed or 1
-        pm.t = pm.t + dt
+        local dist = xd.lume.distance(pm.from.x, pm.from.y, pm.to.x, pm.to.y)
+        pm.t = pm.t + dt / (dist / entity.pathLength)
         entity.y = xd.lume.lerp(pm.from.y, pm.to.y, pm.t/speed)
         entity.x = xd.lume.lerp(pm.from.x, pm.to.x, pm.t/speed)
         -- done moving to node
