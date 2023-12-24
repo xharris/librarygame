@@ -183,6 +183,15 @@ function Entity.forEach(fn)
     end
 end
 
+---@param fn fun(entity: entity): boolean
+function Entity.find(fn)
+    for _, entity in ipairs(Entity.entities) do
+        if fn(entity) then
+            return entity
+        end
+    end
+end
+
 local System = {}
 M.System = System
 

@@ -8,6 +8,7 @@ end
 
 function love.update(dt)
     xd.update(dt)
+    xd.sta.call('update', dt)
 end
 
 function love.draw()
