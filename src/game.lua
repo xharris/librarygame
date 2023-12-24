@@ -108,12 +108,15 @@ function M.load()
         image=actorInfo.path,
         ox=actorInfo.anchorX, oy=actorInfo.anchorY,
         zOrdering=zOrdering.MODE.Y,
-        pathGrid=PATH_GRID.FLOOR
+        pathGrid=PATH_GRID.FLOOR,
+        pathSpeed=2
     }
     actor.x, actor.y = isometric.toIso(0, 0)
     actor.pathX = 0
     actor.pathY = 0
     xd.sce.addTo(layerMap, actor)
+
+    -- DEV click to find path from bird to clicked tile
 
     ---@type entity
     local lastNode

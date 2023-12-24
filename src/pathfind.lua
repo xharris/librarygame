@@ -34,9 +34,10 @@ xd.sce.addDrawFn(function(entity)
         local list = entity.pathList
         local points = {}
         xd.lume.each(list, function(node)
-            xd.lume.push(points, node.x+list[1].ox, node.y+list[1].oy)
+            xd.lume.push(points, node.x+list[1].ox-entity.x, node.y+list[1].oy-entity.y)
         end)
         if #points >= 4 then
+            -- love.graphics.reset()
             love.graphics.setColor(0,1,0)
             love.graphics.line(points)
         end
@@ -62,7 +63,7 @@ local function newGrid(pathGrid)
                 ---@type entity
                 local neighbor = getNode(grid, getKey({pathGrid=pathGrid, pathX=dx, pathY=dy}))
                 if
-                    neighbor and 
+                    neighbor and
                     not xd.ent.remove[neighbor.id] and
                     neighbor.id ~= node.id and
                     (not neighbor.pathNoDiagonal or x == 0 or y == 0) and
@@ -100,6 +101,7 @@ local function newGrid(pathGrid)
 end
 
 xd.sys.add(function(dt, entity)
+    -- find path for entity
     if xd.ent.has(entity, 'pathGrid', 'pathX', 'pathY') then
         if not grids[entity.pathGrid] then
             grids[entity.pathGrid] = newGrid(entity.pathGrid)
@@ -107,6 +109,36 @@ xd.sys.add(function(dt, entity)
         local grid = grids[entity.pathGrid]
         if not getNode(grid, getKey(entity)) then
             setNode(grid, getKey(entity), entity)
+        end
+    end
+    -- move entity on a path
+    if xd.ent.has(entity, 'pathList') then
+        if #entity.pathList > 1 and not entity.pathMove then
+            table.remove(entity.pathList, 1)
+            local to = entity.pathList[1]
+            if to.pathWeight == M.MAX_WEIGHT then
+                entity.pathList = {}
+            else
+                entity.pathMove = {
+                    i=0,
+                    t=0,
+                    from={x=entity.x, y=entity.y}, 
+                    to={x=to.x, y=to.y, pathX=to.pathX, pathY=to.pathY}
+                }
+            end
+        end
+    end
+    if xd.ent.has(entity, 'pathMove', 'pathList') then
+        local pm = entity.pathMove
+        local speed = entity.pathSpeed or 1
+        pm.t = pm.t + dt
+        entity.y = xd.lume.lerp(pm.from.y, pm.to.y, pm.t/speed)
+        entity.x = xd.lume.lerp(pm.from.x, pm.to.x, pm.t/speed)
+        -- done moving to node
+        if pm.t >= speed then
+            entity.pathMove = nil
+            entity.pathX = pm.to.pathX
+            entity.pathY = pm.to.pathY
         end
     end
 end)
