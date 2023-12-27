@@ -2,18 +2,42 @@ local M = {}
 local xd = require('engine')
 local layer = require('src.layer')
 
-M.STRUCTURE_TYPE = {WALL=0,TILE=1,STORAGE=2,ENTRANCE=3}
+-- entity.activity
+M.ACTIVITY = {NOTHING='nothing',READ='read'}
+-- determines whether an actor can perform an activity
+---@type table<number, fun(entity: entity): boolean>
+M.ACTIVITY_COND = {
+    [M.ACTIVITY.READ] = function(entity)
+        return entity.happiness == nil or entity.happiness > 0
+    end
+}
+---@type table<number, fun(entity: entity)>
+M.ACTIVITY_FAIL = {
+    [M.ACTIVITY.READ] = function (entity)
+        entity.happiness = entity.happiness - 10
+        xd.debug(tostring(entity)..' happiness -10 --> '..entity.happiness)
+    end
+}
+-- entity.structureType
+M.STRUCTURE_TYPE = {WALL='wall',TILE='tile',STORAGE='storage',ENTRANCE='entrance'}
+-- entity.actorType
 M.ACTORS = {
-    [0]={
+    {
+        name='base',
         path='bird.png',
         anchorX=32,
         anchorY=44,
-        likes={''}
+        activities={M.ACTIVITY.READ}
     }
 }
-M.PATH_GRID = {FLOOR=0}
+-- how often actor should look for a new activity
+M.CD_FIND_ACTIVITY = 3
+-- entity.itemType
+M.ITEM = {BOOK=0}
+M.PATH_GRID = {FLOOR='floor'}
 
 M.t = 0
+-- 1 cycle = 1 world hour?
 M.cycle = 0
 
 M.layer = {

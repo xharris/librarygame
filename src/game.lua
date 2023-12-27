@@ -4,12 +4,16 @@ local g = require('src.global')
 
 local input = require('input')
 
+
 local image = require('src.image')
 local isometric = require('src.isometric')
 local layer = require('src.layer')
 local zOrdering = require('src.zOrdering')
 local pathing = require('src.pathfind')
+
 require('src.structures.entrance')
+require('src.activity')
+require('src.activity.read')
 
 local STRUCTURES = {
     [1]={
@@ -37,7 +41,7 @@ local map = {
     {3, 1, 1, 1, 1, 1},
     {0, 1, 1, 1, 1, 1},
     {0, 1, 1, 1, 1, 1},
-    {0, 1, 1, 1, 1, 2},
+    {0, 1, 1, 1, 2, 1},
     {0, 1, 1, 1, 1, 1}
 }
 
@@ -57,6 +61,7 @@ function M.load()
                     ox=tileInfo.anchorX, oy=tileInfo.anchorY,
                     isoX=x, isoY=y,
                     zOrdering=zOrdering.MODE.Y,
+                    pathGrid=g.PATH_GRID.FLOOR,
                     pathX=x, pathY=y,
                     structureType=info.type
                 }
@@ -69,7 +74,7 @@ function M.load()
 
                 -- set camera on center tile
                 if y == math.floor(#map / 2) and x == math.floor(#yval / 2) then
-                    -- g.layer.map.layerFollow = floor
+                    g.layer.map.layerFollow = floor
                 end
 
                 -- add structure at this cell in map
@@ -77,21 +82,28 @@ function M.load()
                     local struct = xd.ent.new{
                         image=info.path,
                         ox=info.anchorX, oy=info.anchorY,
+                        pathX=x, pathY=y,
+                        pathGrid=g.PATH_GRID.FLOOR,
                         isoX=x, isoY=y,
                         zOrdering=zOrdering.MODE.Y,
-                        a=0.75,
-                        structureType=info.type
+                        structureType=info.type,
                     }
                     xd.sce.addTo(g.layer.map, struct)
-                end
 
-                -- add to pathfinding map
-                floor.pathGrid = g.PATH_GRID.FLOOR
+                    if info and info.type == g.STRUCTURE_TYPE.STORAGE then
+                        -- make storage structures solid for pathfinding
+                        struct.pathNoDiagonal = true
+                        struct.pathWeight = pathing.MAX_WEIGHT
+                        -- add a book
+                        local book = xd.ent.new{
+                            itemType=g.ITEM.BOOK
+                        }
+                        struct.inventory = {book}
+                    end
 
-                -- make storage structures solid for pathfinding
-                if info and info.type == g.STRUCTURE_TYPE.STORAGE then
-                    floor.pathNoDiagonal = true
-                    floor.pathWeight = pathing.MAX_WEIGHT
+                    if info and info.type == g.STRUCTURE_TYPE.ENTRANCE then
+                        struct.pathNoDiagonal = true
+                    end
                 end
             end
         end
@@ -123,7 +135,7 @@ end
                 actor.pathList = pathing.getPath(actor, entity)
                 if actor.pathList then
                     xd.lume.each(actor.pathList, function(node)
-                        xd.log({node.x, node.y})
+                        xd.debug({node.x, node.y})
                     end)
                 end
             end

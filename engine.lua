@@ -4,18 +4,59 @@ local inspect = require('inspect')
 local M = {}
 
 M.NAN = 0/0
+M.LOG={ERROR=0,WARN=1,INFO=2,DEBUG=3}
+M.LOG_LEVEL=M.LOG.INFO
 
-function M.log(...)
+local LOG_ICON = {
+    [M.LOG.ERROR] = '!',
+    [M.LOG.WARN] =  '?', -- '⚠️',
+    [M.LOG.INFO] =  'i', -- '📃',
+    [M.LOG.DEBUG] =  'x', -- '🔧'
+}
+
+local debugGetInfo = debug.getinfo
+---@param level number
+local function log(level, ...)
     local args = {...}
-    if #args > 1 then
-        print(inspect.inspect(args))
-    else
-        print(inspect.inspect(args[1]))
+    local t = debugGetInfo(3)
+    -- if #args > 1 then
+        print('['..LOG_ICON[level]..']', inspect.inspect(args), '\t('..t.short_src..':'..t.currentline..')')
+    -- else
+    --     print('['..LOG_ICON[level]..']', inspect.inspect(args[1]), '\t('..t.short_src..':'..t.currentline..')')
+    -- end
+end
+
+function M.error(...)
+    if M.LOG_LEVEL >= M.LOG.ERROR then
+        log(M.LOG.ERROR, ...)
     end
 end
 
 function M.warn(...)
-    print(table.concat({'[WARN]', ...}, ' '))
+    if M.LOG_LEVEL >= M.LOG.WARN then
+        log(M.LOG.WARN, ...)
+    end
+end
+
+function M.info(...)
+    if M.LOG_LEVEL >= M.LOG.INFO then
+        log(M.LOG.INFO, ...)
+    end
+end
+
+function M.debug(...)
+    if M.LOG_LEVEL >= M.LOG.DEBUG then
+        log(M.LOG.DEBUG, ...)
+    end
+end
+
+---@alias id string
+
+---@param prefix? string
+---@return id
+function M.id(prefix)
+    prefix = prefix or ''
+    return prefix..'-'..lume.uuid()
 end
 
 local Storage = {}
@@ -96,7 +137,10 @@ end
 
 ---@return entity
 function Entity.new(props)
-    props = props or {}
+    props = setmetatable(props or {}, {
+        __tostring = function (t) return 'entity-'..t.id end,
+        __eq = function (t1, t2) return t1.id == t2.id end
+    })
     
     props.id = Entity._id
     props.x = props.x or 0
@@ -382,6 +426,54 @@ function M.update(dt)
     Scene.update()
 end
 
+local Signal = {}
+M.Signal = Signal
+
+---@type table<string, fun(...)[]>
+Signal.listeners = {}
+
+---@param key any|any[]
+---@return string
+local function getSignalKey(key)
+    ---@type string
+    local ret
+    if type(key) == 'table' then
+        ret = table.concat(key,'|')
+    else
+        ret = tostring(key)
+    end
+    if not Signal.listeners[ret] then
+        Signal.listeners[ret] = {}
+    end
+    return ret
+end
+
+---@param key any|any[]
+---@param fn fun(...)
+function Signal.on(key, fn)
+    local signalKey = getSignalKey(key)
+    table.insert(Signal.listeners[signalKey], fn)
+end
+
+---@param key any|any[]
+---@param fn fun(...):boolean Return true to remove the listener
+function Signal.on(key, fn)
+    local signalKey = getSignalKey(key)
+    lume.filter(Signal.listeners[signalKey], function (item)
+        return item ~= fn
+    end)
+end
+
+---@param key any|any[]
+---@param ... any
+function Signal.emit(key, ...)
+    local signalKey = getSignalKey(key)
+    local args = {...}
+    lume.filter(Signal.listeners[signalKey], function (item)
+        return item(unpack(args)) ~= true
+    end)
+end
+
 local Test = {}
 M.Test = Test
 
@@ -411,12 +503,18 @@ function Test.expect(expr, expected)
     end
 end
 
+---@param text string
+function Test.describe(text)
+    print(lume.format('\27[107mDESC\27[0m \t-- {desc} --', { desc=text }))
+end
+
 -- shorthand
 M.sta = M.State
 M.ent = M.Entity
 M.sys = M.System
 M.sce = M.Scene
 M.sto = M.Storage
+M.sig = M.Signal
 M.lume = lume
 
 return M

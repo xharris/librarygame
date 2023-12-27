@@ -1,6 +1,7 @@
 
 
 local xd = require('engine')
+xd.LOG_LEVEL = xd.LOG.DEBUG
 
 function love.load()
     xd.sta.load('src.game')

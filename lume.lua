@@ -247,7 +247,11 @@ function lume.array(...)
   return t
 end
 
-
+---@generic I
+---@param t I[]
+---@param fn fun(item:I, args:...)
+---@param ... any
+---@return I[]
 function lume.each(t, fn, ...)
   local iter = getiter(t)
   if type(fn) == "string" then
@@ -313,7 +317,11 @@ function lume.unique(t)
   return rtn
 end
 
-
+---@generic I
+---@param t I[]
+---@param fn fun(item:I):boolean
+---@param retainkeys? boolean
+---@return I[]
 function lume.filter(t, fn, retainkeys)
   fn = iteratee(fn)
   local iter = getiter(t)
@@ -384,7 +392,11 @@ function lume.find(t, value)
   return nil
 end
 
-
+---@generic K, V
+---@param t table<K, V>
+---@param fn fun(value:V):boolean
+---@return V|nil
+---@return K|nil
 function lume.match(t, fn)
   fn = iteratee(fn)
   local iter = getiter(t)

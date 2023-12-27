@@ -20,10 +20,9 @@ actor:
 - ALL
     - happiness
         - will cause actor to leave/quit if low enough
-    - likes
-        - peforming this increases happiness
-        - book genres
-        - other activities
+    - likes (activity)
+        - peforming activity increases happiness
+        - 
     - dislikes
         - exposure to dislikes lowers happiness
     - age
@@ -75,3 +74,4 @@ making it fun:
 polish:
 - https://www.gamedeveloper.com/programming/toward-more-realistic-pathfinding
 - https://github.com/airstruck/knife/blob/master/readme/chain.md
+

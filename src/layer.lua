@@ -17,8 +17,8 @@ xd.sys.add(function(dt, entity)
         entity.oy = -gh/2
         -- follow an entity
         if entity.layerFollow then
-            entity.x = -entity.layerFollow.x + (gw/2)
-            entity.y = -entity.layerFollow.y + (gh/2)
+            entity.x = -entity.layerFollow.x -- + (gw/2)
+            entity.y = -entity.layerFollow.y -- + (gh/2)
         end
         if entity.layer == M.TYPE.INPUT_PAN then
             local dragstart = get(entity, 'dragstart')

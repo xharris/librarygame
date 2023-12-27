@@ -1,31 +1,58 @@
 local M = {}
 local xd = require('engine')
 local astar = require('astar')
+local util = require('src.util')
 
 M.MAX_WEIGHT = 100
 
----@class node
----@field pathGrid number
+---@class pathMoveNode
+---@field x number
+---@field y number
+---@field pathX? number
+---@field pathY? number
+
+---@class pathMove
+---@field i number
+---@field t number
+---@field from pathMoveNode
+
+---@class node: entity
+---@field pathGrid id Which grid this node belongs to
 ---@field pathX integer
 ---@field pathY integer
+---@field pathSpeed? number Lower number = Move slower on path
 ---@field pathWeight? number
 ---@field pathNoDiagonal? boolean
----@field pathSolid? boolean
+---@field pathSolid? boolean Entity cannot be passed through
+---@field pathList? node[] List of points from a generated path
+---@field pathLength? number Length of all points in pathList
+---@field pathMove? pathMove Current destination node from pathList
 
-local getNode, setNode = xd.sto.new()
+local get, set = xd.sto.new()
 
----@type entity[]
+---@type table<number, entity>
 local grids = {}
+
+---@type node[]
+local nodes = {}
+
+---@param obj node|entity
+local function getKey(obj)
+    return table.concat({obj.pathGrid, obj.pathX, obj.pathY}, ',')
+end
 
 xd.sce.addDrawFn(function(entity)
     if xd.ent.has(entity, 'pathGrid') then
+        -- draw dot at each node
         if entity.pathColor then
             love.graphics.setColor(entity.pathColor)
         else
             local wt = entity.pathWeight or 1
             love.graphics.setColor(xd.lume.lerp(0, 1, wt/M.MAX_WEIGHT), 0, xd.lume.lerp(1, 0, wt/M.MAX_WEIGHT))
         end
-        love.graphics.circle('fill',entity.ox,entity.oy,8)
+        love.graphics.translate(entity.ox, entity.oy)
+        love.graphics.circle(entity.pathX ~= nil and entity.pathY ~= nil and 'fill' or 'line',-4,0,4)
+        love.graphics.print(entity.pathX..','..entity.pathY, 0, -8)
     end
 end, { z=99 })
 
@@ -44,11 +71,6 @@ xd.sce.addDrawFn(function(entity)
     end
 end)
 
----@param obj node|entity
-local function getKey(obj)
-    return table.concat({obj.pathGrid, obj.pathX, obj.pathY}, ',')
-end
-
 local function newGrid(pathGrid)
     local grid
     local map = {}
@@ -60,13 +82,26 @@ local function newGrid(pathGrid)
         for x = -1, 1 do
             for y = -1, 1 do
                 dx, dy = node.pathX + x, node.pathY + y
-                ---@type entity
-                local neighbor = getNode(grid, getKey({pathGrid=pathGrid, pathX=dx, pathY=dy}))
+                ---@type node
+                local neighbor
+                local foundEnd = false
+                -- find 'heaviest' node at these coordinates
+                xd.lume.each(nodes, function (item)
+                    local neighborWeight = neighbor and (neighbor.pathWeight or 0) or 0
+                    local itemWeight = item.pathWeight or 0
+                    if not foundEnd and item.pathX == dx and item.pathY == dy and (not neighbor or itemWeight > neighborWeight) then
+                        neighbor = item
+                        if item == userdata.to then
+                            foundEnd = true
+                        end
+                    end
+                end)
+                -- get node with largest weight
                 if
                     neighbor and
                     not xd.ent.remove[neighbor.id] and
                     neighbor.id ~= node.id and
-                    (not neighbor.pathNoDiagonal or x == 0 or y == 0) and
+                    (not neighbor.pathNoDiagonal or not node.pathNoDiagonal or x == 0 or y == 0) and
                     ((neighbor.pathWeight or 1) < M.MAX_WEIGHT or userdata.to.id == neighbor.id)
                 then
                     addNeighbor(neighbor)
@@ -92,7 +127,7 @@ local function newGrid(pathGrid)
     ---@param node node
     ---@param goal node
     function map:estimate_cost(node, goal, userdata)
-        -- xd.log('estimate_cost', { node=node, goal=goal })
+        -- xd.debug('estimate_cost', { node=node, goal=goal })
         return self:get_cost(node, goal, userdata)
     end
     local finder = astar.new(map)
@@ -101,18 +136,16 @@ local function newGrid(pathGrid)
 end
 
 xd.sys.add(function(dt, entity)
-    -- find path for entity
+    ---@cast entity node
     if xd.ent.has(entity, 'pathGrid', 'pathX', 'pathY') then
         if not grids[entity.pathGrid] then
             grids[entity.pathGrid] = newGrid(entity.pathGrid)
         end
         local grid = grids[entity.pathGrid]
-        if not getNode(grid, getKey(entity)) then
-            setNode(grid, getKey(entity), entity)
-        end
+        util.addToSet(nodes, entity)
     end
     -- move entity on a path
-    if xd.ent.has(entity, 'pathList') then
+    if entity.pathList then
         if entity.pathLength == nil then
             -- get length of path
             entity.pathLength = 0
@@ -125,12 +158,18 @@ xd.sys.add(function(dt, entity)
             end
         end
         if #entity.pathList > 1 and not entity.pathMove then
-            table.remove(entity.pathList, 1)
-            local to = entity.pathList[1]
+            -- get new path (in case something has changed in the path)
+            entity.pathX = entity.pathList[2].pathX
+            entity.pathY = entity.pathList[2].pathY
+            entity.pathList = M.getPath(entity, entity.pathList[#entity.pathList])
+            
+            local to = entity.pathList[2]
             if to.pathWeight == M.MAX_WEIGHT then
                 -- stop moving on path
                 entity.pathList = nil
                 entity.pathLength = nil
+                xd.debug(tostring(entity)..' done moving')
+                xd.sig.emit({entity.id, 'pathDone'})
             else
                 -- move to next point in path
                 entity.pathMove = {
@@ -142,13 +181,13 @@ xd.sys.add(function(dt, entity)
             end
         end
     end
-    if xd.ent.has(entity, 'pathMove', 'pathList') then
-        local pm = entity.pathMove
+    local pm = entity.pathMove
+    if pm and entity.pathList then
         local speed = entity.pathSpeed or 1
         local dist = xd.lume.distance(pm.from.x, pm.from.y, pm.to.x, pm.to.y)
         pm.t = pm.t + dt / (dist / entity.pathLength)
-        entity.y = xd.lume.lerp(pm.from.y, pm.to.y, pm.t/speed)
         entity.x = xd.lume.lerp(pm.from.x, pm.to.x, pm.t/speed)
+        entity.y = xd.lume.lerp(pm.from.y, pm.to.y, pm.t/speed)
         -- done moving to node
         if pm.t >= speed then
             entity.pathMove = nil
@@ -158,11 +197,11 @@ xd.sys.add(function(dt, entity)
     end
 end)
 
----@param from entity
----@param to entity
----@return entity[]
+---@param from node|entity
+---@param to node|entity
+---@return node[]
 function M.getPath(from, to)
-    if not from.pathGrid or not to.pathGrid then
+    if from.pathGrid == nil or to.pathGrid == nil then
         xd.warn("pathGrid missing in 'from' or 'to'")
         return {}
     end
@@ -175,7 +214,29 @@ function M.getPath(from, to)
         xd.warn("grid not found")
         return {}
     end
+    xd.debug('get path from '..tostring(from)..'('..from.pathX..','..from.pathY..')'..' to '..tostring(to)..'('..to.pathX..','..to.pathY..')')
     return grid.pathFinder:find(from, to, { to=to })
+end
+
+---@param entity entity
+---@param filter? fun(node: node):boolean
+---@return node?
+function M.findNearestNode(entity, filter)
+    local minDist = 0
+    ---@type node?
+    local minNode
+    ---@type number?
+    local dist
+    xd.ent.forEach(function (node)
+        if node.pathGrid then
+            ---@cast node node
+            dist = xd.lume.distance(node.x, node.y, entity.x, entity.y)
+            if not minNode or minDist > dist and (not filter or filter(node)) then
+                minNode = node
+            end
+        end
+    end)
+    return minNode
 end
 
 return M
