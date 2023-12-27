@@ -73,5 +73,7 @@ making it fun:
 
 polish:
 - https://www.gamedeveloper.com/programming/toward-more-realistic-pathfinding
+
+other:
 - https://github.com/airstruck/knife/blob/master/readme/chain.md
 
