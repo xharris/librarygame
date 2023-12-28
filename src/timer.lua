@@ -30,4 +30,20 @@ function M.after(sec, fn)
     return timer
 end
 
+---@alias next fun(...)
+---@param ... fun(next: next, ...)
+function M.script(...)
+    local f = 1
+    local fn
+    local fns = {...}
+    local function next(...)
+        fn = fns[f]
+        if fn then
+            fn(next, ...)
+        end
+        f = f + 1
+    end
+    next()
+end
+
 return M

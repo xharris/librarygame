@@ -49,4 +49,14 @@ function M.spawnPatron()
     end
 end
 
+---@param actor entity
+---@param itemFn fun(item: entity):boolean
+---@return boolean
+function M.hasItem(actor, itemFn)
+    if not actor.inventory then
+        return false
+    end
+    return xd.lume.match(actor.inventory, itemFn) ~= nil
+end
+
 return M

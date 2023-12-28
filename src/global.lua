@@ -33,7 +33,7 @@ M.ACTORS = {
 -- how often actor should look for a new activity
 M.CD_FIND_ACTIVITY = 3
 -- entity.itemType
-M.ITEM = {BOOK=0}
+M.ITEM = {BOOK='book'}
 M.PATH_GRID = {FLOOR='floor'}
 
 M.t = 0

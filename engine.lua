@@ -462,7 +462,7 @@ local function getSignalKey(key)
 end
 
 ---@param key any|any[]
----@param fn fun(...):boolean?
+---@param fn fun(...):boolean? Return `true` to remove listener
 function Signal.on(key, fn)
     local signalKey = getSignalKey(key)
     table.insert(Signal.listeners[signalKey], fn)
