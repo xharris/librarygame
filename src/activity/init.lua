@@ -46,15 +46,16 @@ function M.getActivityName(value)
     return name
 end
 
+--- Is an entity waiting on something else to perform at activity?
 ---@param entity entityWithActivity
 function M.isActivityOnHold(entity)
     return entity.activity and entity.activity ~= g.ACTIVITY.NOTHING and entity.activity == entity.activityThinking and entity.activityThinkingTime ~= nil
 end
 
 ---@param entity entityWithActivity
----@param activity string
-function M.activityFail(entity, activity)
-    if not entity.activityThinking then
+function M.activityFail(entity)
+    local activity = entity.activity
+    if activity and not entity.activityThinking then
         xd.debug(tostring(entity)..' thinking about '..M.getActivityName(activity))
         -- start thinking about the activity. start timer before officially failing
         entity.activityThinking = activity

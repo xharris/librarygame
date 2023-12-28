@@ -236,6 +236,19 @@ function Entity.find(fn)
     end
 end
 
+---@param entity? entity
+---@param ... string
+function Entity.inspect(entity, ...)
+    if not entity then
+        return 'nil'
+    end
+    local keys = {...}
+    keys = lume.map(keys, function (key)
+        return key..'='..tostring(entity[key])
+    end)
+    return tostring(entity)..'('..table.concat(keys, ',')..')'
+end
+
 local System = {}
 M.System = System
 
@@ -449,19 +462,10 @@ local function getSignalKey(key)
 end
 
 ---@param key any|any[]
----@param fn fun(...)
+---@param fn fun(...):boolean?
 function Signal.on(key, fn)
     local signalKey = getSignalKey(key)
     table.insert(Signal.listeners[signalKey], fn)
-end
-
----@param key any|any[]
----@param fn fun(...):boolean Return true to remove the listener
-function Signal.on(key, fn)
-    local signalKey = getSignalKey(key)
-    lume.filter(Signal.listeners[signalKey], function (item)
-        return item ~= fn
-    end)
 end
 
 ---@param key any|any[]
@@ -469,7 +473,7 @@ end
 function Signal.emit(key, ...)
     local signalKey = getSignalKey(key)
     local args = {...}
-    lume.filter(Signal.listeners[signalKey], function (item)
+    Signal.listeners[signalKey] = lume.filter(Signal.listeners[signalKey], function (item)
         return item(unpack(args)) ~= true
     end)
 end

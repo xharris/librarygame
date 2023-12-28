@@ -102,7 +102,8 @@ local function newGrid(pathGrid)
                     not xd.ent.remove[neighbor.id] and
                     neighbor.id ~= node.id and
                     (not neighbor.pathNoDiagonal or not node.pathNoDiagonal or x == 0 or y == 0) and
-                    ((neighbor.pathWeight or 1) < M.MAX_WEIGHT or userdata.to.id == neighbor.id)
+                    ((neighbor.pathWeight or 1) < M.MAX_WEIGHT or userdata.to.id == neighbor.id) and
+                    neighbor.pathGrid == node.pathGrid
                 then
                     addNeighbor(neighbor)
                 end
@@ -159,18 +160,18 @@ xd.sys.add(function(dt, entity)
         end
         if #entity.pathList > 1 and not entity.pathMove then
             -- get new path (in case something has changed in the path)
-            entity.pathX = entity.pathList[2].pathX
-            entity.pathY = entity.pathList[2].pathY
+            local lastPoint = entity.pathList[2]
             entity.pathList = M.getPath(entity, entity.pathList[#entity.pathList])
-            
             local to = entity.pathList[2]
-            if to.pathWeight == M.MAX_WEIGHT then
+            if to.pathWeight == M.MAX_WEIGHT or #entity.pathList <= 1 or (to.pathX == entity.pathX and to.pathY == entity.pathY) then
                 -- stop moving on path
                 entity.pathList = nil
                 entity.pathLength = nil
-                xd.debug(tostring(entity)..' done moving')
+                xd.debug(xd.ent.inspect(entity, 'pathX', 'pathY')..' done moving')
                 xd.sig.emit({entity.id, 'pathDone'})
             else
+                entity.pathX = lastPoint.pathX
+                entity.pathY = lastPoint.pathY
                 -- move to next point in path
                 entity.pathMove = {
                     i=0,
@@ -214,7 +215,7 @@ function M.getPath(from, to)
         xd.warn("grid not found")
         return {}
     end
-    xd.debug('get path from '..tostring(from)..'('..from.pathX..','..from.pathY..')'..' to '..tostring(to)..'('..to.pathX..','..to.pathY..')')
+    -- xd.debug('get path from '..tostring(from)..'('..from.pathX..','..from.pathY..')'..' to '..tostring(to)..'('..to.pathX..','..to.pathY..')')
     return grid.pathFinder:find(from, to, { to=to })
 end
 
@@ -227,12 +228,13 @@ function M.findNearestNode(entity, filter)
     local minNode
     ---@type number?
     local dist
-    xd.ent.forEach(function (node)
-        if node.pathGrid then
+    xd.lume.each(nodes, function (node)
+        if node.pathGrid and node.pathX ~= nil and node.pathY ~= nil then
             ---@cast node node
-            dist = xd.lume.distance(node.x, node.y, entity.x, entity.y)
-            if not minNode or minDist > dist and (not filter or filter(node)) then
+            dist = xd.lume.distance(node.pathX, node.pathY, entity.pathX, entity.pathY)
+            if (not minNode or dist < minDist) and (not filter or filter(node)) then
                 minNode = node
+                minDist = dist
             end
         end
     end)
