@@ -47,15 +47,16 @@ M.t = 0
 -- 1 cycle = 1 world hour?
 M.cycle = 0
 
----@type table<string, entity|withLayer>
-M.layer = {
-    map = xd.ent.new{ layer=layer.TYPE.INPUT_PAN, layerFollow=nil, sx=2, sy=2 }
+---@enum LAYER
+M.LAYER = {
+    MAP = 'map'
+    -- map = xd.ent.new{ layer=layer.TYPE.INPUT_PAN, layerFollow=nil, sx=2, sy=2 }
 }
 layer.MAX_ZOOM = 2.5
 layer.MIN_ZOOM = 1
 
-for _, entity in pairs(M.layer) do
-    xd.sce.addToWorld(entity)
-end
+-- for _, entity in pairs(M.layer) do
+--     xd.sce.addToWorld(entity)
+-- end
 
 return M

@@ -5,6 +5,7 @@ local g = require('src.global')
 local isometric = require('src.isometric')
 local pathfind = require('src.pathfind')
 local image = require('src.image')
+local layer = require('src.layer')
 
 ---@type table<number, number>
 local count = {}
@@ -29,16 +30,15 @@ function M.spawnPatron()
 
         local actorInfo = xd.lume.filter(g.ACTORS, function(a) return a.name == 'base' end)[1]
         if actorInfo and M.getCount(actorInfo.name) < 1 then
-            local iw, ih = image.getImage('new/bird_base.png'):getDimensions()
             local actor = xd.ent.new{
-                imageList={
-                    'new/bird_feet.png',
-                    'new/bird_fill.png',
-                    'new/bird_base.png',
-                    'new/bird_eyes.png',
-                    'new/bird_arm.png'
+                imageLayers={
+                    {'bird/bird_feet.png'},
+                    {'bird/bird_fill.png', {244/255, 67/255, 54/255, 1}},
+                    {'bird/bird_base.png'},
+                    {'bird/bird_eyes.png'},
+                    {'bird/bird_arm.png'}
                 },
-                ox=iw/2, oy=ih/2 + isometric.TILE_SIZE/4,
+                oy=isometric.TILE_SIZE/4,
                 zOrdering=zOrdering.MODE.Y,
                 pathX=entrance.pathX, pathY=entrance.pathY,
                 pathColor={0,1,0},
@@ -47,11 +47,12 @@ function M.spawnPatron()
                 activities=actorInfo.activities,
                 inventory={},
                 happiness=100,
-                actorType=actorInfo.name
+                actorType=actorInfo.name,
+                layer=g.LAYER.MAP
             }
-            g.layer.map.layerFollow = actor
+            layer.follow(actor)
             actor.x, actor.y = entrance.x, entrance.y
-            xd.sce.addTo(g.layer.map, actor)
+            xd.sce.addToWorld(actor)
             incrCount(actorInfo.name)
             return actor
         end

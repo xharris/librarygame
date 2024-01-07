@@ -112,6 +112,7 @@ function M.storeItem(actor, itemMatch, done)
         xd.info(tostring(actor)..' could not find storage to store item '..tostring())
         return done(false)
     end
+    -- TODO: chance of dropping item on ground without storing it
     -- move to storage
     actor.pathList = pathfind.getPath(actor, storage)
     if not actor.pathList then
@@ -137,6 +138,10 @@ function M.storeItem(actor, itemMatch, done)
         done(true)
         return true
     end)
+end
+
+function M.dropItem(entity, itemMatch)
+    -- TODO: drop item on the closest tile, that doesn't have a solid structure on it
 end
 
 return M

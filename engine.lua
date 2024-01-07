@@ -69,11 +69,16 @@ function Storage.new()
     ---get
     ---@param entity entity
     ---@param key string
-    return function(entity, key)
+    ---@param ifNull any?
+    return function(entity, key, ifNull)
         -- get
-        if store[entity.id] then
-            return store[entity.id][key]
+        if not store[entity.id] then
+            store[entity.id] = {}
         end
+        if store[entity.id][key] == nil and ifNull ~= nil then
+            store[entity.id][key] = ifNull
+        end
+        return store[entity.id][key]
     end, 
     ---set
     ---@param entity entity
@@ -203,11 +208,23 @@ end
 function Entity.has(entity, ...)
     if not entity then return false end
     for _, key in ipairs({...}) do
-        if entity[key] == false or entity[key] == nil then
+        if entity[key] == nil then
             return false
         end
     end
     return true
+end
+
+---@param entity entity
+---@param ... string
+function Entity.hasAny(entity, ...)
+    if not entity then return false end
+    for _, key in ipairs({...}) do
+        if entity[key] ~= nil then
+            return true
+        end
+    end
+    return false
 end
 
 function Entity.missing(entity, ...)
@@ -313,10 +330,10 @@ M.Scene = Scene
 
 Scene.world = Entity.new()
 
----@type table<number, entity[]>
+---@type table<id, entity[]>
 Scene.children = { [Scene.world.id]={} }
 
----@type table<number, number>
+---@type table<id, id>
 Scene.childToParent = {}
 
 ---@class DrawingFnOptions
@@ -326,10 +343,10 @@ Scene.childToParent = {}
 ---@field fn function
 ---@field options DrawingFnOptions
 
----@type table<number, DrawingFnObj>
+---@type DrawingFnObj[]
 Scene.drawingFns = {}
 
----@type table<number, love.Transform>
+---@type table<id, love.Transform>
 Scene.transforms = {}
 
 local function sortDrawingFns()
@@ -398,7 +415,7 @@ function Scene.update(entity, parentTransform) -- TODO
     -- update transform
     local transform = Scene.transforms[entity.id]
     if parentTransform then
-        tempTransform:setTransformation(round(entity.x), round(entity.y), entity.r, entity.sx, entity.sy, round(entity.ox), round(entity.oy), entity.kx, entity.ky)
+        tempTransform:setTransformation(round(entity.x), round(entity.y), entity.r, entity.sx, entity.sy, round(entity.ox), round(entity.oy), entity.kx, entity.ky)    
         transform = parentTransform:clone()
         Scene.transforms[entity.id] = transform:apply(tempTransform)
     else
@@ -417,26 +434,26 @@ function Scene.update(entity, parentTransform) -- TODO
     end
 end
 
+function Scene.preDrawEach(entity) end
+function Scene.postDrawEach(entity) end
+
 function Scene.draw()
     Entity.forEach(function(entity)
         local transform = Scene.transforms[entity.id]
         if not transform then return end
         -- draw entity
+        love.graphics.push('all')
+        Scene.preDrawEach(entity)
         for _, obj in pairs(Scene.drawingFns) do
             love.graphics.push('all')
             -- transform
-            love.graphics.replaceTransform(transform)
+            love.graphics.applyTransform(transform)
             obj.fn(entity)
             love.graphics.pop()
         end
+        Scene.postDrawEach(entity)
+        love.graphics.pop()
     end)
-end
-
----@param dt number
-function M.update(dt)
-    System.update(dt)
-    Entity.update()
-    Scene.update()
 end
 
 local Signal = {}
@@ -478,6 +495,14 @@ function Signal.emit(key, ...)
     end)
 end
 
+---@param dt number
+function M.update(dt)
+    Signal.emit('update', dt)
+    System.update(dt)
+    Entity.update()
+    Scene.update()
+end
+
 local Test = {}
 M.Test = Test
 
@@ -513,11 +538,20 @@ function Test.describe(text)
 end
 
 -- shorthand
+
+-- State
 M.sta = M.State
+-- Entity
 M.ent = M.Entity
+-- System
 M.sys = M.System
+-- Scene
 M.sce = M.Scene
+-- Storage 
+-- 
+-- TODO: remove?
 M.sto = M.Storage
+-- Signal
 M.sig = M.Signal
 M.lume = lume
 

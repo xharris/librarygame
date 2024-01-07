@@ -54,14 +54,14 @@ function M.load()
                 local iw, ih = image.getImage(tileInfo.path):getDimensions()
                 local floor = xd.ent.new{
                     image=tileInfo.path,
-                    ox=iw/2, oy=ih/2,
                     isoX=x, isoY=y,
                     zOrdering=zOrdering.MODE.Y,
                     pathGrid=g.PATH_GRID.FLOOR,
                     pathX=x, pathY=y,
-                    structureType=info.type
+                    structureType=info.type,
+                    layer=g.LAYER.MAP
                 }
-                xd.sce.addTo(g.layer.map, floor)
+                xd.sce.addToWorld(floor)
 
                 -- set z offset
                 if tileInfo.isFloor then
@@ -70,23 +70,23 @@ function M.load()
 
                 -- set camera on center tile
                 if y == math.floor(#map / 2) and x == math.floor(#yval / 2) then
-                    g.layer.map.layerFollow = floor
+                    -- layer.follow(floor)
                 end
 
                 -- add structure at this cell in map
                 if info and not info.isFloor then
-                    local iw, ih = image.getImage(info.path):getDimensions()
                     local struct = xd.ent.new{
                         image=info.path,
-                        ox=iw/2, oy=ih/2 + (isometric.TILE_SIZE/4),
+                        oy=(isometric.TILE_SIZE/4),
                         pathX=x, pathY=y,
                         pathGrid=g.PATH_GRID.FLOOR,
                         isoX=x, isoY=y,
                         zOrdering=zOrdering.MODE.Y,
                         structureType=info.type,
-                        imageColor=tileInfo.color,
+                        imageColor=info.color,
+                        layer=g.LAYER.MAP
                     }
-                    xd.sce.addTo(g.layer.map, struct)
+                    xd.sce.addToWorld(struct)
 
                     if info and info.type == g.STRUCTURE_TYPE.STORAGE then
                         -- make storage structures solid for pathfinding
@@ -114,6 +114,14 @@ function M.update(dt)
     t = t + dt
     g.t = floor(t)
     g.cycle = floor(g.t / 60) + 1
+end
+
+function xd.sce.preDrawEach(entity)
+    layer.preDrawEach(entity)
+end
+
+function xd.sce.postDrawEach(entity)
+    layer.postDrawEach(entity)
 end
 
 --[[
