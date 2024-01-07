@@ -72,8 +72,13 @@ making it fun:
     - stealing
 
 polish:
-- https://www.gamedeveloper.com/programming/toward-more-realistic-pathfinding
+- activity/read
+    - chance that patron will keep book instead of storing it
+    - need library card to take book home
+- doors/gates
+    - toggle access based on actorType
 
 other:
 - https://github.com/airstruck/knife/blob/master/readme/chain.md
+- https://www.gamedeveloper.com/programming/toward-more-realistic-pathfinding
 

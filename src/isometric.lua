@@ -1,7 +1,7 @@
 local M = {}
 local xd = require('engine')
 
-M.TILE_SIZE = 64
+M.TILE_SIZE = 32
 
 function M.toIso(x, y)
     local w, h = M.TILE_SIZE, M.TILE_SIZE / 2

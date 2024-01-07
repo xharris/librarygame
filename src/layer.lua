@@ -2,6 +2,11 @@ local M = {}
 local xd = require('engine')
 local input = require('input')
 
+---@class withLayer : entity
+---@field layer LAYER_TYPE
+---@field layerFollow? entity
+
+---@enum LAYER_TYPE
 M.TYPE = {STATIC=0, INPUT_PAN=1}
 M.MIN_ZOOM = 0.75
 M.MAX_ZOOM = 1.5
@@ -17,8 +22,8 @@ xd.sys.add(function(dt, entity)
         entity.oy = -gh/2
         -- follow an entity
         if entity.layerFollow then
-            entity.x = -entity.layerFollow.x -- + (gw/2)
-            entity.y = -entity.layerFollow.y -- + (gh/2)
+            entity.x = -(entity.layerFollow.x * entity.sx) - (gw/2)
+            entity.y = -(entity.layerFollow.y * entity.sy) - (gh/2)
         end
         if entity.layer == M.TYPE.INPUT_PAN then
             local dragstart = get(entity, 'dragstart')

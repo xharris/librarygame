@@ -3,14 +3,15 @@ local M = {}
 local xd = require('engine')
 local g = require('src.global')
 
----@class entityWithActivity : entity
+---@class withActivity : entity
 ---@field activity? id
 ---@field activities? id[]
+---@field activityTimer? number Seconds until actor looks for something to do
 ---@field activityThinking? id Activity is on hold and about to fail
 ---@field activityThinkingTime? number Time left before activity is failed
 
 xd.sys.add(function (dt, entity)
-    ---@cast entity entityWithActivity
+    ---@cast entity withActivity
     if entity.activities then
         if (not entity.activity or entity.activity == g.ACTIVITY.NOTHING) and g.t % g.CD_FIND_ACTIVITY == 0 then
             -- pick an activity to do
@@ -24,12 +25,14 @@ xd.sys.add(function (dt, entity)
         end
     end
     if M.isActivityOnHold(entity) then
+        -- something stopping actor from doing the activity
         entity.activityThinkingTime = entity.activityThinkingTime - dt
         if entity.activityThinkingTime <= 0 then
             -- officially failed to do activity
             xd.debug(tostring(entity)..' failed to '..M.getActivityName(entity.activity))
-            if g.ACTIVITY_FAIL[entity.activity] then
-                g.ACTIVITY_FAIL[entity.activity](entity)
+            if entity.happiness ~= nil then
+                entity.happiness = entity.happiness - 10
+                xd.debug(tostring(entity)..' happiness -10 --> '..entity.happiness)
             end
             entity.activity = g.ACTIVITY.NOTHING
             entity.activityThinking = nil
@@ -38,8 +41,11 @@ xd.sys.add(function (dt, entity)
     end
 end)
 
----@param value string
+---@param value string|number
 function M.getActivityName(value)
+    if type(value) == 'string' then
+        return value
+    end
     local _, name = xd.lume.match(g.ACTIVITY, function (v)
         return value == v
     end)
@@ -47,12 +53,12 @@ function M.getActivityName(value)
 end
 
 --- Is an entity waiting on something else to perform at activity?
----@param entity entityWithActivity
+---@param entity withActivity
 function M.isActivityOnHold(entity)
     return entity.activity and entity.activity ~= g.ACTIVITY.NOTHING and entity.activity == entity.activityThinking and entity.activityThinkingTime ~= nil
 end
 
----@param entity entityWithActivity
+---@param entity withActivity
 function M.activityFail(entity)
     local activity = entity.activity
     if activity and not entity.activityThinking then
@@ -60,6 +66,15 @@ function M.activityFail(entity)
         -- start thinking about the activity. start timer before officially failing
         entity.activityThinking = activity
         entity.activityThinkingTime = 5
+    end
+end
+
+---@param entity withActivity
+function M.activitySuccess(entity)
+    local activity = entity.activity
+    if activity then
+        xd.debug(tostring(entity)..' finished '..M.getActivityName(activity))
+        entity.activity = g.ACTIVITY.NOTHING
     end
 end
 

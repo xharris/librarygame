@@ -41,20 +41,20 @@ local function getKey(obj)
     return table.concat({obj.pathGrid, obj.pathX, obj.pathY}, ',')
 end
 
-xd.sce.addDrawFn(function(entity)
-    if xd.ent.has(entity, 'pathGrid') then
-        -- draw dot at each node
-        if entity.pathColor then
-            love.graphics.setColor(entity.pathColor)
-        else
-            local wt = entity.pathWeight or 1
-            love.graphics.setColor(xd.lume.lerp(0, 1, wt/M.MAX_WEIGHT), 0, xd.lume.lerp(1, 0, wt/M.MAX_WEIGHT))
-        end
-        love.graphics.translate(entity.ox, entity.oy)
-        love.graphics.circle(entity.pathX ~= nil and entity.pathY ~= nil and 'fill' or 'line',-4,0,4)
-        love.graphics.print(entity.pathX..','..entity.pathY, 0, -8)
-    end
-end, { z=99 })
+-- xd.sce.addDrawFn(function(entity)
+--     if xd.ent.has(entity, 'pathGrid') then
+--         -- draw dot at each node
+--         if entity.pathColor then
+--             love.graphics.setColor(entity.pathColor)
+--         else
+--             local wt = entity.pathWeight or 1
+--             love.graphics.setColor(xd.lume.lerp(0, 1, wt/M.MAX_WEIGHT), 0, xd.lume.lerp(1, 0, wt/M.MAX_WEIGHT))
+--         end
+--         love.graphics.translate(entity.ox, entity.oy)
+--         love.graphics.circle(entity.pathX ~= nil and entity.pathY ~= nil and 'fill' or 'line',-4,0,4)
+--         love.graphics.print(entity.pathX..','..entity.pathY, 0, -8)
+--     end
+-- end, { z=99 })
 
 xd.sce.addDrawFn(function(entity)
     if xd.ent.has(entity, 'pathList') then
@@ -215,7 +215,7 @@ function M.getPath(from, to)
         xd.warn("grid not found")
         return {}
     end
-    -- xd.debug('get path from '..tostring(from)..'('..from.pathX..','..from.pathY..')'..' to '..tostring(to)..'('..to.pathX..','..to.pathY..')')
+    -- xd.debug('from', xd.ent.inspect(from, 'pathX', 'pathY', 'pathWeight'), 'to', xd.ent.inspect(to, 'pathX', 'pathY', 'pathWeight'))
     return grid.pathFinder:find(from, to, { to=to })
 end
 

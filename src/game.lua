@@ -17,21 +17,16 @@ require('src.activity.read')
 
 local STRUCTURES = {
     [1]={
-        path='tile.png',
-        anchorX=32,
-        anchorY=32,
+        path='new/tile.png',
         isFloor=true
     },
     [2]={
-        path='box.png',
-        anchorX=32,
-        anchorY=44,
-        type=g.STRUCTURE_TYPE.STORAGE
+        path='new/box.png',
+        type=g.STRUCTURE_TYPE.STORAGE,
+        color={161/255, 136/255, 127/255, 1}
     },
     [3]={
         path='tile.png',
-        anchorX=32,
-        anchorY=32,
         isFloor=true,
         type=g.STRUCTURE_TYPE.ENTRANCE
     }
@@ -56,9 +51,10 @@ function M.load()
             if info then
                 -- add floor
                 local tileInfo = STRUCTURES[1]
+                local iw, ih = image.getImage(tileInfo.path):getDimensions()
                 local floor = xd.ent.new{
                     image=tileInfo.path,
-                    ox=tileInfo.anchorX, oy=tileInfo.anchorY,
+                    ox=iw/2, oy=ih/2,
                     isoX=x, isoY=y,
                     zOrdering=zOrdering.MODE.Y,
                     pathGrid=g.PATH_GRID.FLOOR,
@@ -79,14 +75,16 @@ function M.load()
 
                 -- add structure at this cell in map
                 if info and not info.isFloor then
+                    local iw, ih = image.getImage(info.path):getDimensions()
                     local struct = xd.ent.new{
                         image=info.path,
-                        ox=info.anchorX, oy=info.anchorY,
+                        ox=iw/2, oy=ih/2 + (isometric.TILE_SIZE/4),
                         pathX=x, pathY=y,
                         pathGrid=g.PATH_GRID.FLOOR,
                         isoX=x, isoY=y,
                         zOrdering=zOrdering.MODE.Y,
                         structureType=info.type,
+                        imageColor=tileInfo.color,
                     }
                     xd.sce.addTo(g.layer.map, struct)
 

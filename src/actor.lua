@@ -3,7 +3,8 @@ local xd = require('engine')
 local zOrdering = require('src.zOrdering')
 local g = require('src.global')
 local isometric = require('src.isometric')
-local pathing = require('src.pathfind')
+local pathfind = require('src.pathfind')
+local image = require('src.image')
 
 ---@type table<number, number>
 local count = {}
@@ -28,9 +29,16 @@ function M.spawnPatron()
 
         local actorInfo = xd.lume.filter(g.ACTORS, function(a) return a.name == 'base' end)[1]
         if actorInfo and M.getCount(actorInfo.name) < 1 then
+            local iw, ih = image.getImage('new/bird_base.png'):getDimensions()
             local actor = xd.ent.new{
-                image=actorInfo.path,
-                ox=actorInfo.anchorX, oy=actorInfo.anchorY,
+                imageList={
+                    'new/bird_feet.png',
+                    'new/bird_fill.png',
+                    'new/bird_base.png',
+                    'new/bird_eyes.png',
+                    'new/bird_arm.png'
+                },
+                ox=iw/2, oy=ih/2 + isometric.TILE_SIZE/4,
                 zOrdering=zOrdering.MODE.Y,
                 pathX=entrance.pathX, pathY=entrance.pathY,
                 pathColor={0,1,0},
@@ -41,6 +49,7 @@ function M.spawnPatron()
                 happiness=100,
                 actorType=actorInfo.name
             }
+            g.layer.map.layerFollow = actor
             actor.x, actor.y = entrance.x, entrance.y
             xd.sce.addTo(g.layer.map, actor)
             incrCount(actorInfo.name)
@@ -57,6 +66,33 @@ function M.hasItem(actor, itemFn)
         return false
     end
     return xd.lume.match(actor.inventory, itemFn) ~= nil
+end
+
+---@param actor entity
+---@param done fun(success:boolean)
+function M.sit(actor, done)
+    -- find a place to sit that's not next to storage
+    local node = pathfind.findNearestNode(actor, function (node)
+        if node.sittingActor then
+            local actor2 = xd.ent.get(node.sittingActor)
+            if actor2 and xd.lume.distance(actor2.x, actor2.y, node.x, node.y) > 3 then
+                node.sittingActor = nil
+            end
+        end
+        return node.sittingActor == nil and xd.lume.distance(actor.pathX, actor.pathY, node.pathX, node.pathY) > 1
+    end)
+    if not node then
+        xd.info(tostring(actor)..' could not find a spot to sit')
+        return done(false)
+    end
+    -- move there
+    actor.pathList = pathfind.getPath(actor, node)
+    xd.sig.on({actor.id, 'pathDone'}, function ()
+        node.actorSitting = actor.id
+        actor.sitting = node.id
+        done(true)
+        return true
+    end)
 end
 
 return M

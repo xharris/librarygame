@@ -89,7 +89,7 @@ function Storage.new()
 end
 
 ---@class entity
----@field id number Unique ID
+---@field id id Unique ID
 ---@field z number Z index used for Scene sorting
 ---@field x? number Position X
 ---@field y? number Position Y
@@ -161,7 +161,7 @@ function Entity.new(props)
     return props
 end
 
----@param id integer
+---@param id id
 function Entity.get(id)
     return Entity.entityIDMap[id]
 end
