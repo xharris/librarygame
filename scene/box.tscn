@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://0eigapackogc"]
+
+[ext_resource type="Texture2D" uid="uid://dwrtxvcmdead2" path="res://images/box.png" id="1_eygps"]
+[ext_resource type="Script" path="res://scene/box.gd" id="1_ob2bm"]
+
+[node name="Node2D" type="Node2D" groups=["structure"]]
+script = ExtResource("1_ob2bm")
+
+[node name="Box" type="Sprite2D" parent="."]
+position = Vector2(0, -9)
+texture = ExtResource("1_eygps")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionPolygon2D" parent="StaticBody2D"]
+polygon = PackedVector2Array(-16, 0, 0, -9, 16, 0, 0, 9)

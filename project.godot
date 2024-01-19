@@ -1,0 +1,45 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="library"
+run/main_scene="res://scene/starter.tscn"
+config/features=PackedStringArray("4.2", "Mobile")
+config/icon="res://icon.svg"
+
+[autoload]
+
+TileMapHelper="*res://tile_map_helper.gd"
+NavigationHelper="*res://navigation_helper.gd"
+PatronHelper="*res://patron_helper.gd"
+InventoryHelper="*res://inventory_helper.gd"
+Util="*res://util.gd"
+
+[editor]
+
+version_control/plugin_name="GitPlugin"
+version_control/autoload_on_startup=true
+
+[layer_names]
+
+2d_physics/layer_1="wall"
+2d_navigation/layer_1="floor"
+2d_physics/layer_2="actor"
+2d_navigation/layer_2="wall"
+2d_navigation/layer_3="no_idle_floor"
+avoidance/layer_1="structure"
+avoidance/layer_2="actor"
+
+[rendering]
+
+textures/canvas_textures/default_texture_filter=0
+renderer/rendering_method="mobile"
+2d/snap/snap_2d_transforms_to_pixel=true

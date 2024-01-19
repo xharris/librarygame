@@ -1,0 +1,35 @@
+[gd_scene load_steps=5 format=3 uid="uid://d4aumh5ieaj1b"]
+
+[ext_resource type="TileSet" uid="uid://cdnnwkki8p3gv" path="res://tilemap/tile.tres" id="1_0buem"]
+[ext_resource type="PackedScene" uid="uid://b605xg1hw7sdr" path="res://scene/patron.tscn" id="2_p85kw"]
+[ext_resource type="Script" path="res://scene/TileMap.gd" id="2_tc80i"]
+[ext_resource type="PackedScene" uid="uid://0eigapackogc" path="res://scene/box.tscn" id="4_n80kj"]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="TileMap" type="TileMap" parent="."]
+y_sort_enabled = true
+tile_set = ExtResource("1_0buem")
+format = 2
+layer_0/name = "bg"
+layer_0/y_sort_enabled = true
+layer_0/tile_data = PackedInt32Array(-65537, 0, 0, -131073, 0, 0, -131072, 0, 0, 131071, 0, 0, 196606, 0, 0, -2, 0, 0, 65535, 0, 0, 131070, 0, 0, -65536, 0, 0, 1, 0, 0, 65537, 0, 0, -65534, 0, 0, -131070, 0, 0, -196606, 0, 0, -65533, 0, 0, 3, 0, 0, 131073, 0, 0, 196609, 0, 0, 262146, 0, 0, 196610, 0, 0, 131075, 0, 0, 65539, 0, 0, -131069, 0, 0, 0, 0, 0, -1, 0, 0)
+script = ExtResource("2_tc80i")
+
+[node name="Patron" parent="TileMap" node_paths=PackedStringArray("path_target") instance=ExtResource("2_p85kw")]
+position = Vector2(-48, 27)
+path_target = NodePath("../Box")
+
+[node name="Box" parent="TileMap" instance=ExtResource("4_n80kj")]
+position = Vector2(112, -9)
+
+[node name="Box2" parent="TileMap" instance=ExtResource("4_n80kj")]
+
+[node name="Box3" parent="TileMap" instance=ExtResource("4_n80kj")]
+position = Vector2(16, 9)
+
+[node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(3, 3)
+position_smoothing_enabled = true
+drag_horizontal_enabled = true
+drag_vertical_enabled = true
