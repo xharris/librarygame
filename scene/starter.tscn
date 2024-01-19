@@ -1,9 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://d4aumh5ieaj1b"]
+[gd_scene load_steps=6 format=3 uid="uid://d4aumh5ieaj1b"]
 
 [ext_resource type="TileSet" uid="uid://cdnnwkki8p3gv" path="res://tilemap/tile.tres" id="1_0buem"]
-[ext_resource type="PackedScene" uid="uid://b605xg1hw7sdr" path="res://scene/patron.tscn" id="2_p85kw"]
+[ext_resource type="PackedScene" uid="uid://b605xg1hw7sdr" path="res://scene/actor.tscn" id="2_p85kw"]
 [ext_resource type="Script" path="res://scene/starter.gd" id="2_tc80i"]
 [ext_resource type="PackedScene" uid="uid://0eigapackogc" path="res://scene/box.tscn" id="4_n80kj"]
+[ext_resource type="PackedScene" uid="uid://daqdlgnvoww0t" path="res://scene/station.tscn" id="5_6bqxd"]
 
 [node name="Node2D" type="Node2D"]
 
@@ -25,6 +26,10 @@ position = Vector2(-48, 27)
 
 [node name="Box" parent="TileMap" instance=ExtResource("4_n80kj")]
 position = Vector2(48, -45)
+
+[node name="Chair" parent="TileMap" instance=ExtResource("5_6bqxd")]
+position = Vector2(-32, -18)
+is_seat = true
 
 [node name="Camera2D" type="Camera2D" parent="."]
 zoom = Vector2(2, 2)

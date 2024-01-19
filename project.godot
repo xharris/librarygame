@@ -34,6 +34,7 @@ version_control/autoload_on_startup=true
 2d_navigation/layer_1="floor"
 2d_physics/layer_2="actor"
 2d_navigation/layer_2="wall"
+2d_physics/layer_3="station"
 2d_navigation/layer_3="no_idle_floor"
 avoidance/layer_1="structure"
 avoidance/layer_2="actor"

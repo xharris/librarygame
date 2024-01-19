@@ -11,7 +11,7 @@ func find_item(filter:Callable) -> Item:
 func find_inventory_with_item(item_id:int) -> Array[Inventory]:
 	return Inventory.instances.filter(func(i:Inventory): return i.has_item(item_id))
 
-class Inventory extends Node:
+class Inventory extends Resource:
 	static var instances: Array[Inventory]
 	
 	var node:Node2D
@@ -22,28 +22,33 @@ class Inventory extends Node:
 		instances.append(self)
 
 	func has_item(id:int) -> bool:
-		return items.filter(func(i:Item): return i.id == id).size() > 0
+		return items.any(func(i:Item): return i.id == id)
+		
+	func has_item_type(type:ITEM_TYPE) -> bool:
+		return items.any(func(i:Item): return i.type == type)
 		
 	func add_item(item:Item):
 		items.append(item)
 
 	## Move an item from one inventory to another
 	## TODO show item bouncing from this inventory to other one
-	func transfer_item(item_id:int, other:Inventory):
+	func transfer_item(item_id:int, to:Inventory):
 		# find item
 		var found_item:Item
 		for item in items:
 			if item.id == item_id:
 				found_item = item
 		if not found_item:
-			print('Item ',item_id,' not found in ',self)
 			return
 		# move to other inventory
-		other.items.append(found_item)
+		to.items.append(found_item)
 
-class Item extends Node:
+class Item extends Resource:
 	static var next_id = 1
 	static var templates = {}
+	
+	static func _static_init():
+		register_item('rich dad poor dad', ITEM_TYPE.BOOK)
 
 	static func register_item(item_name:String, type:ITEM_TYPE) -> int:
 		if templates.values().filter(func(item):item.item_name == item_name).size() > 0:
@@ -78,6 +83,3 @@ class Item extends Node:
 		new_item.item_name = item_name
 		new_item.type = type
 		return new_item
-
-func _ready():
-	Item.register_item('rich dad poor dad', ITEM_TYPE.BOOK)

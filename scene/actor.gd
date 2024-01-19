@@ -1,4 +1,4 @@
-class_name Patron
+class_name Actor
 extends CharacterBody2D
 
 @onready var sprite := $Sprite
@@ -7,6 +7,9 @@ extends CharacterBody2D
 
 var inventory = InventoryHelper.Inventory.new(self)
 var move_speed = 50
+
+func _ready():
+	add_to_group('actor')
 
 func _process(delta):
 	# face left/right

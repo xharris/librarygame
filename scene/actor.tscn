@@ -1,17 +1,18 @@
-[gd_scene load_steps=18 format=3 uid="uid://b605xg1hw7sdr"]
+[gd_scene load_steps=19 format=3 uid="uid://b605xg1hw7sdr"]
 
 [ext_resource type="Texture2D" uid="uid://cebukflmmmgg3" path="res://images/bird/bird_fill.png" id="1_h7u8n"]
-[ext_resource type="Script" path="res://scene/patron.gd" id="1_td06u"]
+[ext_resource type="Script" path="res://scene/actor.gd" id="1_td06u"]
+[ext_resource type="Script" path="res://scene/actor_state/PatronStateMachine.gd" id="2_ierx5"]
 [ext_resource type="Texture2D" uid="uid://dja0ek61h5nmy" path="res://images/bird/bird_base.png" id="2_vvh5p"]
-[ext_resource type="Script" path="res://scene/patron_state/PatronStateMachine.gd" id="2_xjejb"]
-[ext_resource type="Script" path="res://scene/patron_state/Idle.gd" id="3_lafxd"]
+[ext_resource type="Script" path="res://scene/actor_state/Idle.gd" id="3_74qp3"]
 [ext_resource type="Texture2D" uid="uid://beksen7m2ygr6" path="res://images/bird/bird_eyes.png" id="3_lid3r"]
+[ext_resource type="Script" path="res://scene/actor_state/Read.gd" id="4_2d571"]
 [ext_resource type="Texture2D" uid="uid://cxlw7fdccyd8i" path="res://images/bird/bird_feet.png" id="4_u1mgq"]
 [ext_resource type="Texture2D" uid="uid://c3y248giufovg" path="res://images/bird/bird_feet2.png" id="5_3mvyw"]
-[ext_resource type="Script" path="res://scene/patron_state/Read.gd" id="5_v7xu7"]
+[ext_resource type="Script" path="res://scene/actor_state/Leave.gd" id="5_hkclm"]
 [ext_resource type="Texture2D" uid="uid://b0o1kdes8am2m" path="res://images/bird/bird_arm.png" id="6_2glyp"]
-[ext_resource type="Script" path="res://scene/patron_state/GetItem.gd" id="6_jteks"]
-[ext_resource type="Script" path="res://scene/patron_state/Leave.gd" id="6_t68m3"]
+[ext_resource type="Script" path="res://scene/actor_state/GetItem.gd" id="6_bm4gi"]
+[ext_resource type="Script" path="res://scene/actor_state/Sit.gd" id="7_cfde1"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_apiia"]
 animations = [{
@@ -75,40 +76,51 @@ _data = {
 "walk": SubResource("Animation_vxr2p")
 }
 
-[node name="CharacterBody2D" type="CharacterBody2D"]
+[node name="Actor" type="CharacterBody2D" groups=["actor"]]
 collision_layer = 2
 collision_mask = 3
 platform_floor_layers = 4294967292
 platform_wall_layers = 1
 script = ExtResource("1_td06u")
 
-[node name="PatronStateMachine" type="Node" parent="."]
-script = ExtResource("2_xjejb")
+[node name="ActorStateMachine" type="Node" parent="."]
+script = ExtResource("2_ierx5")
 
-[node name="Idle" type="Node" parent="PatronStateMachine" node_paths=PackedStringArray("body", "nav_agent")]
-script = ExtResource("3_lafxd")
+[node name="Idle" type="Node" parent="ActorStateMachine" node_paths=PackedStringArray("body", "nav_agent")]
+script = ExtResource("3_74qp3")
 body = NodePath("../..")
 nav_agent = NodePath("../../NavigationAgent2D")
 
-[node name="IdleTimer" type="Timer" parent="PatronStateMachine/Idle"]
-wait_time = 2.0
-autostart = true
+[node name="IdleTimer" type="Timer" parent="ActorStateMachine/Idle"]
+wait_time = 3.0
+one_shot = true
 
-[node name="Read" type="Node" parent="PatronStateMachine" node_paths=PackedStringArray("nav_agent", "body")]
-script = ExtResource("5_v7xu7")
+[node name="Read" type="Node" parent="ActorStateMachine" node_paths=PackedStringArray("nav_agent", "body")]
+script = ExtResource("4_2d571")
 nav_agent = NodePath("../../NavigationAgent2D")
 body = NodePath("../..")
 
-[node name="Leave" type="Node" parent="PatronStateMachine" node_paths=PackedStringArray("nav_agent")]
-script = ExtResource("6_t68m3")
+[node name="ReadTimer" type="Timer" parent="ActorStateMachine/Read"]
+one_shot = true
+
+[node name="Leave" type="Node" parent="ActorStateMachine" node_paths=PackedStringArray("nav_agent")]
+script = ExtResource("5_hkclm")
 nav_agent = NodePath("../../NavigationAgent2D")
 
-[node name="GetItem" type="Node" parent="PatronStateMachine" node_paths=PackedStringArray("nav_agent", "patron")]
-script = ExtResource("6_jteks")
+[node name="GetItem" type="Node" parent="ActorStateMachine" node_paths=PackedStringArray("nav_agent", "actor")]
+script = ExtResource("6_bm4gi")
 nav_agent = NodePath("../../NavigationAgent2D")
-patron = NodePath("../..")
+actor = NodePath("../..")
 
-[node name="Sit" type="Node" parent="PatronStateMachine"]
+[node name="Sit" type="Node" parent="ActorStateMachine" node_paths=PackedStringArray("body", "nav_agent", "sprite")]
+script = ExtResource("7_cfde1")
+body = NodePath("../..")
+nav_agent = NodePath("../../NavigationAgent2D")
+sprite = NodePath("../../Sprite")
+
+[node name="SitTimer" type="Timer" parent="ActorStateMachine/Sit"]
+wait_time = 3.0
+one_shot = true
 
 [node name="Sprite" type="Node2D" parent="."]
 position = Vector2(0, 2)
@@ -159,6 +171,10 @@ libraries = {
 "": SubResource("AnimationLibrary_i68tf")
 }
 
-[connection signal="timeout" from="PatronStateMachine/Idle/IdleTimer" to="PatronStateMachine/Idle" method="pick_new_state"]
-[connection signal="target_reached" from="NavigationAgent2D" to="PatronStateMachine" method="_on_navigation_agent_2d_target_reached"]
-[connection signal="target_reached" from="NavigationAgent2D" to="PatronStateMachine/GetItem" method="_on_navigation_agent_2d_target_reached"]
+[connection signal="timeout" from="ActorStateMachine/Idle/IdleTimer" to="ActorStateMachine/Idle" method="pick_new_state"]
+[connection signal="timeout" from="ActorStateMachine/Read/ReadTimer" to="ActorStateMachine/Read" method="_on_read_timer_timeout"]
+[connection signal="timeout" from="ActorStateMachine/Sit/SitTimer" to="ActorStateMachine/Sit" method="_on_sit_timer_timeout"]
+[connection signal="target_reached" from="NavigationAgent2D" to="ActorStateMachine" method="_on_navigation_agent_2d_target_reached"]
+[connection signal="target_reached" from="NavigationAgent2D" to="ActorStateMachine/Idle" method="_on_navigation_agent_2d_target_reached"]
+[connection signal="target_reached" from="NavigationAgent2D" to="ActorStateMachine/GetItem" method="_on_nav_target_reached"]
+[connection signal="target_reached" from="NavigationAgent2D" to="ActorStateMachine/Sit" method="_on_navigation_agent_2d_target_reached"]

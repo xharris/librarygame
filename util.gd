@@ -8,4 +8,4 @@ func weighted_choice(weights:Array[int]):
 	for w in range(weights.size()):
 		if r <= weights[w]:
 			return w
-	return -1
+	return weights.size() - 1

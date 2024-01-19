@@ -1,11 +1,12 @@
-extends PatronStateMachine
+extends Node
 
-@export var body: CharacterBody2D
+var fsm: ActorStateMachine
+@export var body: Actor
 @export var nav_agent: NavigationAgent2D
+@onready var timer = $IdleTimer
 
 var r = 0
 func pick_new_state():
-	print('picked ',r)
 	match r:
 		0:
 			# walk to a random spot
@@ -16,15 +17,18 @@ func pick_new_state():
 		1:
 			# stand still
 			body.velocity = Vector2.ZERO
+			timer.start(3)
 		2:
-			# read
-			get_parent()\
-				.push_state('GetItem', func(item:InventoryHelper.Item): return item.type == InventoryHelper.ITEM_TYPE.BOOK)\
-				.push_state('Read')
+			# sit (and maybe read)
+			fsm.set_state('Sit')
 			
-	r = Util.weighted_choice([20, 30, 50])
+	r = Util.weighted_choice([20, 30, 40])
 	
-func enter():
-	# TODO move_speed = 25
+func enter(args:Dictionary):
+	body.move_speed = 25
 	nav_agent.target_desired_distance = 10
 	pick_new_state()
+
+func _on_navigation_agent_2d_target_reached():
+	body.velocity = Vector2.ZERO
+	timer.start(3)

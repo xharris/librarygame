@@ -3,10 +3,10 @@
 [ext_resource type="Texture2D" uid="uid://dwrtxvcmdead2" path="res://images/box.png" id="1_eygps"]
 [ext_resource type="Script" path="res://scene/box.gd" id="1_ob2bm"]
 
-[node name="Node2D" type="Node2D" groups=["structure"]]
+[node name="Box" type="Node2D" groups=["storage"]]
 script = ExtResource("1_ob2bm")
 
-[node name="Box" type="Sprite2D" parent="."]
+[node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(0, -9)
 texture = ExtResource("1_eygps")
 
