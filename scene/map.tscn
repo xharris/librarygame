@@ -1,0 +1,34 @@
+[gd_scene load_steps=3 format=3 uid="uid://d4aumh5ieaj1b"]
+
+[ext_resource type="TileSet" uid="uid://cdnnwkki8p3gv" path="res://tilemap/tile.tres" id="1_yvi12"]
+[ext_resource type="Script" path="res://scene/map.gd" id="2_e8glo"]
+
+[node name="TileMap" type="TileMap"]
+y_sort_enabled = true
+tile_set = ExtResource("1_yvi12")
+format = 2
+layer_0/name = "nav"
+layer_0/y_sort_enabled = true
+layer_0/z_index = 1
+layer_1/name = "map"
+layer_1/y_sort_enabled = true
+layer_1/y_sort_origin = -8
+layer_1/navigation_enabled = false
+layer_1/tile_data = PackedInt32Array()
+script = ExtResource("2_e8glo")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(2, 2)
+position_smoothing_enabled = true
+drag_horizontal_enabled = true
+drag_vertical_enabled = true
+
+[node name="NavMeshTimer" type="Timer" parent="."]
+wait_time = 3.0
+autostart = true
+
+[node name="PatronSpawner" type="Timer" parent="."]
+autostart = true
+
+[connection signal="timeout" from="NavMeshTimer" to="." method="_on_nav_mesh_timer_timeout"]
+[connection signal="timeout" from="PatronSpawner" to="." method="_on_patron_spawner_timeout"]

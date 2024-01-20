@@ -10,6 +10,7 @@ func pick_new_state():
 	match r:
 		0:
 			# walk to a random spot
+			body.move_speed = 25
 			var random_cell := TileMapHelper.get_random_tilemap_cell()
 			if random_cell.is_valid():
 				NavigationHelper.toggle_layers(nav_agent, [NavigationHelper.LAYER.NO_IDLE_FLOOR], false)
@@ -25,7 +26,6 @@ func pick_new_state():
 	r = Util.weighted_choice([20, 30, 40])
 	
 func enter(args:Dictionary):
-	body.move_speed = 25
 	nav_agent.target_desired_distance = 10
 	pick_new_state()
 

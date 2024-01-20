@@ -1,14 +1,14 @@
 [gd_scene load_steps=3 format=3 uid="uid://0eigapackogc"]
 
-[ext_resource type="Texture2D" uid="uid://dwrtxvcmdead2" path="res://images/box.png" id="1_eygps"]
-[ext_resource type="Script" path="res://scene/box.gd" id="1_ob2bm"]
+[ext_resource type="Script" path="res://scene/storage.gd" id="1_ob2bm"]
+[ext_resource type="Texture2D" uid="uid://dwrtxvcmdead2" path="res://image/box.png" id="2_7spyr"]
 
-[node name="Box" type="Node2D" groups=["storage"]]
+[node name="Storage" type="Node2D" groups=["storage"]]
 script = ExtResource("1_ob2bm")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(0, -9)
-texture = ExtResource("1_eygps")
+texture = ExtResource("2_7spyr")
 
 [node name="StaticBody2D" type="StaticBody2D" parent="."]
 

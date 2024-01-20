@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dik5q2kevlltw"
-path="res://.godot/imported/base_tile.png-cd43b75ed50f96bc4c8f14ab49c2aefe.ctex"
+uid="uid://b0o1kdes8am2m"
+path="res://.godot/imported/bird_arm.png-d59e70d80a55cbeed2e22a537267df41.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://images/tile/base_tile.png"
-dest_files=["res://.godot/imported/base_tile.png-cd43b75ed50f96bc4c8f14ab49c2aefe.ctex"]
+source_file="res://image/bird/bird_arm.png"
+dest_files=["res://.godot/imported/bird_arm.png-d59e70d80a55cbeed2e22a537267df41.ctex"]
 
 [params]
 

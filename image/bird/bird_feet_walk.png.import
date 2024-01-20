@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bbu23jikax2rh"
-path="res://.godot/imported/empty.png-54b5b2c669c2676a16145ca47b2a27e3.ctex"
+uid="uid://c3y248giufovg"
+path="res://.godot/imported/bird_feet_walk.png-6e73a22f7d5e26dc755bca5f5213bb4c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://images/tile/empty.png"
-dest_files=["res://.godot/imported/empty.png-54b5b2c669c2676a16145ca47b2a27e3.ctex"]
+source_file="res://image/bird/bird_feet_walk.png"
+dest_files=["res://.godot/imported/bird_feet_walk.png-6e73a22f7d5e26dc755bca5f5213bb4c.ctex"]
 
 [params]
 

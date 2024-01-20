@@ -11,8 +11,20 @@ func find_item(filter:Callable) -> Item:
 func find_inventory_with_item(item_id:int) -> Array[Inventory]:
 	return Inventory.instances.filter(func(i:Inventory): return i.has_item(item_id))
 
+func get_closest_inventory(to:Node2D) -> Inventory:
+	Inventory.instances.sort_custom(func(a:Inventory,b:Inventory): 
+		return a.node.global_position.distance_to(to.global_position) <  b.node.global_position.distance_to(to.global_position)
+	)
+	return Inventory.instances.front()
+
 class Inventory extends Resource:
 	static var instances: Array[Inventory]
+
+	static func find_closest(to:Node2D) -> Inventory:
+		instances.sort_custom(func(a:Inventory,b:Inventory): 
+			return a.node.global_position.distance_to(to.global_position) <  b.node.global_position.distance_to(to.global_position)
+		)
+		return instances.front()
 	
 	var node:Node2D
 	var items:Array[Item]
@@ -27,21 +39,27 @@ class Inventory extends Resource:
 	func has_item_type(type:ITEM_TYPE) -> bool:
 		return items.any(func(i:Item): return i.type == type)
 		
-	func add_item(item:Item):
+	func add_item(item:Item) -> Inventory:
 		items.append(item)
+		return self
+
+	func get_items(id:int) -> Array[Item]:
+		return items.filter(func(i:Item): return i.id == id)
 
 	## Move an item from one inventory to another
 	## TODO show item bouncing from this inventory to other one
-	func transfer_item(item_id:int, to:Inventory):
+	## Returns true on success
+	func transfer_item(item_id:int, to:Inventory) -> bool:
 		# find item
 		var found_item:Item
 		for item in items:
 			if item.id == item_id:
 				found_item = item
 		if not found_item:
-			return
+			return false
 		# move to other inventory
 		to.items.append(found_item)
+		return true
 
 class Item extends Resource:
 	static var next_id = 1

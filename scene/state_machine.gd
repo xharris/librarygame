@@ -11,15 +11,16 @@ func _disable_state(node:Node):
 	remove_child(node)
 	last_process_mode[node.name] = node.process_mode
 	node.process_mode = Node.PROCESS_MODE_DISABLED
+	# disconnect signals
 	connections[node.name] = node.get_incoming_connections()
 	for connection in node.get_incoming_connections():
 		var sig:Signal = connection.get('signal')
 		var cal:Callable = connection.get('callable')
-		var flags:int = connection.get('flags')
 		sig.disconnect(cal)
 
 func _enable_state(node:Node):
 	node.process_mode = last_process_mode.get(node.name, node.process_mode)
+	# reconnect signals
 	if connections.has(node.name):
 		for connection in connections[node.name]:
 			var sig:Signal = connection.get('signal')

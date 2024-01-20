@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="library"
-run/main_scene="res://scene/starter.tscn"
+run/main_scene="res://map/FirstMap.tscn"
 config/features=PackedStringArray("4.2", "Mobile")
 config/icon="res://icon.svg"
 
@@ -19,7 +19,7 @@ config/icon="res://icon.svg"
 
 TileMapHelper="*res://tile_map_helper.gd"
 NavigationHelper="*res://navigation_helper.gd"
-PatronHelper="*res://patron_helper.gd"
+ActorHelper="*res://actor_helper.gd"
 InventoryHelper="*res://inventory_helper.gd"
 Util="*res://util.gd"
 

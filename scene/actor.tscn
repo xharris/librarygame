@@ -1,44 +1,24 @@
-[gd_scene load_steps=19 format=3 uid="uid://b605xg1hw7sdr"]
+[gd_scene load_steps=23 format=3 uid="uid://b605xg1hw7sdr"]
 
-[ext_resource type="Texture2D" uid="uid://cebukflmmmgg3" path="res://images/bird/bird_fill.png" id="1_h7u8n"]
 [ext_resource type="Script" path="res://scene/actor.gd" id="1_td06u"]
 [ext_resource type="Script" path="res://scene/actor_state/PatronStateMachine.gd" id="2_ierx5"]
-[ext_resource type="Texture2D" uid="uid://dja0ek61h5nmy" path="res://images/bird/bird_base.png" id="2_vvh5p"]
 [ext_resource type="Script" path="res://scene/actor_state/Idle.gd" id="3_74qp3"]
-[ext_resource type="Texture2D" uid="uid://beksen7m2ygr6" path="res://images/bird/bird_eyes.png" id="3_lid3r"]
 [ext_resource type="Script" path="res://scene/actor_state/Read.gd" id="4_2d571"]
-[ext_resource type="Texture2D" uid="uid://cxlw7fdccyd8i" path="res://images/bird/bird_feet.png" id="4_u1mgq"]
-[ext_resource type="Texture2D" uid="uid://c3y248giufovg" path="res://images/bird/bird_feet2.png" id="5_3mvyw"]
 [ext_resource type="Script" path="res://scene/actor_state/Leave.gd" id="5_hkclm"]
-[ext_resource type="Texture2D" uid="uid://b0o1kdes8am2m" path="res://images/bird/bird_arm.png" id="6_2glyp"]
 [ext_resource type="Script" path="res://scene/actor_state/GetItem.gd" id="6_bm4gi"]
 [ext_resource type="Script" path="res://scene/actor_state/Sit.gd" id="7_cfde1"]
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_apiia"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("4_u1mgq")
-}],
-"loop": true,
-"name": &"stand",
-"speed": 5.0
-}, {
-"frames": [{
-"duration": 1.0,
-"texture": ExtResource("4_u1mgq")
-}, {
-"duration": 1.0,
-"texture": ExtResource("5_3mvyw")
-}],
-"loop": true,
-"name": &"walk",
-"speed": 5.0
-}]
+[ext_resource type="Script" path="res://scene/actor_state/StoreItem.gd" id="8_ielna"]
+[ext_resource type="Texture2D" uid="uid://cebukflmmmgg3" path="res://image/bird/bird_fill.png" id="9_4iuug"]
+[ext_resource type="Texture2D" uid="uid://dja0ek61h5nmy" path="res://image/bird/bird_base.png" id="10_k2auc"]
+[ext_resource type="Texture2D" uid="uid://beksen7m2ygr6" path="res://image/bird/bird_eyes.png" id="11_5gryt"]
+[ext_resource type="Texture2D" uid="uid://vyfab613nxcw" path="res://image/bird/bird_feet_sit.png" id="12_02mln"]
+[ext_resource type="Texture2D" uid="uid://cxlw7fdccyd8i" path="res://image/bird/bird_feet.png" id="12_gkc4j"]
+[ext_resource type="Texture2D" uid="uid://b0o1kdes8am2m" path="res://image/bird/bird_arm.png" id="14_gb18g"]
+[ext_resource type="Texture2D" uid="uid://c3y248giufovg" path="res://image/bird/bird_feet_walk.png" id="14_yantv"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_rr7n6"]
-radius = 2.0
-height = 10.0
+radius = 1.0
+height = 2.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_xdbd6"]
 radius = 19.0
@@ -49,7 +29,7 @@ loop_mode = 1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite/BirdFeet:frame")
+tracks/0/path = NodePath("SpriteDirection/Sprite/BirdFeet:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -61,7 +41,7 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("Sprite:position")
+tracks/1/path = NodePath("SpriteDirection/Sprite:position")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
@@ -70,11 +50,111 @@ tracks/1/keys = {
 "update": 0,
 "values": [Vector2(0, 2), Vector2(0, -1)]
 }
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("SpriteDirection/Sprite/BirdFeet:animation")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [&"walk"]
+}
+
+[sub_resource type="Animation" id="Animation_yi3xk"]
+resource_name = "sit"
+length = 0.4
+step = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SpriteDirection/Sprite/BirdFeet:animation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [&"sit"]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("SpriteDirection/Sprite:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 4)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("SpriteDirection/Sprite:scale")
+tracks/2/interp = 2
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.4),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(1, 1), Vector2(1.25, 0.9), Vector2(1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_0ssif"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SpriteDirection/Sprite:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0, 4)]
+}
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_i68tf"]
 _data = {
+"RESET": SubResource("Animation_0ssif"),
+"sit": SubResource("Animation_yi3xk"),
 "walk": SubResource("Animation_vxr2p")
 }
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_apiia"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("12_02mln")
+}],
+"loop": true,
+"name": &"sit",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("12_gkc4j")
+}],
+"loop": true,
+"name": &"stand",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("12_gkc4j")
+}, {
+"duration": 1.0,
+"texture": ExtResource("14_yantv")
+}],
+"loop": true,
+"name": &"walk",
+"speed": 5.0
+}]
 
 [node name="Actor" type="CharacterBody2D" groups=["actor"]]
 collision_layer = 2
@@ -112,45 +192,26 @@ script = ExtResource("6_bm4gi")
 nav_agent = NodePath("../../NavigationAgent2D")
 actor = NodePath("../..")
 
-[node name="Sit" type="Node" parent="ActorStateMachine" node_paths=PackedStringArray("body", "nav_agent", "sprite")]
+[node name="Sit" type="Node" parent="ActorStateMachine" node_paths=PackedStringArray("body", "nav_agent", "sprite", "animation")]
 script = ExtResource("7_cfde1")
 body = NodePath("../..")
 nav_agent = NodePath("../../NavigationAgent2D")
-sprite = NodePath("../../Sprite")
+sprite = NodePath("../../SpriteDirection/Sprite")
+animation = NodePath("../../AnimationPlayer")
 
 [node name="SitTimer" type="Timer" parent="ActorStateMachine/Sit"]
 wait_time = 3.0
 one_shot = true
 
-[node name="Sprite" type="Node2D" parent="."]
-position = Vector2(0, 2)
-
-[node name="BirdFill" type="Sprite2D" parent="Sprite"]
-position = Vector2(0, -11)
-texture = ExtResource("1_h7u8n")
-
-[node name="BirdBase" type="Sprite2D" parent="Sprite"]
-position = Vector2(0, -11)
-texture = ExtResource("2_vvh5p")
-
-[node name="BirdEyes" type="Sprite2D" parent="Sprite"]
-position = Vector2(0, -11)
-texture = ExtResource("3_lid3r")
-
-[node name="BirdFeet" type="AnimatedSprite2D" parent="Sprite"]
-position = Vector2(0, -11)
-sprite_frames = SubResource("SpriteFrames_apiia")
-animation = &"walk"
-
-[node name="BirdArm" type="Sprite2D" parent="Sprite"]
-position = Vector2(0, -11)
-texture = ExtResource("6_2glyp")
+[node name="StoreItem" type="Node" parent="ActorStateMachine"]
+script = ExtResource("8_ielna")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 rotation = 1.5708
 shape = SubResource("CapsuleShape2D_rr7n6")
 
 [node name="DetectionArea" type="Area2D" parent="."]
+visible = false
 collision_layer = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="DetectionArea"]
@@ -161,8 +222,8 @@ shape = SubResource("CircleShape2D_xdbd6")
 path_desired_distance = 5.0
 navigation_layers = 5
 path_postprocessing = 1
-radius = 30.0
 avoidance_layers = 2
+avoidance_mask = 2
 debug_enabled = true
 debug_path_custom_point_size = 2.0
 
@@ -171,6 +232,32 @@ libraries = {
 "": SubResource("AnimationLibrary_i68tf")
 }
 
+[node name="SpriteDirection" type="Node2D" parent="."]
+
+[node name="Sprite" type="Node2D" parent="SpriteDirection"]
+position = Vector2(0, 4)
+
+[node name="BirdFill" type="Sprite2D" parent="SpriteDirection/Sprite"]
+position = Vector2(0, -11)
+texture = ExtResource("9_4iuug")
+
+[node name="BirdBase" type="Sprite2D" parent="SpriteDirection/Sprite"]
+position = Vector2(0, -11)
+texture = ExtResource("10_k2auc")
+
+[node name="BirdEyes" type="Sprite2D" parent="SpriteDirection/Sprite"]
+position = Vector2(0, -11)
+texture = ExtResource("11_5gryt")
+
+[node name="BirdFeet" type="AnimatedSprite2D" parent="SpriteDirection/Sprite"]
+position = Vector2(0, -11)
+sprite_frames = SubResource("SpriteFrames_apiia")
+animation = &"walk"
+
+[node name="BirdArm" type="Sprite2D" parent="SpriteDirection/Sprite"]
+position = Vector2(0, -11)
+texture = ExtResource("14_gb18g")
+
 [connection signal="timeout" from="ActorStateMachine/Idle/IdleTimer" to="ActorStateMachine/Idle" method="pick_new_state"]
 [connection signal="timeout" from="ActorStateMachine/Read/ReadTimer" to="ActorStateMachine/Read" method="_on_read_timer_timeout"]
 [connection signal="timeout" from="ActorStateMachine/Sit/SitTimer" to="ActorStateMachine/Sit" method="_on_sit_timer_timeout"]
@@ -178,3 +265,5 @@ libraries = {
 [connection signal="target_reached" from="NavigationAgent2D" to="ActorStateMachine/Idle" method="_on_navigation_agent_2d_target_reached"]
 [connection signal="target_reached" from="NavigationAgent2D" to="ActorStateMachine/GetItem" method="_on_nav_target_reached"]
 [connection signal="target_reached" from="NavigationAgent2D" to="ActorStateMachine/Sit" method="_on_navigation_agent_2d_target_reached"]
+[connection signal="target_reached" from="NavigationAgent2D" to="ActorStateMachine/StoreItem" method="_on_nav_target_reached"]
+[connection signal="velocity_computed" from="NavigationAgent2D" to="." method="_on_navigation_agent_2d_velocity_computed"]

@@ -15,8 +15,6 @@ func enter(args:Dictionary):
 	var item_filter := args.get('item_filter', Callable()) as Callable
 	var happiness_loss := args.get('happiness_loss', 0) as int
 	
-	nav_agent.target_reached.connect(_on_nav_target_reached)
-	
 	actor.move_speed = 50
 	item = InventoryHelper.find_item(item_filter) as InventoryHelper.Item
 	if not item:
@@ -32,9 +30,6 @@ func enter(args:Dictionary):
 	# move to inventory
 	nav_agent.target_desired_distance = 20
 	nav_agent.target_position = found_inventory.node.global_position
-
-func leave():
-	nav_agent.target_reached.disconnect(_on_nav_target_reached())
 
 func _on_nav_target_reached():
 	if item.type == InventoryHelper.ITEM_TYPE.BOOK and found_inventory.has_item(item.id):

@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://daqdlgnvoww0t"]
 
-[ext_resource type="Texture2D" uid="uid://dwrtxvcmdead2" path="res://images/box.png" id="1_02nq3"]
 [ext_resource type="Script" path="res://scene/station.gd" id="1_kmw1x"]
+[ext_resource type="Texture2D" uid="uid://dwrtxvcmdead2" path="res://image/box.png" id="2_gicnx"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_uhb18"]
 radius = 8.0
@@ -13,7 +13,7 @@ script = ExtResource("1_kmw1x")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(0, -9)
-texture = ExtResource("1_02nq3")
+texture = ExtResource("2_gicnx")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, -8)
