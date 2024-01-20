@@ -28,6 +28,7 @@ class Inventory extends Resource:
 	
 	var node:Node2D
 	var items:Array[Item]
+	var visible := false
 
 	func _init(parent:Node):
 		node = parent
@@ -47,8 +48,8 @@ class Inventory extends Resource:
 		return items.filter(func(i:Item): return i.id == id)
 
 	## Move an item from one inventory to another
-	## TODO show item bouncing from this inventory to other one
 	## Returns true on success
+	## TODO show item bouncing from this inventory to other one
 	func transfer_item(item_id:int, to:Inventory) -> bool:
 		# find item
 		var found_item:Item
@@ -60,6 +61,11 @@ class Inventory extends Resource:
 		# move to other inventory
 		to.items.append(found_item)
 		return true
+		
+	## TODO add inventory for nearest tile on current map, move item to tile's inventory
+	## TODO visually place item on the tile
+	func drop_item(item:Item):
+		var drop_position = node.global_position
 
 class Item extends Resource:
 	static var next_id = 1

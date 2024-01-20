@@ -1,14 +1,15 @@
-extends Node
+extends Task
 
-var fsm: ActorStateMachine
-@export var nav_agent: NavigationAgent2D
-@export var body: Actor
 @onready var timer = $ReadTimer
 
+func _init():
+	required_previous_state = ['Sit']
+
+func is_task_needed() -> bool:
+	return actor.inventory.has_item_type(InventoryHelper.ITEM_TYPE.BOOK)
+	
 func enter(args:Dictionary):
-	nav_agent.target_position = body.global_position
-	body.velocity = Vector2.ZERO
-	var has_book = body.inventory.has_item_type(InventoryHelper.ITEM_TYPE.BOOK)
+	var has_book = actor.inventory.has_item_type(InventoryHelper.ITEM_TYPE.BOOK)
 	if has_book:
 		# stop and read for a while
 		timer.start(3)

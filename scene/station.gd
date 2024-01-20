@@ -1,8 +1,11 @@
 class_name Station
 extends Area2D
 
+enum STATION_TYPE {SEAT}
+
 @export var max_occupancy = 1
-@export var is_seat = false
+@export var type:STATION_TYPE
+
 
 var occupied = false
 var users:Array[Node] = []

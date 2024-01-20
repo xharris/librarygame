@@ -1,6 +1,5 @@
-extends Node
+extends State
 
-var fsm: ActorStateMachine
 @export var nav_agent: NavigationAgent2D
 @export var actor: Actor
 
@@ -17,7 +16,7 @@ func enter(args:Dictionary):
 	# find inventory (that doesnt belong to a actor) containing item
 	found_inventory = InventoryHelper.get_closest_inventory(actor)
 	if not found_inventory:
-		# TODO set inventory to map's inventory and drop on the ground (nearest tile)
+		actor.inventory.drop_item(item)
 		return fsm.set_state('Idle')
 	# move to inventory
 	nav_agent.target_desired_distance = 20

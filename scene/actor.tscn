@@ -1,9 +1,8 @@
-[gd_scene load_steps=23 format=3 uid="uid://b605xg1hw7sdr"]
+[gd_scene load_steps=22 format=3 uid="uid://b605xg1hw7sdr"]
 
 [ext_resource type="Script" path="res://scene/actor.gd" id="1_td06u"]
-[ext_resource type="Script" path="res://scene/actor_state/PatronStateMachine.gd" id="2_ierx5"]
+[ext_resource type="Script" path="res://scene/actor_state/ActorStateMachine.gd" id="2_rx4tf"]
 [ext_resource type="Script" path="res://scene/actor_state/Idle.gd" id="3_74qp3"]
-[ext_resource type="Script" path="res://scene/actor_state/Read.gd" id="4_2d571"]
 [ext_resource type="Script" path="res://scene/actor_state/Leave.gd" id="5_hkclm"]
 [ext_resource type="Script" path="res://scene/actor_state/GetItem.gd" id="6_bm4gi"]
 [ext_resource type="Script" path="res://scene/actor_state/Sit.gd" id="7_cfde1"]
@@ -23,44 +22,19 @@ height = 2.0
 [sub_resource type="CircleShape2D" id="CircleShape2D_xdbd6"]
 radius = 19.0
 
-[sub_resource type="Animation" id="Animation_vxr2p"]
-resource_name = "walk"
-loop_mode = 1
+[sub_resource type="Animation" id="Animation_0ssif"]
+length = 0.001
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("SpriteDirection/Sprite/BirdFeet:frame")
+tracks/0/path = NodePath("SpriteDirection/Sprite:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.5),
-"transitions": PackedFloat32Array(1, 1),
-"update": 1,
-"values": [0, 1]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("SpriteDirection/Sprite:position")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.5),
-"transitions": PackedFloat32Array(1, 1),
-"update": 0,
-"values": [Vector2(0, 2), Vector2(0, -1)]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("SpriteDirection/Sprite/BirdFeet:animation")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [&"walk"]
+"update": 0,
+"values": [Vector2(0, 4)]
 }
 
 [sub_resource type="Animation" id="Animation_yi3xk"]
@@ -104,19 +78,44 @@ tracks/2/keys = {
 "values": [Vector2(1, 1), Vector2(1.25, 0.9), Vector2(1, 1)]
 }
 
-[sub_resource type="Animation" id="Animation_0ssif"]
-length = 0.001
+[sub_resource type="Animation" id="Animation_vxr2p"]
+resource_name = "walk"
+loop_mode = 1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("SpriteDirection/Sprite:position")
+tracks/0/path = NodePath("SpriteDirection/Sprite/BirdFeet:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [0, 1]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("SpriteDirection/Sprite:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(0, 2), Vector2(0, -1)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("SpriteDirection/Sprite/BirdFeet:animation")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Vector2(0, 4)]
+"update": 1,
+"values": [&"walk"]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_i68tf"]
@@ -163,8 +162,11 @@ platform_floor_layers = 4294967292
 platform_wall_layers = 1
 script = ExtResource("1_td06u")
 
-[node name="ActorStateMachine" type="Node" parent="."]
-script = ExtResource("2_ierx5")
+[node name="ActorStateMachine" type="Node" parent="." node_paths=PackedStringArray("actor", "nav_agent", "animation")]
+script = ExtResource("2_rx4tf")
+actor = NodePath("..")
+nav_agent = NodePath("../NavigationAgent2D")
+animation = NodePath("../AnimationPlayer")
 
 [node name="Idle" type="Node" parent="ActorStateMachine" node_paths=PackedStringArray("body", "nav_agent")]
 script = ExtResource("3_74qp3")
@@ -173,14 +175,6 @@ nav_agent = NodePath("../../NavigationAgent2D")
 
 [node name="IdleTimer" type="Timer" parent="ActorStateMachine/Idle"]
 wait_time = 3.0
-one_shot = true
-
-[node name="Read" type="Node" parent="ActorStateMachine" node_paths=PackedStringArray("nav_agent", "body")]
-script = ExtResource("4_2d571")
-nav_agent = NodePath("../../NavigationAgent2D")
-body = NodePath("../..")
-
-[node name="ReadTimer" type="Timer" parent="ActorStateMachine/Read"]
 one_shot = true
 
 [node name="Leave" type="Node" parent="ActorStateMachine" node_paths=PackedStringArray("nav_agent")]
@@ -258,8 +252,8 @@ animation = &"walk"
 position = Vector2(0, -11)
 texture = ExtResource("14_gb18g")
 
+[connection signal="add_state" from="ActorStateMachine" to="ActorStateMachine" method="_on_add_state"]
 [connection signal="timeout" from="ActorStateMachine/Idle/IdleTimer" to="ActorStateMachine/Idle" method="pick_new_state"]
-[connection signal="timeout" from="ActorStateMachine/Read/ReadTimer" to="ActorStateMachine/Read" method="_on_read_timer_timeout"]
 [connection signal="timeout" from="ActorStateMachine/Sit/SitTimer" to="ActorStateMachine/Sit" method="_on_sit_timer_timeout"]
 [connection signal="target_reached" from="NavigationAgent2D" to="ActorStateMachine" method="_on_navigation_agent_2d_target_reached"]
 [connection signal="target_reached" from="NavigationAgent2D" to="ActorStateMachine/Idle" method="_on_navigation_agent_2d_target_reached"]

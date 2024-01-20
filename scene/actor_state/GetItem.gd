@@ -1,6 +1,5 @@
-extends Node
+extends State
 
-var fsm: ActorStateMachine
 @export var nav_agent: NavigationAgent2D
 @export var actor: Actor
 
@@ -32,8 +31,7 @@ func enter(args:Dictionary):
 	nav_agent.target_position = found_inventory.node.global_position
 
 func _on_nav_target_reached():
-	if item.type == InventoryHelper.ITEM_TYPE.BOOK and found_inventory.has_item(item.id):
-		found_inventory.transfer_item(item.id, actor.inventory)
-		fsm.set_state('Sit')
+	if fsm.get_task_manager().start_next_task():
+		return
 	else:
 		fsm.set_state('Idle')

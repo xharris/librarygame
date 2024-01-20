@@ -1,6 +1,5 @@
-extends Node
+extends State
 
-var fsm: ActorStateMachine
 @export var body: Actor
 @export var nav_agent: NavigationAgent2D
 @onready var timer = $SitTimer
@@ -15,7 +14,9 @@ func enter(_args:Dictionary):
 	nav_agent.target_desired_distance = 10
 	# find nearest chair
 	var chairs:Array[Station] = []
-	chairs.assign(get_tree().get_nodes_in_group('station').filter(func(n:Station):return n.can_use() and n.is_seat))
+	chairs.assign(get_tree().get_nodes_in_group('station').filter(func(n:Station):
+		return n.can_use() and n.type == Station.STATION_TYPE.SEAT)
+	)
 	chairs.sort_custom(func(a:Station,b:Station):return get_distance(a) < get_distance(b))
 	if chairs.size():
 		# go to chair
@@ -30,15 +31,14 @@ func enter(_args:Dictionary):
 
 func _on_navigation_agent_2d_target_reached():
 	body.velocity = Vector2.ZERO
-	if chair:
+	if chair and chair.can_use():
 		body.global_position = chair.global_position + Vector2(0, 1)
 		body.scale.x = chair.scale.x
 	animation.play('sit')
-	var has_book = body.inventory.has_item_type(InventoryHelper.ITEM_TYPE.BOOK)
-	if has_book:
-		fsm.set_state('Read')
+	var task_man := fsm.get_task_manager() as TaskManager
+	if task_man and task_man.start_next_task():
+		return
 	else:
-		# TODO sit for random_range seconds
 		timer.start()
 
 func _on_sit_timer_timeout():

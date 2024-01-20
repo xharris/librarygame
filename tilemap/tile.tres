@@ -41,7 +41,7 @@ texture = ExtResource("1_2073c")
 margins = Vector2i(0, 8)
 texture_region_size = Vector2i(32, 18)
 0:0/0 = 0
-0:0/0/modulate = Color(1, 0.768627, 0.815686, 1)
+0:0/0/modulate = Color(0.878431, 0.878431, 0.878431, 1)
 0:0/0/navigation_layer_1/polygon = SubResource("NavigationPolygon_nyuyc")
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_0k7up"]
@@ -57,7 +57,7 @@ texture = ExtResource("1_2073c")
 margins = Vector2i(0, 8)
 texture_region_size = Vector2i(32, 18)
 0:0/0 = 0
-0:0/0/modulate = Color(0.615686, 1, 0.588235, 1)
+0:0/0/modulate = Color(0.619608, 0.619608, 0.619608, 1)
 0:0/0/navigation_layer_1/polygon = SubResource("NavigationPolygon_0k7up")
 
 [resource]

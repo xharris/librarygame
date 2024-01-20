@@ -1,4 +1,4 @@
-extends Node
+extends State
 
 @export var nav_agent: NavigationAgent2D
 

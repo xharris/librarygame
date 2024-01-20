@@ -5,7 +5,7 @@ extends CharacterBody2D
 @onready var animation := $AnimationPlayer
 @onready var nav_agent := $NavigationAgent2D
 
-var role := ActorHelper.ACTOR_ROLE.PATRON
+var role = ActorHelper.ACTOR_ROLE.PATRON
 var inventory = InventoryHelper.Inventory.new(self)
 var move_speed = 50
 

@@ -2,13 +2,18 @@ class_name StateMachine
 extends Node
 
 var initial_state: String
-var current_state: Node
-var states:Array[Node] = []
+var current_state: State
+var current_state_name = ''
+var states:Array[State] = []
 var last_process_mode:Dictionary = {}
 var connections:Dictionary = {}
 
+signal add_state(node:State)
+
 func _disable_state(node:Node):
-	remove_child(node)
+	if not node is State:
+		return
+	remove_child.call_deferred(node)
 	last_process_mode[node.name] = node.process_mode
 	node.process_mode = Node.PROCESS_MODE_DISABLED
 	# disconnect signals
@@ -19,6 +24,8 @@ func _disable_state(node:Node):
 		sig.disconnect(cal)
 
 func _enable_state(node:Node):
+	if not node is State:
+		return
 	node.process_mode = last_process_mode.get(node.name, node.process_mode)
 	# reconnect signals
 	if connections.has(node.name):
@@ -27,7 +34,7 @@ func _enable_state(node:Node):
 			var cal:Callable = connection.get('callable')
 			var flags:int = connection.get('flags')
 			sig.connect(cal, flags)
-	add_child(node)
+	add_child.call_deferred(node)
 
 func state_callv(method_name:String, args:Dictionary = {}, state:Node = current_state):
 	if state and state.has_method(method_name):
@@ -43,14 +50,20 @@ func set_state(state_name:String, args:Dictionary = {}):
 	var next_state := states.filter(func(s:Node): return s.name == state_name).front() as Node
 	if next_state:
 		current_state = next_state
+		current_state_name = current_state.name
 		_enable_state(current_state)
 		state_callv('enter', args)
-
-func get_states():
-	states = get_children()
+	else:
+		push_error('State "',state_name,'" not found in ',states.map(func(s:State):return s.name))
+	
+func add_states(new_states:Array[Node]):
+	for new_state in new_states:
+		if new_state is State:
+			(new_state as Object).set('fsm', self)
+			_disable_state(new_state)
+			states.append(new_state)
+			print(name,'++',new_state.name)
+			add_state.emit(new_state)
 
 func _ready():
-	get_states()
-	for child in get_children():
-		(child as Object).set('fsm', self)
-		_disable_state(child)
+	add_states(get_children())

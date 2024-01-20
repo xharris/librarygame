@@ -1,11 +1,14 @@
 class_name Map
 extends TileMap
 
-var inventory := InventoryHelper.Inventory.new(self)
 var scn_actor = preload("res://scene/actor.tscn")
-
+var inventories = {}
 var nav_layer_name = 'nav'
-var spawn_chance = 50 # / 100
+## increases when average happiness increases
+var spawn_chance = 0 # / 100 
+@export var initial_spawn_count = 3
+
+signal spawn_patron(actor:Actor)
 
 func get_tile_coords(tile_name:String):
 	var layers = get_layers_count()
@@ -59,8 +62,9 @@ func _on_nav_mesh_timer_timeout():
 func _on_patron_spawner_timeout():
 	var entrance_tiles = get_tile_coords('entrance')
 	var patron_count := get_tree().get_nodes_in_group('actor').filter(func(a:Actor): return a.role == ActorHelper.ACTOR_ROLE.PATRON).size()
-	var map_capacity := 1 # (get_used_cells(TileMapHelper.get_layer_by_name(self, 'map')).size() * 2/3)
-	if entrance_tiles.size() and patron_count < map_capacity and (randi() % 100) < spawn_chance:
+	var map_capacity := (get_used_cells(TileMapHelper.get_layer_by_name(self, 'map')).size() * 2/3)
+	if entrance_tiles.size() and patron_count < map_capacity and (randi() % 100) < (spawn_chance if patron_count >= initial_spawn_count else 60):
 		var new_actor := scn_actor.instantiate() as Actor
 		new_actor.global_position = entrance_tiles.pick_random()
+		spawn_patron.emit(new_actor)
 		add_child(new_actor)
