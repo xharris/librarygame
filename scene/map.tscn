@@ -23,12 +23,9 @@ position_smoothing_enabled = true
 drag_horizontal_enabled = true
 drag_vertical_enabled = true
 
-[node name="NavMeshTimer" type="Timer" parent="."]
-wait_time = 3.0
-autostart = true
-
 [node name="PatronSpawner" type="Timer" parent="."]
 autostart = true
 
-[connection signal="timeout" from="NavMeshTimer" to="." method="_on_nav_mesh_timer_timeout"]
+[connection signal="child_entered_tree" from="." to="." method="_on_child_entered_tree"]
+[connection signal="child_exiting_tree" from="." to="." method="_on_child_exiting_tree"]
 [connection signal="timeout" from="PatronSpawner" to="." method="_on_patron_spawner_timeout"]

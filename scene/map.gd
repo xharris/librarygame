@@ -1,7 +1,7 @@
 class_name Map
 extends TileMap
 
-var scn_actor = preload("res://scene/actor.tscn")
+var scn_patron = preload("res://scene/patron.tscn")
 var inventories = {}
 var nav_layer_name = 'nav'
 ## increases when average happiness increases
@@ -24,16 +24,16 @@ func get_tile_coords(tile_name:String):
 				tiles.append(to_global(map_to_local(cell)))
 	return tiles
 
-func is_structure_at(coords:Vector2i):
+func is_walkable(coords:Vector2i):
 	if get_child_count() == 0:
 		return false
 	for c in get_children():
-		if c.is_in_group('structure') and c.is_class('Node2D'):
-			var c_position = local_to_map(to_local((c as Node2D).global_position))
+		if c is Station:
+			var c_position = local_to_map(to_local(c.global_position))
 			if c_position == coords:
-				return true
-	return false
-	
+				return false
+	return true
+
 func update_navigation():
 	var tile_layer = TileMapHelper.get_layer_by_name(self, 'map')
 	var nav_layer = TileMapHelper.get_layer_by_name(self, nav_layer_name)
@@ -42,11 +42,11 @@ func update_navigation():
 	var tile_coords = get_used_cells(tile_layer)
 	for coords in tile_coords:
 		var has_nav = get_cell_source_id(nav_layer, coords) > -1
-		var has_structure = is_structure_at(coords)
-		if not has_nav and not has_structure:
+		var is_walkable = is_walkable(coords)
+		if not has_nav and is_walkable:
 			# add nav cell
 			set_cell(nav_layer, coords, 1, Vector2i.ZERO)
-		if has_nav and has_structure:
+		if has_nav and not is_walkable:
 			# remove nav cell
 			erase_cell(nav_layer, coords)
 
@@ -56,15 +56,18 @@ func _enter_tree():
 func _ready():
 	update_navigation()
 
-func _on_nav_mesh_timer_timeout():
-	update_navigation()
-
 func _on_patron_spawner_timeout():
 	var entrance_tiles = get_tile_coords('entrance')
 	var patron_count := get_tree().get_nodes_in_group('actor').filter(func(a:Actor): return a.role == ActorHelper.ACTOR_ROLE.PATRON).size()
 	var map_capacity := (get_used_cells(TileMapHelper.get_layer_by_name(self, 'map')).size() * 2/3)
 	if entrance_tiles.size() and patron_count < map_capacity and (randi() % 100) < (spawn_chance if patron_count >= initial_spawn_count else 60):
-		var new_actor := scn_actor.instantiate() as Actor
-		new_actor.global_position = entrance_tiles.pick_random()
-		spawn_patron.emit(new_actor)
-		add_child(new_actor)
+		var new_patron := scn_patron.instantiate()
+		new_patron.global_position = entrance_tiles.pick_random()
+		spawn_patron.emit(new_patron.find_child('Actor'))
+		add_child(new_patron)
+
+func _on_child_entered_tree(node):
+	update_navigation()
+
+func _on_child_exiting_tree(node):
+	update_navigation()

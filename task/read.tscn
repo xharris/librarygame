@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://bxv5rbx6nrgnk"]
+
+[ext_resource type="Script" path="res://task/read.gd" id="1_fcpfs"]
+
+[node name="Read" type="Node"]
+script = ExtResource("1_fcpfs")
+
+[node name="ReadTimer" type="Timer" parent="."]
+one_shot = true
+
+[connection signal="timeout" from="ReadTimer" to="." method="_on_read_timer_timeout"]

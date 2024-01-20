@@ -5,8 +5,8 @@ var fsm:ActorStateMachine
 var queue:Array[Task]
 
 func _enter_tree():
-	var parent = get_parent() as StateMachine
-	if parent is ActorStateMachine:
+	var parent = get_parent().find_child('ActorStateMachine') as ActorStateMachine
+	if parent:
 		fsm = parent
 		var children = get_children()
 		parent.add_states(children)

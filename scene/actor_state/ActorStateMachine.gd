@@ -6,11 +6,11 @@ extends StateMachine
 @export var animation: AnimationPlayer
 
 func get_task_manager() -> TaskManager:
-	return get_children().filter(func(s:Node): return s is TaskManager).front()
+	return get_parent().find_child('TaskManager') as TaskManager
 
 func _ready():
 	super._ready()
-	set_state('Idle')
+	set_state('Walk')
 
 func _on_add_state(node):
 	if node is Task:

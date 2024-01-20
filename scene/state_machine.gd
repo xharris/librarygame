@@ -9,11 +9,12 @@ var last_process_mode:Dictionary = {}
 var connections:Dictionary = {}
 
 signal add_state(node:State)
+signal change_state(node:State)
 
 func _disable_state(node:Node):
 	if not node is State:
 		return
-	remove_child.call_deferred(node)
+	remove_child(node)
 	last_process_mode[node.name] = node.process_mode
 	node.process_mode = Node.PROCESS_MODE_DISABLED
 	# disconnect signals
@@ -34,7 +35,7 @@ func _enable_state(node:Node):
 			var cal:Callable = connection.get('callable')
 			var flags:int = connection.get('flags')
 			sig.connect(cal, flags)
-	add_child.call_deferred(node)
+	add_child(node)
 
 func state_callv(method_name:String, args:Dictionary = {}, state:Node = current_state):
 	if state and state.has_method(method_name):
@@ -52,6 +53,7 @@ func set_state(state_name:String, args:Dictionary = {}):
 		current_state = next_state
 		current_state_name = current_state.name
 		_enable_state(current_state)
+		change_state.emit(current_state)
 		state_callv('enter', args)
 	else:
 		push_error('State "',state_name,'" not found in ',states.map(func(s:State):return s.name))

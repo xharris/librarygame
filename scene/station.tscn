@@ -1,10 +1,14 @@
-[gd_scene load_steps=4 format=3 uid="uid://daqdlgnvoww0t"]
+[gd_scene load_steps=5 format=3 uid="uid://daqdlgnvoww0t"]
 
 [ext_resource type="Script" path="res://scene/station.gd" id="1_kmw1x"]
 [ext_resource type="Texture2D" uid="uid://dwrtxvcmdead2" path="res://image/box.png" id="2_gicnx"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_uhb18"]
-radius = 8.0
+radius = 11.0
+
+[sub_resource type="NavigationPolygon" id="NavigationPolygon_b0itx"]
+outlines = Array[PackedVector2Array]([PackedVector2Array(0, 8, 14, 0, 0, -7, -14, 0)])
+source_geometry_group_name = &"navigation_polygon_source_group"
 
 [node name="Station" type="Area2D" groups=["station"]]
 collision_layer = 4
@@ -18,6 +22,11 @@ texture = ExtResource("2_gicnx")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, -8)
 shape = SubResource("CircleShape2D_uhb18")
+
+[node name="NavigationRegion2D" type="NavigationRegion2D" parent="."]
+navigation_polygon = SubResource("NavigationPolygon_b0itx")
+navigation_layers = 5
+enter_cost = 2.0
 
 [connection signal="body_entered" from="." to="." method="_on_body_entered"]
 [connection signal="body_exited" from="." to="." method="_on_body_exited"]

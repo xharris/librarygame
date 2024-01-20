@@ -4,7 +4,8 @@ enum LAYER {
 	_ZERO,
 	FLOOR,
 	WALL,
-	NO_IDLE_FLOOR
+	NO_IDLE_FLOOR,
+	ENTRANCE
 }
 
 func toggle_layers(nav_agent:NavigationAgent2D, layers:Array[LAYER], enable:bool):
