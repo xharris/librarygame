@@ -5,8 +5,10 @@
 [ext_resource type="PackedScene" uid="uid://bxv5rbx6nrgnk" path="res://task/read.tscn" id="3_uyntw"]
 
 [node name="Patron" type="Node2D"]
+y_sort_enabled = true
 
 [node name="Actor" parent="." instance=ExtResource("1_mtyag")]
+position = Vector2(0, -9)
 
 [node name="TaskManager" parent="Actor" instance=ExtResource("2_j4877")]
 

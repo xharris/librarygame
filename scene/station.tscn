@@ -10,6 +10,7 @@ outlines = Array[PackedVector2Array]([PackedVector2Array(0, 8, 14, 0, 0, -7, -14
 source_geometry_group_name = &"navigation_polygon_source_group"
 
 [node name="Station" type="Area2D" groups=["station"]]
+y_sort_enabled = true
 collision_layer = 4
 collision_mask = 2
 script = ExtResource("1_kmw1x")

@@ -210,6 +210,8 @@ libraries = {
 }
 
 [node name="SpriteDirection" type="Node2D" parent="."]
+y_sort_enabled = true
+position = Vector2(0, 6)
 
 [node name="Sprite" type="Node2D" parent="SpriteDirection"]
 position = Vector2(0, 4)
@@ -236,10 +238,9 @@ position = Vector2(0, -11)
 texture = ExtResource("14_gb18g")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, -1)
+position = Vector2(0, 7)
 rotation = 1.5708
 shape = SubResource("CapsuleShape2D_rr7n6")
-disabled = true
 
 [node name="ActorStateMachine" type="Node2D" parent="." node_paths=PackedStringArray("actor", "nav_agent", "animation")]
 script = ExtResource("2_rx4tf")
@@ -282,7 +283,6 @@ collision_layer = 2
 collision_mask = 4
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="ActorStateMachine/Sit/ChairDetection"]
-position = Vector2(0, -5)
 shape = SubResource("CircleShape2D_sj276")
 
 [node name="StoreItem" type="Node" parent="ActorStateMachine" node_paths=PackedStringArray("nav_agent", "actor")]

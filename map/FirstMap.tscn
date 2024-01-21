@@ -1,8 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://cfacs6nfw2h00"]
+[gd_scene load_steps=3 format=3 uid="uid://cfacs6nfw2h00"]
 
 [ext_resource type="PackedScene" uid="uid://d4aumh5ieaj1b" path="res://scene/map.tscn" id="1_4k65g"]
 [ext_resource type="Script" path="res://map/FirstMap.gd" id="1_jmgbv"]
-[ext_resource type="PackedScene" uid="uid://daqdlgnvoww0t" path="res://scene/station.tscn" id="3_bfggv"]
 
 [node name="FirstMap" type="Node2D"]
 script = ExtResource("1_jmgbv")
@@ -10,7 +9,5 @@ script = ExtResource("1_jmgbv")
 [node name="Map" parent="." instance=ExtResource("1_4k65g")]
 layer_1/tile_data = PackedInt32Array(-1, 0, 0, 65535, 0, 0, -2, 0, 0, -65537, 0, 0, -131073, 0, 0, -131072, 0, 0, -65536, 0, 0, 0, 0, 0, 131071, 0, 0, 131070, 2, 0, 196606, 2, 0, 262141, 4, 0)
 initial_spawn_count = 5
-
-[node name="Station" parent="Map" instance=ExtResource("3_bfggv")]
 
 [connection signal="spawn_patron" from="Map" to="." method="_on_map_spawn_patron"]
