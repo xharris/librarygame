@@ -28,7 +28,8 @@ func enter(args:Dictionary):
 		return item_not_found(happiness_loss)
 	# move to inventory
 	nav_agent.target_desired_distance = 20
-	nav_agent.target_position = found_inventory.node.global_position
+	if not actor.move_to(found_inventory.node.global_position):
+		_on_nav_target_reached()
 
 func _on_nav_target_reached():
 	if fsm.get_task_manager().start_next_task():

@@ -17,13 +17,13 @@ class RandomTile:
 	func map_to_global():
 		return tilemap.to_global(tilemap.map_to_local(cell))
 
-func get_random_tilemap_cell(filter: Callable = Callable()) -> RandomTile:
+func get_random_tilemap_cell(layer_name: String = 'map', filter: Callable = Callable()) -> RandomTile:
 	var tilemap := get_tree().get_nodes_in_group('tilemap').front() as Map
 	var rand_tile = RandomTile.new()
 	if tilemap:
-		var map_layer = get_layer_by_name(tilemap, 'map')
+		var layer = get_layer_by_name(tilemap, layer_name)
 		rand_tile.tilemap = tilemap
-		var cells = tilemap.get_used_cells(map_layer)
+		var cells = tilemap.get_used_cells(layer)
 		if filter.is_valid():
 			cells = cells.filter(filter)
 		rand_tile.cell = cells.pick_random()

@@ -10,6 +10,18 @@ var role = ActorHelper.ACTOR_ROLE.PATRON
 var inventory = InventoryHelper.Inventory.new(self)
 var move_speed = 50
 
+## Returns false if the target is too close
+func move_to(target:Vector2, speed:int = 50) -> bool:
+	if global_position.distance_to(target) <= 16:
+		return false
+	move_speed = speed
+	nav_agent.target_position = target
+	if not nav_agent.is_target_reachable():
+		nav_agent.target_position = global_position
+		return false
+	animation.play('walk')
+	return true	
+
 func stop_moving():
 	# TODO all @onready vars are NULL :\
 	velocity = Vector2.ZERO
@@ -31,7 +43,6 @@ func _ready():
 
 func _physics_process(delta):
 	move_and_slide()
-
 
 func _on_actor_state_machine_change_state(node):
 	stop_moving()

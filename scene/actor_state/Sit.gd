@@ -6,15 +6,39 @@ extends State
 @export var sprite: Node2D
 @export var animation: AnimationPlayer
 
+var sit_attempts = 3
 
 func get_distance(other:Node2D):
 	return body.global_position.distance_to(other.global_position)
 
+func find_seat():
+	# nowhere to sit
+	if sit_attempts <= 0:
+		return stop_and_sit()
+	# find nearest chair
+	var chair:Station = null
+	var chairs:Array[Station] = []
+	chairs.assign(get_tree().get_nodes_in_group('station').filter(func(n:Station):
+		return n.can_use() and n.type == Station.STATION_TYPE.SEAT)
+	)
+	chairs.sort_custom(func(a:Station,b:Station):return get_distance(a) < get_distance(b))
+	# go to chair
+	if chairs.size() and body.move_to((chairs.front() as Station).global_position):
+		return
+	# sit on the ground somewhere
+	var random_tile := TileMapHelper.get_random_tilemap_cell()
+	if random_tile.is_valid() and body.move_to(random_tile.map_to_global()):
+		return
+	sit_attempts -= 1
+	find_seat()
+
 func stop_and_sit(chair:Node2D = null):
 	# use chair if available
-	if chair is Station:
-		if chair.can_use() and chair.type == Station.STATION_TYPE.SEAT:
+	if chair is Station and (chair as Station).type == Station.STATION_TYPE.SEAT:
+		if chair.can_use():
 			chair.use(fsm.actor)
+		else:
+			return find_seat()
 	# sit
 	body.stop_moving()
 	animation.play('sit')
@@ -22,29 +46,18 @@ func stop_and_sit(chair:Node2D = null):
 	var task_man := fsm.get_task_manager() as TaskManager
 	if task_man and task_man.start_next_task():
 		return
-	else:
-		timer.start()
+	timer.start()
 
 func enter(_args:Dictionary):
 	nav_agent.target_desired_distance = 10
-	# find nearest chair
-	var chairs:Array[Station] = []
-	chairs.assign(get_tree().get_nodes_in_group('station').filter(func(n:Station):
-		return n.can_use() and n.type == Station.STATION_TYPE.SEAT)
-	)
-	chairs.sort_custom(func(a:Station,b:Station):return get_distance(a) < get_distance(b))
-	if chairs.size():
-		# go to chair
-		var chair := chairs.front() as Station
-		nav_agent.target_position = chair.global_position
-		animation.play('walk')
-	else:
-		# sit on the ground somewhere
-		var random_tile := TileMapHelper.get_random_tilemap_cell()
-		if not random_tile.is_valid():
-			return stop_and_sit()
-		nav_agent.target_position = random_tile.map_to_global()
-		animation.play('walk')
+	find_seat()
+
+func _process(delta):
+	if not nav_agent.is_navigation_finished():
+		if body.velocity != Vector2.ZERO:
+			animation.play('walk')
+		else:
+			animation.play('stand')
 
 func _physics_process(delta):
 	if not nav_agent.is_navigation_finished():

@@ -2,8 +2,9 @@
 
 [ext_resource type="Script" path="res://task/read.gd" id="1_fcpfs"]
 
-[node name="Read" type="Node"]
+[node name="Read" type="Node" node_paths=PackedStringArray("timer")]
 script = ExtResource("1_fcpfs")
+timer = NodePath("ReadTimer")
 
 [node name="ReadTimer" type="Timer" parent="."]
 one_shot = true

@@ -22,6 +22,7 @@ NavigationHelper="*res://navigation_helper.gd"
 ActorHelper="*res://actor_helper.gd"
 InventoryHelper="*res://inventory_helper.gd"
 Util="*res://util.gd"
+StationHelper="*res://station_helper.gd"
 
 [editor]
 

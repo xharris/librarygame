@@ -4,7 +4,6 @@
 [ext_resource type="Texture2D" uid="uid://dwrtxvcmdead2" path="res://image/box.png" id="2_gicnx"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_uhb18"]
-radius = 11.0
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_b0itx"]
 outlines = Array[PackedVector2Array]([PackedVector2Array(0, 8, 14, 0, 0, -7, -14, 0)])

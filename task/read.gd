@@ -1,6 +1,6 @@
 extends Task
 
-@onready var timer = $ReadTimer
+@export var timer:Timer
 
 func _init():
 	required_previous_state = ['Sit']

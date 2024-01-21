@@ -16,7 +16,8 @@ func pick_new_state():
 			# walk to a random spot
 			return fsm.set_state('Walk')
 		1:
-			# stand still
+			# do nothing
+			animation.play('stand')
 			timer.start(3)
 		2:
 			# perform a random task
@@ -27,7 +28,7 @@ func pick_new_state():
 	
 func enter(args:Dictionary):
 	nav_agent.target_desired_distance = 10
-	pick_new_state()
+	timer.start(3)
 
 func _on_navigation_agent_2d_target_reached():
 	body.stop_moving()

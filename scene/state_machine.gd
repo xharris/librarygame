@@ -42,9 +42,10 @@ func state_callv(method_name:String, args:Dictionary = {}, state:Node = current_
 		state.callv(method_name, [args])
 
 func set_state(state_name:String, args:Dictionary = {}):
-	print(name,'->',state_name,args)
+	print(get_parent(),name,'->',state_name,args)
 	# leave current state
 	if current_state:
+		change_state.emit(current_state)
 		state_callv('leave')
 		_disable_state(current_state)
 	# enter next state
@@ -53,7 +54,6 @@ func set_state(state_name:String, args:Dictionary = {}):
 		current_state = next_state
 		current_state_name = current_state.name
 		_enable_state(current_state)
-		change_state.emit(current_state)
 		state_callv('enter', args)
 	else:
 		push_error('State "',state_name,'" not found in ',states.map(func(s:State):return s.name))

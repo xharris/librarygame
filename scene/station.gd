@@ -6,11 +6,10 @@ enum STATION_TYPE {SEAT}
 @export var max_occupancy = 1
 @export var type:STATION_TYPE
 
-var occupied = false
 var users:Array[Node2D] = []
 
 func can_use():
-	return users.size() < max_occupancy and not occupied
+	return users.size() < max_occupancy
 
 func use(node:Node2D):
 	if type == STATION_TYPE.SEAT:
@@ -20,5 +19,8 @@ func use(node:Node2D):
 		node.scale.x = scale.x
 	users.append(node)
 
-func _on_body_exited(body):
-	users = users.filter(func(u:Node): return u != body)
+func done_using(node:Node2D):
+	users = users.filter(func(u:Node): return u != node)
+	
+func _ready():
+	add_to_group('station')
