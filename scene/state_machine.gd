@@ -1,6 +1,8 @@
 class_name StateMachine
 extends Node
 
+var log = Log.new()
+
 var initial_state: String
 var current_state: State
 var current_state_name = ''
@@ -42,7 +44,7 @@ func state_callv(method_name:String, args:Dictionary = {}, state:Node = current_
 		state.callv(method_name, [args])
 
 func set_state(state_name:String, args:Dictionary = {}):
-	print(get_parent(),name,'->',state_name,args)
+	log.debug('%s->%s%s',[get_parent().name,state_name,args])
 	# leave current state
 	if current_state:
 		change_state.emit(current_state)
@@ -56,7 +58,7 @@ func set_state(state_name:String, args:Dictionary = {}):
 		_enable_state(current_state)
 		state_callv('enter', args)
 	else:
-		push_error('State "',state_name,'" not found in ',states.map(func(s:State):return s.name))
+		log.error('State "%s" not found in %s',[state_name,states.map(func(s:State):return s.name)])
 	
 func add_states(new_states:Array[Node]):
 	for new_state in new_states:
@@ -64,7 +66,7 @@ func add_states(new_states:Array[Node]):
 			(new_state as Object).set('fsm', self)
 			_disable_state(new_state)
 			states.append(new_state)
-			print(name,'++',new_state.name)
+			log.debug('%s++%s',[get_parent().name,new_state.name])
 			add_state.emit(new_state)
 
 func _ready():

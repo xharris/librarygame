@@ -1,6 +1,8 @@
 class_name TaskManager
 extends Node
 
+var log = Log.new()
+
 var fsm:ActorStateMachine
 var queue:Array[Task]
 
@@ -19,7 +21,7 @@ func _get_needed_tasks():
 	for task in tasks:
 		if task.is_task_needed() and not queue.any(func(t:Task): return t == task):
 			if fsm:
-				print(fsm.name,"+!",task.name)
+				log.debug('%s+!%s', [fsm.name,task.name])
 			queue.append(task)
 
 ## returns true if a new task has been started

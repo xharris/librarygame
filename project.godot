@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="library"
-run/main_scene="res://map/FirstMap.tscn"
+run/main_scene="res://scene/play_screen.tscn"
 config/features=PackedStringArray("4.2", "Mobile")
 config/icon="res://icon.svg"
 
@@ -23,6 +23,8 @@ ActorHelper="*res://actor_helper.gd"
 InventoryHelper="*res://inventory_helper.gd"
 Util="*res://util.gd"
 StationHelper="*res://station_helper.gd"
+Global="*res://global.gd"
+Log="*res://log.gd"
 
 [editor]
 

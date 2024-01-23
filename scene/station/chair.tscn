@@ -1,0 +1,26 @@
+[gd_scene load_steps=4 format=3 uid="uid://bxm5sd1depqes"]
+
+[ext_resource type="PackedScene" uid="uid://daqdlgnvoww0t" path="res://scene/station.tscn" id="1_10ijf"]
+[ext_resource type="Texture2D" uid="uid://bnaspjbmiacqt" path="res://image/station/chair.png" id="2_pbtm8"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_we3vy"]
+radius = 7.0
+height = 24.0
+
+[node name="Chair" type="Node2D"]
+
+[node name="Station" parent="." node_paths=PackedStringArray("sprite") instance=ExtResource("1_10ijf")]
+title = "Chair"
+description = "Can seat 1 patron"
+flavor_text = "Not everyone likes to read while standing"
+sprite = NodePath("Sprite2D")
+sit_offset = Vector2(0, -6)
+
+[node name="Sprite2D" type="Sprite2D" parent="Station"]
+position = Vector2(0, -1)
+texture = ExtResource("2_pbtm8")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Station"]
+z_index = 1
+rotation = -1.57079
+shape = SubResource("CapsuleShape2D_we3vy")

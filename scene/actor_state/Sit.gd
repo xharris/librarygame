@@ -7,6 +7,7 @@ extends State
 @export var animation: AnimationPlayer
 
 var sit_attempts = 3
+var chair:Station
 
 func get_distance(other:Node2D):
 	return body.global_position.distance_to(other.global_position)
@@ -16,14 +17,14 @@ func find_seat():
 	if sit_attempts <= 0:
 		return stop_and_sit()
 	# find nearest chair
-	var chair:Station = null
 	var chairs:Array[Station] = []
 	chairs.assign(get_tree().get_nodes_in_group('station').filter(func(n:Station):
-		return n.can_use() and n.type == Station.STATION_TYPE.SEAT)
+		return n.can_use() and n.type == StationHelper.STATION_TYPE.SEAT)
 	)
 	chairs.sort_custom(func(a:Station,b:Station):return get_distance(a) < get_distance(b))
 	# go to chair
 	if chairs.size() and body.move_to((chairs.front() as Station).global_position):
+		chair = chairs.front()
 		return
 	# sit on the ground somewhere
 	var random_tile := TileMapHelper.get_random_tilemap_cell()
@@ -32,9 +33,9 @@ func find_seat():
 	sit_attempts -= 1
 	find_seat()
 
-func stop_and_sit(chair:Node2D = null):
+func stop_and_sit():
 	# use chair if available
-	if chair is Station and (chair as Station).type == Station.STATION_TYPE.SEAT:
+	if chair is Station and (chair as Station).type == StationHelper.STATION_TYPE.SEAT:
 		if chair.can_use():
 			chair.use(fsm.actor)
 		else:
@@ -52,6 +53,9 @@ func enter(_args:Dictionary):
 	nav_agent.target_desired_distance = 10
 	find_seat()
 
+func leave():
+	StationHelper.free_all_stations_by_type(fsm.actor, StationHelper.STATION_TYPE.SEAT)
+
 func _process(delta):
 	if not nav_agent.is_navigation_finished():
 		if body.velocity != Vector2.ZERO:
@@ -68,7 +72,8 @@ func _on_sit_timer_timeout():
 	fsm.set_state('Idle')
 
 func _on_chair_detection_area_entered(area):
-	stop_and_sit(area)
+	chair = area
+	stop_and_sit()
 
 func _on_navigation_agent_2d_target_reached():
 	stop_and_sit()

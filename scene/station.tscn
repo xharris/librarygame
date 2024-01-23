@@ -1,9 +1,6 @@
-[gd_scene load_steps=5 format=3 uid="uid://daqdlgnvoww0t"]
+[gd_scene load_steps=3 format=3 uid="uid://daqdlgnvoww0t"]
 
 [ext_resource type="Script" path="res://scene/station.gd" id="1_kmw1x"]
-[ext_resource type="Texture2D" uid="uid://dwrtxvcmdead2" path="res://image/box.png" id="2_gicnx"]
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_uhb18"]
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_b0itx"]
 outlines = Array[PackedVector2Array]([PackedVector2Array(0, 8, 14, 0, 0, -7, -14, 0)])
@@ -14,14 +11,6 @@ y_sort_enabled = true
 collision_layer = 4
 collision_mask = 2
 script = ExtResource("1_kmw1x")
-
-[node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(0, -9)
-texture = ExtResource("2_gicnx")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, -8)
-shape = SubResource("CircleShape2D_uhb18")
 
 [node name="NavigationRegion2D" type="NavigationRegion2D" parent="."]
 navigation_polygon = SubResource("NavigationPolygon_b0itx")

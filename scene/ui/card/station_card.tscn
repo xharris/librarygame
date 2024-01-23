@@ -1,0 +1,107 @@
+[gd_scene load_steps=6 format=3 uid="uid://wop0l75iqvv1"]
+
+[ext_resource type="Script" path="res://scene/ui/card/station_card.gd" id="1_d47mc"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3fk0j"]
+bg_color = Color(0.129412, 0.129412, 0.129412, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.619608, 0.619608, 0.619608, 1)
+shadow_color = Color(0.619608, 0.619608, 0.619608, 1)
+shadow_size = 1
+shadow_offset = Vector2(2, 2)
+
+[sub_resource type="FontVariation" id="FontVariation_b4g6r"]
+spacing_top = -2
+
+[sub_resource type="FontVariation" id="FontVariation_sxk2e"]
+spacing_top = -4
+spacing_bottom = -4
+
+[sub_resource type="FontVariation" id="FontVariation_kid30"]
+variation_transform = Transform2D(1, 0.3, 0, 1, 0, 0)
+
+[node name="Panel" type="PanelContainer" node_paths=PackedStringArray("title_label", "description_label", "flavor_text_label", "label_container", "label_super_container", "icon")]
+offset_right = 197.0
+offset_bottom = 66.0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+focus_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_3fk0j")
+script = ExtResource("1_d47mc")
+title_label = NodePath("HBoxContainer/MarginContainer/VBoxContainer/Title")
+description_label = NodePath("HBoxContainer/MarginContainer/VBoxContainer/Description")
+flavor_text_label = NodePath("HBoxContainer/MarginContainer/VBoxContainer/FlavorText")
+label_container = NodePath("HBoxContainer/MarginContainer/VBoxContainer")
+label_super_container = NodePath("HBoxContainer/MarginContainer")
+icon = NodePath("HBoxContainer/AspectRatioContainer/Icon/SubViewport")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+stretch_mode = 1
+
+[node name="Icon" type="SubViewportContainer" parent="HBoxContainer/AspectRatioContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="SubViewport" type="SubViewport" parent="HBoxContainer/AspectRatioContainer/Icon"]
+disable_3d = true
+handle_input_locally = false
+size = Vector2i(64, 64)
+render_target_update_mode = 4
+
+[node name="Camera2D" type="Camera2D" parent="HBoxContainer/AspectRatioContainer/Icon/SubViewport"]
+
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer"]
+visible = false
+layout_mode = 2
+theme_override_constants/margin_left = 6
+theme_override_constants/margin_top = 6
+theme_override_constants/margin_right = 6
+theme_override_constants/margin_bottom = 6
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Title" type="RichTextLabel" parent="HBoxContainer/MarginContainer/VBoxContainer"]
+clip_contents = false
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+theme_override_fonts/normal_font = SubResource("FontVariation_b4g6r")
+text = "STATION NAME"
+fit_content = true
+scroll_active = false
+autowrap_mode = 0
+
+[node name="Description" type="RichTextLabel" parent="HBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_fonts/normal_font = SubResource("FontVariation_sxk2e")
+theme_override_font_sizes/normal_font_size = 12
+bbcode_enabled = true
+text = "DESCRIPTION"
+fit_content = true
+autowrap_mode = 0
+
+[node name="FlavorText" type="RichTextLabel" parent="HBoxContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/default_color = Color(1, 1, 1, 0.490196)
+theme_override_fonts/normal_font = SubResource("FontVariation_kid30")
+theme_override_font_sizes/normal_font_size = 10
+text = "FLAVOR TEXT"
+fit_content = true
+autowrap_mode = 0
+
+[connection signal="focus_entered" from="." to="." method="_on_focus_entered"]
+[connection signal="focus_exited" from="." to="." method="_on_focus_exited"]
+[connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]
+[connection signal="pressed" from="." to="." method="_on_pressed"]

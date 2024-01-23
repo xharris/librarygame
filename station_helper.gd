@@ -1,6 +1,6 @@
 extends Node
 
-enum STATION_TYPE {SEAT}
+enum STATION_TYPE {SEAT,STORAGE}
 
 func get_using(node:Node2D) -> Array[Station]:
 	var stations:Array[Station]

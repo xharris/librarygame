@@ -21,7 +21,7 @@ length = 0.001
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("SpriteDirection/Sprite:position")
+tracks/0/path = NodePath("SpriteTransform/Sprite:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -38,7 +38,7 @@ step = 0.05
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("SpriteDirection/Sprite/BirdFeet:animation")
+tracks/0/path = NodePath("SpriteTransform/Sprite/BirdFeet:animation")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -50,7 +50,7 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("SpriteDirection/Sprite:position")
+tracks/1/path = NodePath("SpriteTransform/Sprite:position")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
@@ -62,7 +62,7 @@ tracks/1/keys = {
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("SpriteDirection/Sprite:scale")
+tracks/2/path = NodePath("SpriteTransform/Sprite:scale")
 tracks/2/interp = 2
 tracks/2/loop_wrap = true
 tracks/2/keys = {
@@ -78,7 +78,7 @@ length = 0.001
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("SpriteDirection/Sprite/BirdFeet:animation")
+tracks/0/path = NodePath("SpriteTransform/Sprite/BirdFeet:animation")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -90,7 +90,7 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("SpriteDirection/Sprite:position")
+tracks/1/path = NodePath("SpriteTransform/Sprite:position")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
@@ -107,7 +107,7 @@ loop_mode = 1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("SpriteDirection/Sprite/BirdFeet:frame")
+tracks/0/path = NodePath("SpriteTransform/Sprite/BirdFeet:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -119,7 +119,7 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("SpriteDirection/Sprite:position")
+tracks/1/path = NodePath("SpriteTransform/Sprite:position")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
@@ -131,7 +131,7 @@ tracks/1/keys = {
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("SpriteDirection/Sprite/BirdFeet:animation")
+tracks/2/path = NodePath("SpriteTransform/Sprite/BirdFeet:animation")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
@@ -186,14 +186,14 @@ height = 2.0
 [sub_resource type="CircleShape2D" id="CircleShape2D_sj276"]
 radius = 3.0
 
-[node name="Actor" type="CharacterBody2D" node_paths=PackedStringArray("nav_agent", "sprite_direction", "animation") groups=["actor"]]
+[node name="Actor" type="CharacterBody2D" node_paths=PackedStringArray("nav_agent", "sprite_transform", "animation") groups=["actor"]]
 collision_layer = 2
 collision_mask = 3
 platform_floor_layers = 4294967292
 platform_wall_layers = 1
 script = ExtResource("1_td06u")
 nav_agent = NodePath("NavigationAgent2D")
-sprite_direction = NodePath("SpriteDirection")
+sprite_transform = NodePath("SpriteTransform")
 animation = NodePath("AnimationPlayer")
 
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
@@ -209,31 +209,31 @@ libraries = {
 "": SubResource("AnimationLibrary_i68tf")
 }
 
-[node name="SpriteDirection" type="Node2D" parent="."]
+[node name="SpriteTransform" type="Node2D" parent="."]
 y_sort_enabled = true
 position = Vector2(0, 6)
 
-[node name="Sprite" type="Node2D" parent="SpriteDirection"]
+[node name="Sprite" type="Node2D" parent="SpriteTransform"]
 position = Vector2(0, 4)
 
-[node name="BirdFill" type="Sprite2D" parent="SpriteDirection/Sprite"]
+[node name="BirdFill" type="Sprite2D" parent="SpriteTransform/Sprite"]
 position = Vector2(0, -11)
 texture = ExtResource("9_4iuug")
 
-[node name="BirdBase" type="Sprite2D" parent="SpriteDirection/Sprite"]
+[node name="BirdBase" type="Sprite2D" parent="SpriteTransform/Sprite"]
 position = Vector2(0, -11)
 texture = ExtResource("10_k2auc")
 
-[node name="BirdEyes" type="Sprite2D" parent="SpriteDirection/Sprite"]
+[node name="BirdEyes" type="Sprite2D" parent="SpriteTransform/Sprite"]
 position = Vector2(0, -11)
 texture = ExtResource("11_5gryt")
 
-[node name="BirdFeet" type="AnimatedSprite2D" parent="SpriteDirection/Sprite"]
+[node name="BirdFeet" type="AnimatedSprite2D" parent="SpriteTransform/Sprite"]
 position = Vector2(0, -11)
 sprite_frames = SubResource("SpriteFrames_apiia")
 animation = &"stand"
 
-[node name="BirdArm" type="Sprite2D" parent="SpriteDirection/Sprite"]
+[node name="BirdArm" type="Sprite2D" parent="SpriteTransform/Sprite"]
 position = Vector2(0, -11)
 texture = ExtResource("14_gb18g")
 
@@ -271,7 +271,7 @@ actor = NodePath("../..")
 script = ExtResource("7_cfde1")
 body = NodePath("../..")
 nav_agent = NodePath("../../NavigationAgent2D")
-sprite = NodePath("../../SpriteDirection/Sprite")
+sprite = NodePath("../../SpriteTransform/Sprite")
 animation = NodePath("../../AnimationPlayer")
 
 [node name="SitTimer" type="Timer" parent="ActorStateMachine/Sit"]
@@ -295,7 +295,7 @@ script = ExtResource("8_n5ehm")
 actor = NodePath("../..")
 nav_agent = NodePath("../../NavigationAgent2D")
 animation = NodePath("../../AnimationPlayer")
-sprite_direction = NodePath("../../SpriteDirection")
+sprite_direction = NodePath("../../SpriteTransform")
 
 [connection signal="target_reached" from="NavigationAgent2D" to="ActorStateMachine/Idle" method="_on_navigation_agent_2d_target_reached"]
 [connection signal="target_reached" from="NavigationAgent2D" to="ActorStateMachine/GetItem" method="_on_nav_target_reached"]

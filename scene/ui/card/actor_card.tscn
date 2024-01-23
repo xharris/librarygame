@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://csjhaqy5x7y6d"]
+
+[ext_resource type="Texture2D" uid="uid://dwrtxvcmdead2" path="res://image/station/box.png" id="1_ebkeh"]
+
+[node name="ActorCard" type="TextureButton"]
+texture_normal = ExtResource("1_ebkeh")

@@ -3,7 +3,7 @@ extends CharacterBody2D
 
 # TODO unable to use @onready (see todo in stop_moving method)
 @export var nav_agent:NavigationAgent2D # = $NavigationAgent2D
-@export var sprite_direction:Node2D # = $SpriteDirection
+@export var sprite_transform:Node2D # = $SpriteDirection
 @export var animation:AnimationPlayer # = $AnimationPlayer
 
 var role = ActorHelper.ACTOR_ROLE.PATRON
@@ -12,7 +12,7 @@ var move_speed = 50
 
 ## Returns false if the target is too close
 func move_to(target:Vector2, speed:int = 50) -> bool:
-	if global_position.distance_to(target) <= 16:
+	if global_position.distance_to(target) <= 8:
 		return false
 	move_speed = speed
 	nav_agent.target_position = target
@@ -36,7 +36,7 @@ func nav_move():
 func face_move_direction():
 	if velocity != Vector2.ZERO:
 		# face left/right
-		sprite_direction.scale.x = velocity.sign().x * -1
+		sprite_transform.scale.x = velocity.sign().x * -1
 
 func _ready():
 	add_to_group('actor')
