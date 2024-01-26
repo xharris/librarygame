@@ -11,6 +11,7 @@ extends Node2D
 var enabled = true
 
 var users:Array[Node2D] = []
+var inventory = InventoryHelper.Inventory.new(self)
 
 func can_use():
 	return users.size() < max_occupancy and enabled
@@ -28,6 +29,17 @@ func done_using(node:Node2D):
 	if node is Actor:
 		node.sprite_transform.position -= sit_offset
 	users = users.filter(func(u:Node): return u != node)
+	
+## Remove from map
+func remove():
+	# make users walk away
+	for user in users:
+		if user is Actor:
+			user.fsm.set_state('Walk')
+	# drop items on ground
+	for item in inventory.items:
+		inventory.drop_item(item)
+	get_parent().remove_child(self)
 	
 func _ready():
 	add_to_group('station')

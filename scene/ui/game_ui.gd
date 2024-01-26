@@ -11,7 +11,6 @@ var scn_actor_card := preload("res://scene/ui/card/actor_card.tscn")
 var scn_station_card := preload("res://scene/ui/card/small_card.tscn")
 
 var stations:Array[Node] = []
-var deleting = false
 
 signal add_station(type:StationHelper.STATION_TYPE)
 
@@ -94,6 +93,13 @@ func _on_place_object(event:InputEvent, global_position:Vector2, map_position:Ve
 		new_object.global_position = global_position
 		map.add_child(new_object)
 
+func _on_remove_object(event:InputEvent, global_position:Vector2, map_position:Vector2i, map:Map):
+	var stations = StationHelper.get_all()
+	for station in stations:
+		var station_coords = map.local_to_map(map.to_local(station.global_position))
+		if station_coords == map_position:
+			station.remove()
+
 func _on_add_station_pressed():
 	if clear_cards():
 		return
@@ -108,24 +114,19 @@ func _on_add_station_pressed():
 		button.focus_neighbor_top = last_card.get_path()
 		last_card.focus_neighbor_bottom = button.get_path()
 
-func _on_control_gui_input(event):
-	pass
-	# click outside
-	#if event is InputEventMouseButton:
-		#clear_cards()
-
 func _gui_input(event):
 	if event.is_action_pressed('cancel'):
 		clear_cards()
 
+var _on_remove_object_callback:Callable
 func _on_delete_pressed():
 	var map = TileMapHelper.get_current_map() as Map
 	if not map:
 		return
-	deleting = !deleting
-	if deleting:
-		clear_cards()
-		map.selection_enabled = true
-		map.tile_outline_color = Palette.Red500
-	else:
-		map.selection_enabled = false
+	clear_cards()
+	map.selection_enabled = true
+	map.tile_outline_color = Palette.Red500
+	if _on_remove_object_callback and map.tile_select.is_connected(_on_remove_object_callback):
+		map.tile_select.disconnect(_on_remove_object_callback)
+	_on_remove_object_callback = _on_remove_object.bind(map)
+	map.tile_select.connect(_on_remove_object_callback)

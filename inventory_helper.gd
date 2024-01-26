@@ -28,7 +28,8 @@ class Inventory extends Resource:
 	
 	var node:Node2D
 	var items:Array[Item]
-	var visible := false
+	var visible = false
+	var disabled = false
 
 	func _init(parent:Node):
 		node = parent
@@ -41,7 +42,8 @@ class Inventory extends Resource:
 		return items.any(func(i:Item): return i.type == type)
 		
 	func add_item(item:Item) -> Inventory:
-		items.append(item)
+		if not disabled:
+			items.append(item)
 		return self
 
 	func get_items(id:int) -> Array[Item]:
@@ -51,6 +53,8 @@ class Inventory extends Resource:
 	## Returns true on success
 	## TODO show item bouncing from this inventory to other one
 	func transfer_item(item_id:int, to:Inventory) -> bool:
+		if to.disabled:
+			return false
 		# find item
 		var found_item:Item
 		for item in items:

@@ -7,6 +7,7 @@ var l = Log.new()
 @export var nav_agent:NavigationAgent2D # = $NavigationAgent2D
 @export var sprite_transform:Node2D # = $SpriteDirection
 @export var animation:AnimationPlayer # = $AnimationPlayer
+@export var fsm:StateMachine
 
 var role = ActorHelper.ACTOR_ROLE.PATRON
 var inventory = InventoryHelper.Inventory.new(self)
