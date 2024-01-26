@@ -25,8 +25,9 @@ func get_random_tilemap_cell(layer_name: String = 'map', filter: Callable = Call
 		rand_tile.tilemap = tilemap
 		var cells = tilemap.get_used_cells(layer)
 		if filter.is_valid():
-			cells = cells.filter(filter)
-		rand_tile.cell = cells.pick_random()
+			cells = cells.filter(filter.bind(tilemap))
+		if cells.size():
+			rand_tile.cell = cells.pick_random()
 	return rand_tile
 
 func drop_item(inventory:InventoryHelper.Inventory, item_id:int):
@@ -48,3 +49,11 @@ func drop_item(inventory:InventoryHelper.Inventory, item_id:int):
 		tile_object.global_position = tilemap.to_global(tilemap.map_to_local(closest_cell))
 		tilemap.add_child(tile_object)
 		inventory.transfer_item(item_id, tile_object.inventory)
+
+func get_all_instances() -> Array[Map]:
+	var instances:Array[Map]
+	instances.assign(get_tree().get_nodes_in_group('tilemap'))
+	return instances
+
+func get_current_map() -> Map:
+	return get_tree().get_nodes_in_group('tilemap').front() as Map

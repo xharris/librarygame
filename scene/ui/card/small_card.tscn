@@ -1,6 +1,6 @@
 [gd_scene load_steps=6 format=3 uid="uid://wop0l75iqvv1"]
 
-[ext_resource type="Script" path="res://scene/ui/card/station_card.gd" id="1_d47mc"]
+[ext_resource type="Script" path="res://scene/ui/card/small_card.gd" id="1_laef3"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3fk0j"]
 bg_color = Color(0.129412, 0.129412, 0.129412, 1)
@@ -30,7 +30,7 @@ size_flags_horizontal = 0
 size_flags_vertical = 0
 focus_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_3fk0j")
-script = ExtResource("1_d47mc")
+script = ExtResource("1_laef3")
 title_label = NodePath("HBoxContainer/MarginContainer/VBoxContainer/Title")
 description_label = NodePath("HBoxContainer/MarginContainer/VBoxContainer/Description")
 flavor_text_label = NodePath("HBoxContainer/MarginContainer/VBoxContainer/FlavorText")
@@ -102,6 +102,7 @@ autowrap_mode = 0
 
 [connection signal="focus_entered" from="." to="." method="_on_focus_entered"]
 [connection signal="focus_exited" from="." to="." method="_on_focus_exited"]
+[connection signal="gui_input" from="." to="." method="_on_gui_input"]
 [connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
 [connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]
 [connection signal="pressed" from="." to="." method="_on_pressed"]

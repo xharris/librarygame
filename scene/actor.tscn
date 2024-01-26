@@ -267,12 +267,13 @@ script = ExtResource("6_bm4gi")
 nav_agent = NodePath("../../NavigationAgent2D")
 actor = NodePath("../..")
 
-[node name="Sit" type="Node2D" parent="ActorStateMachine" node_paths=PackedStringArray("body", "nav_agent", "sprite", "animation")]
+[node name="Sit" type="Node2D" parent="ActorStateMachine" node_paths=PackedStringArray("body", "nav_agent", "sprite", "animation", "chair_detection")]
 script = ExtResource("7_cfde1")
 body = NodePath("../..")
 nav_agent = NodePath("../../NavigationAgent2D")
 sprite = NodePath("../../SpriteTransform/Sprite")
 animation = NodePath("../../AnimationPlayer")
+chair_detection = NodePath("ChairDetection")
 
 [node name="SitTimer" type="Timer" parent="ActorStateMachine/Sit"]
 wait_time = 3.0
@@ -297,14 +298,14 @@ nav_agent = NodePath("../../NavigationAgent2D")
 animation = NodePath("../../AnimationPlayer")
 sprite_direction = NodePath("../../SpriteTransform")
 
+[connection signal="navigation_blocked" from="." to="ActorStateMachine/Sit" method="_on_actor_navigation_blocked"]
+[connection signal="navigation_blocked" from="." to="ActorStateMachine/Walk" method="_on_actor_navigation_blocked"]
+[connection signal="path_changed" from="NavigationAgent2D" to="." method="_on_navigation_agent_2d_path_changed"]
 [connection signal="target_reached" from="NavigationAgent2D" to="ActorStateMachine/Idle" method="_on_navigation_agent_2d_target_reached"]
 [connection signal="target_reached" from="NavigationAgent2D" to="ActorStateMachine/GetItem" method="_on_nav_target_reached"]
-[connection signal="target_reached" from="NavigationAgent2D" to="ActorStateMachine/Sit" method="_on_navigation_agent_2d_target_reached"]
 [connection signal="target_reached" from="NavigationAgent2D" to="ActorStateMachine/StoreItem" method="_on_nav_target_reached"]
 [connection signal="target_reached" from="NavigationAgent2D" to="ActorStateMachine/Walk" method="_on_navigation_agent_2d_target_reached"]
-[connection signal="velocity_computed" from="NavigationAgent2D" to="." method="_on_navigation_agent_2d_velocity_computed"]
 [connection signal="add_state" from="ActorStateMachine" to="ActorStateMachine" method="_on_add_state"]
 [connection signal="change_state" from="ActorStateMachine" to="." method="_on_actor_state_machine_change_state"]
 [connection signal="timeout" from="ActorStateMachine/Idle/IdleTimer" to="ActorStateMachine/Idle" method="pick_new_state"]
 [connection signal="timeout" from="ActorStateMachine/Sit/SitTimer" to="ActorStateMachine/Sit" method="_on_sit_timer_timeout"]
-[connection signal="area_entered" from="ActorStateMachine/Sit/ChairDetection" to="ActorStateMachine/Sit" method="_on_chair_detection_area_entered"]

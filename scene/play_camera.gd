@@ -1,6 +1,6 @@
 extends Camera2D
 
-var log = Log.new(Log.LEVEL.DEBUG)
+var l = Log.new(Log.LEVEL.DEBUG)
 
 var drag_mouse_start:Vector2
 var dragging = false

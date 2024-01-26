@@ -5,17 +5,15 @@ extends State
 @onready var timer = $SitTimer
 @export var sprite: Node2D
 @export var animation: AnimationPlayer
+@export var chair_detection:Area2D
 
-var sit_attempts = 3
-var chair:Station
+var l = Log.new()
+#var chair:Station
 
 func get_distance(other:Node2D):
 	return body.global_position.distance_to(other.global_position)
 
-func find_seat():
-	# nowhere to sit
-	if sit_attempts <= 0:
-		return stop_and_sit()
+func find_seat() -> Station:
 	# find nearest chair
 	var chairs:Array[Station] = []
 	chairs.assign(get_tree().get_nodes_in_group('station').filter(func(n:Station):
@@ -23,17 +21,20 @@ func find_seat():
 	)
 	chairs.sort_custom(func(a:Station,b:Station):return get_distance(a) < get_distance(b))
 	# go to chair
-	if chairs.size() and body.move_to((chairs.front() as Station).global_position):
-		chair = chairs.front()
-		return
+	if chairs.size():
+		var chair = chairs.front()
+		if body.move_to(chair.global_position):
+			nav_agent.target_reached.connect(_on_navigation_agent_2d_target_reached_station.bind(chair), CONNECT_ONE_SHOT)
+			return
 	# sit on the ground somewhere
 	var random_tile := TileMapHelper.get_random_tilemap_cell()
 	if random_tile.is_valid() and body.move_to(random_tile.map_to_global()):
+		nav_agent.target_reached.connect(_on_navigation_agent_2d_target_reached, CONNECT_ONE_SHOT)
 		return
-	sit_attempts -= 1
-	find_seat()
+	# nowhere to sit
+	return stop_and_sit()
 
-func stop_and_sit():
+func stop_and_sit(chair:Station = null):
 	# use chair if available
 	if chair is Station and (chair as Station).type == StationHelper.STATION_TYPE.SEAT:
 		if chair.can_use():
@@ -50,30 +51,17 @@ func stop_and_sit():
 	timer.start()
 
 func enter(_args:Dictionary):
-	nav_agent.target_desired_distance = 10
 	find_seat()
 
-func leave():
-	StationHelper.free_all_stations_by_type(fsm.actor, StationHelper.STATION_TYPE.SEAT)
-
-func _process(delta):
-	if not nav_agent.is_navigation_finished():
-		if body.velocity != Vector2.ZERO:
-			animation.play('walk')
-		else:
-			animation.play('stand')
-
-func _physics_process(delta):
-	if not nav_agent.is_navigation_finished():
-		body.nav_move()
-		body.face_move_direction()
-
 func _on_sit_timer_timeout():
-	fsm.set_state('Idle')
+	StationHelper.free_all_stations_by_type(fsm.actor, StationHelper.STATION_TYPE.SEAT)
+	fsm.set_state('Walk')
 
-func _on_chair_detection_area_entered(area):
-	chair = area
+func _on_navigation_agent_2d_target_reached_station(station:Station):
+	stop_and_sit(station)
+	
+func _on_navigation_agent_2d_target_reached():
 	stop_and_sit()
 
-func _on_navigation_agent_2d_target_reached():
+func _on_actor_navigation_blocked():
 	stop_and_sit()

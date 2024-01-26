@@ -12,4 +12,6 @@
 zoom = Vector2(2, 2)
 script = ExtResource("3_ntmc1")
 
-[node name="GameUi" parent="." instance=ExtResource("1_i01ed")]
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="GameUi" parent="CanvasLayer" instance=ExtResource("1_i01ed")]

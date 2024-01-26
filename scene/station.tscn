@@ -6,16 +6,11 @@
 outlines = Array[PackedVector2Array]([PackedVector2Array(0, 8, 14, 0, 0, -7, -14, 0)])
 source_geometry_group_name = &"navigation_polygon_source_group"
 
-[node name="Station" type="Area2D" groups=["station"]]
+[node name="Station" type="Node2D" groups=["station"]]
 y_sort_enabled = true
-collision_layer = 4
-collision_mask = 2
 script = ExtResource("1_kmw1x")
 
 [node name="NavigationRegion2D" type="NavigationRegion2D" parent="."]
 navigation_polygon = SubResource("NavigationPolygon_b0itx")
 navigation_layers = 5
 enter_cost = 2.0
-
-[connection signal="body_entered" from="." to="." method="_on_body_entered"]
-[connection signal="body_exited" from="." to="." method="_on_body_exited"]

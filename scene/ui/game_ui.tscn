@@ -2,18 +2,19 @@
 
 [ext_resource type="Script" path="res://scene/ui/game_ui.gd" id="1_ovqxb"]
 
-[node name="GameUi" type="CanvasLayer"]
-script = ExtResource("1_ovqxb")
-
-[node name="Control" type="Control" parent="."]
+[node name="GameUI" type="Control" node_paths=PackedStringArray("menu_buttons_container", "card_list")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+mouse_filter = 1
+script = ExtResource("1_ovqxb")
+menu_buttons_container = NodePath("MarginContainer/VBoxContainer/MenuButtons")
+card_list = NodePath("MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/CardList")
 
-[node name="MarginContainer" type="MarginContainer" parent="Control"]
+[node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -25,16 +26,16 @@ theme_override_constants/margin_top = 32
 theme_override_constants/margin_right = 32
 theme_override_constants/margin_bottom = 32
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Control/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = 32
 
-[node name="ScrollContainer" type="ScrollContainer" parent="Control/MarginContainer/VBoxContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 follow_focus = true
 
-[node name="MarginContainer" type="MarginContainer" parent="Control/MarginContainer/VBoxContainer/ScrollContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/ScrollContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 theme_override_constants/margin_left = 2
@@ -42,25 +43,31 @@ theme_override_constants/margin_top = 2
 theme_override_constants/margin_right = 2
 theme_override_constants/margin_bottom = 2
 
-[node name="CardList" type="VBoxContainer" parent="Control/MarginContainer/VBoxContainer/ScrollContainer/MarginContainer"]
+[node name="CardList" type="VBoxContainer" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = 6
 alignment = 2
 
-[node name="MenuButtons" type="HBoxContainer" parent="Control/MarginContainer/VBoxContainer"]
+[node name="MenuButtons" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 3
+size_flags_horizontal = 0
 size_flags_vertical = 8
+mouse_filter = 0
 theme_override_constants/separation = 32
 
-[node name="AddActor" type="Button" parent="Control/MarginContainer/VBoxContainer/MenuButtons"]
+[node name="AddActor" type="Button" parent="MarginContainer/VBoxContainer/MenuButtons"]
 layout_mode = 2
 text = "ACT"
 
-[node name="AddStation" type="Button" parent="Control/MarginContainer/VBoxContainer/MenuButtons"]
+[node name="AddStation" type="Button" parent="MarginContainer/VBoxContainer/MenuButtons"]
 layout_mode = 2
 text = "STA"
 
-[connection signal="gui_input" from="Control" to="." method="_on_control_gui_input"]
-[connection signal="pressed" from="Control/MarginContainer/VBoxContainer/MenuButtons/AddActor" to="." method="_on_add_actor_pressed"]
-[connection signal="pressed" from="Control/MarginContainer/VBoxContainer/MenuButtons/AddStation" to="." method="_on_add_station_pressed"]
+[node name="Delete" type="Button" parent="MarginContainer/VBoxContainer/MenuButtons"]
+layout_mode = 2
+text = "DEL"
+
+[connection signal="gui_input" from="." to="." method="_on_control_gui_input"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/MenuButtons/AddActor" to="." method="_on_add_actor_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/MenuButtons/AddStation" to="." method="_on_add_station_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/MenuButtons/Delete" to="." method="_on_delete_pressed"]

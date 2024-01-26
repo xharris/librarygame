@@ -1,7 +1,7 @@
-class_name StationCard
-extends Control
+class_name SmallCard
+extends PanelContainer
 
-var log = Log.new(Log.LEVEL.DEBUG)
+var l = Log.new(Log.LEVEL.DEBUG)
 
 @export var title_label:RichTextLabel
 @export var description_label:RichTextLabel
@@ -10,7 +10,7 @@ var log = Log.new(Log.LEVEL.DEBUG)
 @export var label_super_container:Container
 @export var icon:SubViewport
 
-signal pressed
+signal pressed(event:InputEvent)
 
 func _update_label_visibility(text:String, label:Control):
 	label.visible = text.length() > 0
@@ -30,6 +30,7 @@ func set_flavor_text(flavor_text:String = ''):
 func set_icon(node:Node2D = null):
 	icon.get_parent().visible = node != null
 	if node:
+		node.position = Vector2.ZERO
 		icon.add_child(node)
 		#icon.get_camera_2d().global_position = node.global_position
 		#await RenderingServer.frame_post_draw
@@ -37,9 +38,6 @@ func set_icon(node:Node2D = null):
 	else:
 		for child in icon.get_children():
 			icon.remove_child(child)
-
-func _on_pressed():
-	pressed.emit()
 
 func _on_mouse_entered():
 	label_super_container.visible = true
@@ -52,3 +50,7 @@ func _on_focus_entered():
 
 func _on_focus_exited():
 	label_super_container.visible = false
+
+func _on_gui_input(event:InputEvent):
+	if event.is_action_pressed('select'):
+		pressed.emit(event)

@@ -1,5 +1,5 @@
 class_name Station
-extends Area2D
+extends Node2D
 
 @export var title:String = 'Station'
 @export var description:String = ''
@@ -8,22 +8,20 @@ extends Area2D
 @export var max_occupancy = 1
 @export var type:StationHelper.STATION_TYPE
 @export var sit_offset = Vector2(0,1)
+var enabled = true
 
 var users:Array[Node2D] = []
 
 func can_use():
-	return users.size() < max_occupancy
+	return users.size() < max_occupancy and enabled
 
 func use(node:Node2D):
 	if type == StationHelper.STATION_TYPE.SEAT:
+		node.global_position = global_position
 		if node is Actor:
-			node.global_position = global_position
 			node.sprite_transform.position += sit_offset
-		else:
-			node.global_position = global_position
-		if node is CharacterBody2D:
-			node.velocity = Vector2.ZERO
-		node.scale.x = scale.x
+			node.stop_moving()
+			# TODO face same direction as station
 	users.append(node)
 
 func done_using(node:Node2D):

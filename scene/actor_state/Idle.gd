@@ -29,8 +29,3 @@ func pick_new_state():
 func enter(args:Dictionary):
 	nav_agent.target_desired_distance = 10
 	timer.start(3)
-
-func _on_navigation_agent_2d_target_reached():
-	body.stop_moving()
-	animation.play('stand')
-	pick_new_state()

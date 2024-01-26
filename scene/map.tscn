@@ -1,9 +1,10 @@
-[gd_scene load_steps=3 format=3 uid="uid://d4aumh5ieaj1b"]
+[gd_scene load_steps=4 format=3 uid="uid://d4aumh5ieaj1b"]
 
 [ext_resource type="TileSet" uid="uid://cdnnwkki8p3gv" path="res://tilemap/tile.tres" id="1_yvi12"]
 [ext_resource type="Script" path="res://scene/map.gd" id="2_e8glo"]
+[ext_resource type="Texture2D" uid="uid://c8cmi7f6ija80" path="res://image/map_select.png" id="3_2e6rc"]
 
-[node name="TileMap" type="TileMap"]
+[node name="TileMap" type="TileMap" node_paths=PackedStringArray("tile_outline")]
 y_sort_enabled = true
 tile_set = ExtResource("1_yvi12")
 format = 2
@@ -16,9 +17,15 @@ layer_1/y_sort_origin = -20
 layer_1/navigation_enabled = false
 layer_1/tile_data = PackedInt32Array()
 script = ExtResource("2_e8glo")
+tile_outline = NodePath("TileSelect")
 
 [node name="PatronSpawner" type="Timer" parent="."]
 autostart = true
+
+[node name="TileSelect" type="Sprite2D" parent="."]
+z_index = 2
+texture = ExtResource("3_2e6rc")
+offset = Vector2(0, -2)
 
 [connection signal="child_entered_tree" from="." to="." method="_on_child_entered_tree"]
 [connection signal="child_exiting_tree" from="." to="." method="_on_child_exiting_tree"]

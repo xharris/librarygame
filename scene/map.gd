@@ -1,14 +1,18 @@
 class_name Map
 extends TileMap
 
-var scn_patron = preload("res://scene/patron.tscn")
+var scn_patron = preload("res://scene/actor/patron.tscn")
 var inventories = {}
 var nav_layer_name = 'nav'
 ## increases when average happiness increases
 var spawn_chance = 0 # / 100 
+var selection_enabled = false
 @export var initial_spawn_count = 3
+@export var tile_outline:Sprite2D
+var tile_outline_color:Color
 
 signal spawn_patron(actor:Actor)
+signal tile_select(event:InputEvent, global_position:Vector2, map_position:Vector2i)
 
 func get_tile_coords(tile_name:String):
 	var layers = get_layers_count()
@@ -28,7 +32,7 @@ func is_walkable(coords:Vector2i):
 	if get_child_count() == 0:
 		return false
 	for c in get_children():
-		if c is Station:
+		if c is Station or c.get_children().any(func(c2:Node):return c2 is Station):
 			var c_position = local_to_map(to_local(c.global_position))
 			if c_position == coords:
 				return false
@@ -42,19 +46,22 @@ func update_navigation():
 	var tile_coords = get_used_cells(tile_layer)
 	for coords in tile_coords:
 		var has_nav = get_cell_source_id(nav_layer, coords) > -1
-		var is_walkable = is_walkable(coords)
-		if not has_nav and is_walkable:
+		var walkable = is_walkable(coords)
+		if not has_nav and walkable:
 			# add nav cell
 			set_cell(nav_layer, coords, 1, Vector2i.ZERO)
-		if has_nav and not is_walkable:
+		if has_nav and not walkable:
 			# remove nav cell
 			erase_cell(nav_layer, coords)
-
-func _enter_tree():
-	add_to_group('tilemap')
+	
+func is_tile_empty(coords:Vector2i) -> bool:
+	var nav_layer = TileMapHelper.get_layer_by_name(self, 'nav')
+	return get_used_cells(nav_layer).any(func(c:Vector2i):return c == coords)
 	
 func _ready():
+	add_to_group('tilemap')
 	update_navigation()
+	tile_outline_color = Palette.Blue500
 
 func _on_patron_spawner_timeout():
 	var entrance_tiles = get_tile_coords('entrance')
@@ -71,3 +78,23 @@ func _on_child_entered_tree(node):
 
 func _on_child_exiting_tree(node):
 	update_navigation()
+
+func _unhandled_input(event):
+	var mouse_position = get_viewport().get_camera_2d().get_global_mouse_position()
+	var tile_coords = local_to_map(to_local(mouse_position))
+	if selection_enabled and get_cell_tile_data(TileMapHelper.get_layer_by_name(self, 'map'), tile_coords):
+		tile_outline.visible = true
+		var tile_global_position = to_global(map_to_local(tile_coords))
+		# move tile selection outline
+		if event is InputEventMouseMotion:
+			tile_outline.position = tile_global_position
+		# click (tile selection)
+		if event.is_action_pressed('select'):
+			tile_select.emit(event, tile_global_position, tile_coords)
+	else:
+		tile_outline.visible = false
+
+func _process(delta):
+	if not selection_enabled:
+		tile_outline.visible = false
+	tile_outline.modulate = tile_outline.modulate.lerp(tile_outline_color, delta * 5)

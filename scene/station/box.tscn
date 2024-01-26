@@ -6,6 +6,7 @@
 [node name="Box" type="Node2D"]
 
 [node name="Station" parent="." node_paths=PackedStringArray("sprite") instance=ExtResource("1_lmio4")]
+position = Vector2(0, 8)
 title = "Box"
 description = "Item storage for anyone"
 sprite = NodePath("Sprite2D")
