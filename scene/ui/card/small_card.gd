@@ -8,6 +8,7 @@ var l = Log.new(Log.LEVEL.DEBUG)
 @export var flavor_text_label:RichTextLabel
 @export var label_container:Container
 @export var label_super_container:Container
+@export var title_description_separator:Control
 @export var icon:SubViewport
 
 signal pressed(event:InputEvent)
@@ -18,10 +19,12 @@ func _update_label_visibility(text:String, label:Control):
 func set_title(title:String = ''):
 	title_label.text = title
 	_update_label_visibility(title, title_label)
+	title_description_separator.visible = title_label.visible and description_label.visible
 
 func set_description(description:String = ''):
 	description_label.text = description
-	_update_label_visibility(description, description_label)
+	_update_label_visibility(description,description_label)
+	title_description_separator.visible = title_label.visible and description_label.visible
 
 func set_flavor_text(flavor_text:String = ''):
 	flavor_text_label.text = flavor_text
@@ -30,8 +33,10 @@ func set_flavor_text(flavor_text:String = ''):
 func set_icon(node:Node2D = null):
 	icon.get_parent().visible = node != null
 	if node:
-		node.position = Vector2.ZERO
 		icon.add_child(node)
+		if 'center' in node and node.center is Marker2D:
+			var camera = $HBoxContainer/AspectRatioContainer/Icon/SubViewport/Camera2D
+			camera.global_position = node.center.global_position
 		#icon.get_camera_2d().global_position = node.global_position
 		#await RenderingServer.frame_post_draw
 		#(icon as SubViewport).get_texture()

@@ -1,10 +1,13 @@
-[gd_scene load_steps=3 format=3 uid="uid://0eigapackogc"]
+[gd_scene load_steps=4 format=3 uid="uid://0eigapackogc"]
 
 [ext_resource type="Script" path="res://scene/storage.gd" id="1_ob2bm"]
 [ext_resource type="Texture2D" uid="uid://dwrtxvcmdead2" path="res://image/station/box.png" id="2_7spyr"]
+[ext_resource type="PackedScene" uid="uid://bnwrpj700kxul" path="res://scene/inventory.tscn" id="3_cqjjx"]
 
-[node name="Storage" type="Node2D" groups=["storage"]]
+[node name="Storage" type="Node2D" node_paths=PackedStringArray("sprite") groups=["storage"]]
 script = ExtResource("1_ob2bm")
+sprite = NodePath("Sprite2D")
+type = 1
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 position = Vector2(0, -9)
@@ -14,3 +17,5 @@ texture = ExtResource("2_7spyr")
 
 [node name="CollisionShape2D" type="CollisionPolygon2D" parent="StaticBody2D"]
 polygon = PackedVector2Array(-16, 0, 0, -9, 16, 0, 0, 9)
+
+[node name="Inventory" parent="." instance=ExtResource("3_cqjjx")]

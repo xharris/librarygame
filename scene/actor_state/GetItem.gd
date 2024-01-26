@@ -3,8 +3,8 @@ extends State
 @export var nav_agent: NavigationAgent2D
 @export var actor: Actor
 
-var item:InventoryHelper.Item
-var found_inventory:InventoryHelper.Inventory
+var item:Item
+var found_inventory:Inventory
 
 func item_not_found(happiness_loss:int):
 	# TODO lose happiness
@@ -15,14 +15,14 @@ func enter(args:Dictionary):
 	var happiness_loss := args.get('happiness_loss', 0) as int
 	
 	actor.move_speed = 50
-	item = InventoryHelper.find_item(item_filter) as InventoryHelper.Item
+	item = Item.find_item(item_filter)
 	if not item:
 		return item_not_found(happiness_loss)
 	# find inventory (that doesnt belong to a actor) containing item
 	found_inventory = (
-		InventoryHelper.find_inventory_with_item(item.id)
-		.filter(func(i:InventoryHelper.Inventory): return not i.node.is_in_group('actor'))
-		.front() as InventoryHelper.Inventory
+		Inventory.find_inventory_with_item(item.id)
+		.filter(func(i:Inventory): return not i.node.is_in_group('actor'))
+		.front() as Inventory
 	)
 	if not found_inventory:
 		return item_not_found(happiness_loss)

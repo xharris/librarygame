@@ -6,13 +6,13 @@ func _init():
 	required_previous_state = ['Sit']
 
 func is_task_needed() -> bool:
-	return actor.inventory.has_item_type(InventoryHelper.ITEM_TYPE.BOOK)
+	return actor.inventory.has_item_type(Item.ITEM_TYPE.BOOK)
 	
 func enter(args:Dictionary):
-	if not actor.inventory.has_item_type(InventoryHelper.ITEM_TYPE.BOOK):
+	if not actor.inventory.has_item_type(Item.ITEM_TYPE.BOOK):
 		# go get a book
 		return fsm.set_state('GetItem', { 
-			item_filter=func(item:InventoryHelper.Item): return item.type == InventoryHelper.ITEM_TYPE.BOOK 
+			item_filter=func(item:Item): return item.type == Item.ITEM_TYPE.BOOK 
 		})
 	# stop and read for a while
 	actor.stop_moving()

@@ -14,16 +14,16 @@ shadow_size = 1
 shadow_offset = Vector2(2, 2)
 
 [sub_resource type="FontVariation" id="FontVariation_b4g6r"]
-spacing_top = -2
+variation_embolden = 0.5
 
 [sub_resource type="FontVariation" id="FontVariation_sxk2e"]
-spacing_top = -4
-spacing_bottom = -4
 
 [sub_resource type="FontVariation" id="FontVariation_kid30"]
 variation_transform = Transform2D(1, 0.3, 0, 1, 0, 0)
+spacing_top = -2
+spacing_bottom = -2
 
-[node name="Panel" type="PanelContainer" node_paths=PackedStringArray("title_label", "description_label", "flavor_text_label", "label_container", "label_super_container", "icon")]
+[node name="Panel" type="PanelContainer" node_paths=PackedStringArray("title_label", "description_label", "flavor_text_label", "label_container", "label_super_container", "title_description_separator", "icon")]
 offset_right = 197.0
 offset_bottom = 66.0
 size_flags_horizontal = 0
@@ -31,11 +31,12 @@ size_flags_vertical = 0
 focus_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_3fk0j")
 script = ExtResource("1_laef3")
-title_label = NodePath("HBoxContainer/MarginContainer/VBoxContainer/Title")
-description_label = NodePath("HBoxContainer/MarginContainer/VBoxContainer/Description")
-flavor_text_label = NodePath("HBoxContainer/MarginContainer/VBoxContainer/FlavorText")
-label_container = NodePath("HBoxContainer/MarginContainer/VBoxContainer")
-label_super_container = NodePath("HBoxContainer/MarginContainer")
+title_label = NodePath("HBoxContainer/LabelSuperContainer/VBoxContainer/HBoxContainer/Title")
+description_label = NodePath("HBoxContainer/LabelSuperContainer/VBoxContainer/HBoxContainer/Description")
+flavor_text_label = NodePath("HBoxContainer/LabelSuperContainer/VBoxContainer/FlavorText")
+label_container = NodePath("HBoxContainer/LabelSuperContainer/VBoxContainer")
+label_super_container = NodePath("HBoxContainer/LabelSuperContainer")
+title_description_separator = NodePath("HBoxContainer/LabelSuperContainer/VBoxContainer/HBoxContainer/ColorRect")
 icon = NodePath("HBoxContainer/AspectRatioContainer/Icon/SubViewport")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
@@ -45,7 +46,6 @@ theme_override_constants/separation = 0
 [node name="AspectRatioContainer" type="AspectRatioContainer" parent="HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
-stretch_mode = 1
 
 [node name="Icon" type="SubViewportContainer" parent="HBoxContainer/AspectRatioContainer"]
 layout_mode = 2
@@ -54,12 +54,12 @@ size_flags_horizontal = 3
 [node name="SubViewport" type="SubViewport" parent="HBoxContainer/AspectRatioContainer/Icon"]
 disable_3d = true
 handle_input_locally = false
-size = Vector2i(64, 64)
+size = Vector2i(64, 48)
 render_target_update_mode = 4
 
 [node name="Camera2D" type="Camera2D" parent="HBoxContainer/AspectRatioContainer/Icon/SubViewport"]
 
-[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer"]
+[node name="LabelSuperContainer" type="MarginContainer" parent="HBoxContainer"]
 visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 6
@@ -67,31 +67,45 @@ theme_override_constants/margin_top = 6
 theme_override_constants/margin_right = 6
 theme_override_constants/margin_bottom = 6
 
-[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/LabelSuperContainer"]
 layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
 theme_override_constants/separation = 4
 
-[node name="Title" type="RichTextLabel" parent="HBoxContainer/MarginContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/LabelSuperContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 4
+
+[node name="Title" type="RichTextLabel" parent="HBoxContainer/LabelSuperContainer/VBoxContainer/HBoxContainer"]
 clip_contents = false
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 4
 theme_override_fonts/normal_font = SubResource("FontVariation_b4g6r")
+theme_override_font_sizes/normal_font_size = 14
 text = "STATION NAME"
 fit_content = true
 scroll_active = false
 autowrap_mode = 0
 
-[node name="Description" type="RichTextLabel" parent="HBoxContainer/MarginContainer/VBoxContainer"]
+[node name="ColorRect" type="ColorRect" parent="HBoxContainer/LabelSuperContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(2, 2)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="Description" type="RichTextLabel" parent="HBoxContainer/LabelSuperContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 theme_override_fonts/normal_font = SubResource("FontVariation_sxk2e")
-theme_override_font_sizes/normal_font_size = 12
+theme_override_font_sizes/normal_font_size = 14
 bbcode_enabled = true
 text = "DESCRIPTION"
 fit_content = true
 autowrap_mode = 0
 
-[node name="FlavorText" type="RichTextLabel" parent="HBoxContainer/MarginContainer/VBoxContainer"]
+[node name="FlavorText" type="RichTextLabel" parent="HBoxContainer/LabelSuperContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_colors/default_color = Color(1, 1, 1, 0.490196)
 theme_override_fonts/normal_font = SubResource("FontVariation_kid30")

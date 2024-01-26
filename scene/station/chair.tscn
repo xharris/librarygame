@@ -4,16 +4,18 @@
 [ext_resource type="Texture2D" uid="uid://bnaspjbmiacqt" path="res://image/station/chair.png" id="2_pbtm8"]
 
 [node name="Chair" type="Node2D"]
-position = Vector2(0, -16)
 
-[node name="Station" parent="." node_paths=PackedStringArray("sprite") instance=ExtResource("1_10ijf")]
-position = Vector2(0, 9)
+[node name="Station" parent="." node_paths=PackedStringArray("sprite", "center") instance=ExtResource("1_10ijf")]
+y_sort_enabled = false
 title = "Chair"
 description = "Can seat 1 patron"
 flavor_text = "Not everyone likes to read while standing"
 sprite = NodePath("Sprite2D")
-sit_offset = Vector2(0, -14)
+center = NodePath("Center")
 
 [node name="Sprite2D" type="Sprite2D" parent="Station"]
-position = Vector2(0, -10)
 texture = ExtResource("2_pbtm8")
+offset = Vector2(0, -9)
+
+[node name="Center" type="Marker2D" parent="Station"]
+position = Vector2(0, -13)

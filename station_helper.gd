@@ -4,7 +4,7 @@ enum STATION_TYPE {SEAT,STORAGE}
 
 func get_using(node:Node2D) -> Array[Station]:
 	var stations:Array[Station]
-	stations.assign(get_tree().get_nodes_in_group('station').filter(func(s:Station):return s.users.has(node)))
+	stations.assign(get_tree().get_nodes_in_group(Station.GROUP).filter(func(s:Station):return s.users.has(node)))
 	return stations
 
 func free_all_stations_by_type(node:Node2D, type:STATION_TYPE):
@@ -14,5 +14,5 @@ func free_all_stations_by_type(node:Node2D, type:STATION_TYPE):
 
 func get_all() -> Array[Station]:
 	var stations:Array[Station]
-	stations.assign(get_tree().get_nodes_in_group('station') as Array[Station])
+	stations.assign(get_tree().get_nodes_in_group(Station.GROUP) as Array[Station])
 	return stations

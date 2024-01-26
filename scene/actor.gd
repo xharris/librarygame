@@ -8,9 +8,9 @@ var l = Log.new()
 @export var sprite_transform:Node2D # = $SpriteDirection
 @export var animation:AnimationPlayer # = $AnimationPlayer
 @export var fsm:StateMachine
+@export var inventory:Inventory
 
 var role = ActorHelper.ACTOR_ROLE.PATRON
-var inventory = InventoryHelper.Inventory.new(self)
 var move_speed = 50
 var _needs_to_stop_moving = false
 

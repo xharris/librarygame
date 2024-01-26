@@ -1,12 +1,13 @@
-class_name TileObject
+class_name MapTile
 extends Node2D
 
-var inventory := InventoryHelper.Inventory.new(self)
+static var GROUP = 'maptile'
+
 var cell:Vector2i
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass # Replace with function body.
+	add_to_group(GROUP)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.

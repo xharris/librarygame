@@ -1,6 +1,12 @@
-extends Node2D
-
-var inventory = InventoryHelper.Inventory.new(self)
+extends Station
 
 func _ready():
-	inventory.add_item(InventoryHelper.Item.create_from_id(1))
+	var inventory = $Inventory
+	inventory.add_item(Item.create_from_id(1))
+
+func remove():
+	var inventory = $Inventory
+	# drop items on ground
+	for item in inventory.items:
+		inventory.drop_item(item)
+	super()

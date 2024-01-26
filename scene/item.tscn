@@ -1,0 +1,11 @@
+[gd_scene load_steps=3 format=3 uid="uid://dfj0p5j0acmhx"]
+
+[ext_resource type="Script" path="res://scene/item.gd" id="1_pjfbc"]
+[ext_resource type="Texture2D" uid="uid://dwrtxvcmdead2" path="res://image/station/box.png" id="1_rh1hi"]
+
+[node name="Item" type="Node2D"]
+script = ExtResource("1_pjfbc")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("1_rh1hi")

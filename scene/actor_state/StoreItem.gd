@@ -3,8 +3,8 @@ extends State
 @export var nav_agent: NavigationAgent2D
 @export var actor: Actor
 
-var item:InventoryHelper.Item
-var found_inventory:InventoryHelper.Inventory
+var item:Item
+var found_inventory:Inventory
 
 func enter(args:Dictionary):
 	var item_id := args.get('item_id') as int
@@ -14,7 +14,7 @@ func enter(args:Dictionary):
 	if not item:
 		return fsm.set_state('Idle')
 	# find inventory (that doesnt belong to a actor) containing item
-	found_inventory = InventoryHelper.get_closest_inventory(actor)
+	found_inventory = Inventory.find_closest(actor)
 	if not found_inventory:
 		actor.inventory.drop_item(item)
 		return fsm.set_state('Idle')
@@ -24,7 +24,7 @@ func enter(args:Dictionary):
 		_on_nav_target_reached()
 
 func _on_nav_target_reached():
-	if item.type == InventoryHelper.ITEM_TYPE.BOOK and actor.has_item(item.id):
+	if item.type == Item.ITEM_TYPE.BOOK and actor.has_item(item.id):
 		actor.transfer_item(item.id, found_inventory.inventory)
 	fsm.set_state('Idle')
 
