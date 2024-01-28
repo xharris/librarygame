@@ -3,14 +3,18 @@ extends CharacterBody2D
 
 var l = Log.new()
 
+enum ACTOR_ROLE {PATRON,LIBRARIAN,SECURITY,JANITOR}
+enum ACTOR_MOOD {NONE,HAPPY,SAD,ANGRY}
+
 # TODO unable to use @onready (see todo in stop_moving method)
-@export var nav_agent:NavigationAgent2D # = $NavigationAgent2D
-@export var sprite_transform:Node2D # = $SpriteDirection
-@export var animation:AnimationPlayer # = $AnimationPlayer
-@export var fsm:StateMachine
+@export var nav_agent:NavigationAgent2D
+@export var sprite_transform:Node2D
+@export var animation:AnimationPlayer
+@export var fsm:ActorStateMachine 
 @export var inventory:Inventory
 
-var role = ActorHelper.ACTOR_ROLE.PATRON
+var role:ACTOR_ROLE = ACTOR_ROLE.PATRON
+var mood:ACTOR_MOOD = ACTOR_MOOD.NONE
 var move_speed = 50
 var _needs_to_stop_moving = false
 

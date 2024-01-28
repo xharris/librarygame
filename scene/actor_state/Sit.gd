@@ -2,7 +2,7 @@ extends State
 
 @export var body: Actor
 @export var nav_agent: NavigationAgent2D
-@onready var timer = $SitTimer
+@onready var timer:Timer = $SitTimer
 @export var sprite: Node2D
 @export var animation: AnimationPlayer
 @export var chair_detection:Area2D

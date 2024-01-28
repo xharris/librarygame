@@ -1,6 +1,5 @@
 extends State
 
-@export var actor: Actor
 @export var nav_agent: NavigationAgent2D
 @export var animation: AnimationPlayer
 @export var sprite_direction: Node2D
@@ -16,13 +15,13 @@ func enter(args:Dictionary):
 	## Only pick a neighboring tile when choosing a random tile
 	var only_neighbors := args.get("only_neighbors", false) as bool
 
-	StationHelper.free_all_stations_by_type(actor, StationHelper.STATION_TYPE.SEAT)	
+	StationHelper.free_all_stations_by_type(fsm.actor, StationHelper.STATION_TYPE.SEAT)	
 	# walk to given target
-	if target != fsm.actor.global_position and actor.move_to(target, 25):
+	if target != fsm.actor.global_position and fsm.actor.move_to(target, 25):
 		return
-	# walk to a random spot
+	# walk to a random spot 
 	var random_cell := TileMapHelper.get_random_tilemap_cell('nav', _only_neighboring.bind(target) if only_neighbors else Callable())
-	if random_cell.is_valid() and actor.move_to(random_cell.map_to_global()):
+	if random_cell.is_valid() and fsm.actor.move_to(random_cell.map_to_global()):
 		is_random_spot = true
 		NavigationHelper.toggle_layers(nav_agent, [NavigationHelper.LAYER.NO_IDLE_FLOOR, NavigationHelper.LAYER.ENTRANCE], true)
 		return
@@ -32,7 +31,7 @@ func leave():
 	if is_random_spot:
 		is_random_spot = false
 		NavigationHelper.toggle_layers(nav_agent, [NavigationHelper.LAYER.NO_IDLE_FLOOR, NavigationHelper.LAYER.ENTRANCE], false)
-	actor.stop_moving()
+	fsm.actor.stop_moving()
 	animation.play('stand')
 		
 func _on_navigation_agent_2d_target_reached():

@@ -11,9 +11,7 @@ func is_task_needed() -> bool:
 func enter(args:Dictionary):
 	if not actor.inventory.has_item_type(Item.ITEM_TYPE.BOOK):
 		# go get a book
-		return fsm.set_state('GetItem', { 
-			item_filter=func(item:Item): return item.type == Item.ITEM_TYPE.BOOK 
-		})
+		return fsm.set_state('GetItem', { item_filter=func(item:Item): return item.type == Item.ITEM_TYPE.BOOK })
 	# stop and read for a while
 	actor.stop_moving()
 	if animation.current_animation != 'sit':
@@ -24,4 +22,8 @@ func _on_read_timer_timeout():
 	# TODO change to StoreItem
 	# TODO if patron has a library card, chance of StoreItem/leaving with item
 	StationHelper.free_all_stations_by_type(fsm.actor, StationHelper.STATION_TYPE.SEAT)
-	fsm.set_state('Walk')
+	var item = actor.inventory.items.pick_random()
+	if item:
+		fsm.set_state('StoreItem', { item_id=item.id })
+	else:
+		fsm.set_state('Walk')

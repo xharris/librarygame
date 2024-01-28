@@ -16,7 +16,7 @@ func enter(args:Dictionary):
 	# find inventory (that doesnt belong to a actor) containing item
 	found_inventory = Inventory.find_closest(actor)
 	if not found_inventory:
-		actor.inventory.drop_item(item)
+		actor.inventory.drop_item(item_id)
 		return fsm.set_state('Idle')
 	# move to inventory
 	nav_agent.target_desired_distance = 20

@@ -17,7 +17,7 @@ var node:Node2D
 var items:Array[Item]
 var disabled = false
 
-func _ready():
+func _enter_tree():
 	node = get_parent()
 	instances.append(self)
 
@@ -52,7 +52,20 @@ func transfer_item(item_id:int, to:Inventory) -> bool:
 	to.items.append(found_item)
 	return true
 	
-## TODO add inventory for nearest tile on current map, move item to tile's inventory
-## TODO visually place item on the tile
-func drop_item(item:Item):
-	var drop_position = node.global_position
+## Returns true if item was succesfully dropped
+func drop_item(item_id:int):
+	var map := TileMapHelper.get_current_map() as Map
+	if not map:
+		return false
+	var node_cell = map.map_to_local(map.to_local(node.global_position))
+	# Get MapTile at node (if it exists)
+	var map_tiles = get_tree().get_nodes_in_group(MapTile.GROUP).filter(func(m:MapTile):return m.cell == node_cell)
+	var map_tile:MapTile
+	if map_tiles.size():
+		map_tile = map_tiles.front()
+	if not map_tile:
+		# Create a new map tile under the node
+		map_tile = MapTile.new()
+		map_tile.global_position = map.to_global(map.map_to_local(node_cell))
+		map.add_child(map_tile)
+	return transfer_item(item_id, map_tile.inventory)

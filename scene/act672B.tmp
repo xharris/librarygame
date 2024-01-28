@@ -245,8 +245,6 @@ position = Vector2(0, 7)
 rotation = 1.5708
 shape = SubResource("CapsuleShape2D_rr7n6")
 
-[node name="Inventory" parent="." instance=ExtResource("16_e6b7f")]
-
 [node name="ActorStateMachine" type="Node2D" parent="." node_paths=PackedStringArray("actor", "nav_agent", "animation")]
 script = ExtResource("2_rx4tf")
 actor = NodePath("..")
@@ -269,6 +267,8 @@ nav_agent = NodePath("../../NavigationAgent2D")
 
 [node name="GetItem" type="Node" parent="ActorStateMachine"]
 script = ExtResource("6_bm4gi")
+nav_agent = null
+actor = null
 
 [node name="Sit" type="Node2D" parent="ActorStateMachine" node_paths=PackedStringArray("body", "nav_agent", "sprite", "animation", "chair_detection")]
 script = ExtResource("7_cfde1")
@@ -294,12 +294,17 @@ script = ExtResource("8_ielna")
 nav_agent = NodePath("../../NavigationAgent2D")
 actor = NodePath("../..")
 
-[node name="Walk" type="Node" parent="ActorStateMachine" node_paths=PackedStringArray("nav_agent", "animation", "sprite_direction")]
+[node name="Walk" type="Node" parent="ActorStateMachine" node_paths=PackedStringArray("actor", "nav_agent", "animation", "sprite_direction")]
 script = ExtResource("8_n5ehm")
+actor = NodePath("../..")
 nav_agent = NodePath("../../NavigationAgent2D")
 animation = NodePath("../../AnimationPlayer")
 sprite_direction = NodePath("../../SpriteTransform")
 
+[node name="Inventory" parent="." instance=ExtResource("16_e6b7f")]
+
+[connection signal="navigation_blocked" from="." to="ActorStateMachine/Sit" method="_on_actor_navigation_blocked"]
+[connection signal="navigation_blocked" from="." to="ActorStateMachine/Walk" method="_on_actor_navigation_blocked"]
 [connection signal="path_changed" from="NavigationAgent2D" to="." method="_on_navigation_agent_2d_path_changed"]
 [connection signal="target_reached" from="NavigationAgent2D" to="ActorStateMachine/Idle" method="_on_navigation_agent_2d_target_reached"]
 [connection signal="target_reached" from="NavigationAgent2D" to="ActorStateMachine/GetItem" method="_on_nav_target_reached"]

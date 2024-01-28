@@ -3,7 +3,7 @@ extends State
 @export var body: Actor
 @export var nav_agent: NavigationAgent2D
 @export var animation: AnimationPlayer
-@onready var timer = $IdleTimer
+@onready var timer:Timer = $IdleTimer
 
 func pick_new_state():
 	# finish tasks
