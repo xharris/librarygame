@@ -4,6 +4,7 @@ extends StateMachine
 @export var actor: Actor
 @export var nav_agent: NavigationAgent2D
 @export var animation: AnimationPlayer
+@export var inventory: Inventory
 
 func get_task_manager() -> TaskManager:
 	return get_parent().find_child('TaskManager') as TaskManager

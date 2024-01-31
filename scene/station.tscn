@@ -1,10 +1,77 @@
-[gd_scene load_steps=3 format=3 uid="uid://daqdlgnvoww0t"]
+[gd_scene load_steps=8 format=3 uid="uid://daqdlgnvoww0t"]
 
 [ext_resource type="Script" path="res://scene/station.gd" id="1_kmw1x"]
+[ext_resource type="PackedScene" uid="uid://bnwrpj700kxul" path="res://scene/inventory.tscn" id="2_g14xj"]
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_b0itx"]
 outlines = Array[PackedVector2Array]([PackedVector2Array(0, 8, 14, 0, 0, -7, -14, 0)])
 source_geometry_group_name = &"navigation_polygon_source_group"
+
+[sub_resource type="Animation" id="Animation_toy6c"]
+resource_name = "transfer"
+loop_mode = 1
+step = 0.25
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:skew")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.25, 0.5, 0.75, 1),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [0.0, 0.0698132, 0.0, -0.0698132, 0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.25, 0.5, 0.75, 1),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Vector2(0, -9), Vector2(2, -9), Vector2(0, -9), Vector2(-2, -9), Vector2(0, -9)]
+}
+
+[sub_resource type="Animation" id="Animation_bdpt4"]
+resource_name = "get_item"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5, 1),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(1, 1), Vector2(0.8, 0.8), Vector2(1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_fx8b0"]
+resource_name = "store_item"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.5, 1),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector2(1, 1), Vector2(1.2, 1.2), Vector2(1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_cf1o2"]
+_data = {
+"get_item": SubResource("Animation_bdpt4"),
+"store_item": SubResource("Animation_fx8b0"),
+"transfer": SubResource("Animation_toy6c")
+}
 
 [node name="Station" type="Node2D" groups=["station"]]
 y_sort_enabled = true
@@ -14,3 +81,14 @@ script = ExtResource("1_kmw1x")
 navigation_polygon = SubResource("NavigationPolygon_b0itx")
 navigation_layers = 5
 enter_cost = 2.0
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_cf1o2")
+}
+speed_scale = 5.0
+
+[node name="Inventory" parent="." instance=ExtResource("2_g14xj")]
+
+[connection signal="item_removed" from="Inventory" to="." method="_on_inventory_item_removed"]
+[connection signal="item_stored" from="Inventory" to="." method="_on_inventory_item_stored"]

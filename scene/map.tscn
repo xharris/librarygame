@@ -23,6 +23,7 @@ tile_outline = NodePath("TileSelect")
 autostart = true
 
 [node name="TileSelect" type="Sprite2D" parent="."]
+visible = false
 z_index = 2
 texture = ExtResource("3_2e6rc")
 offset = Vector2(0, -2)

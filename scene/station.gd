@@ -4,6 +4,8 @@ extends Node2D
 var l = Log.new()
 static var GROUP = 'station'
 
+@onready var animation:AnimationPlayer = $AnimationPlayer
+@onready var inventory:Inventory = $Inventory
 @export var title:String = 'Station'
 @export var description:String = ''
 @export var flavor_text:String = ''
@@ -46,3 +48,9 @@ func remove():
 	
 func _ready():
 	add_to_group(GROUP)
+
+func _on_inventory_item_stored(item:Item):
+	animation.play('store_item')
+
+func _on_inventory_item_removed(item:Item):
+	animation.play('get_item')

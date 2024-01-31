@@ -1,5 +1,7 @@
 extends State
 
+var l = Log.new(Log.LEVEL.DEBUG)
+
 @export var nav_agent: NavigationAgent2D
 @export var animation: AnimationPlayer
 @export var sprite_direction: Node2D
@@ -12,6 +14,7 @@ func _only_neighboring(cell:Vector2i, map:Map, target:Vector2):
 
 func enter(args:Dictionary):
 	var target := args.get('target', fsm.actor.global_position) as Vector2
+	
 	## Only pick a neighboring tile when choosing a random tile
 	var only_neighbors := args.get("only_neighbors", false) as bool
 
@@ -21,7 +24,9 @@ func enter(args:Dictionary):
 		return
 	# walk to a random spot 
 	var random_cell := TileMapHelper.get_random_tilemap_cell('nav', _only_neighboring.bind(target) if only_neighbors else Callable())
-	if random_cell.is_valid() and fsm.actor.move_to(random_cell.map_to_global()):
+	if random_cell.is_valid() and \
+		random_cell.map_to_global() != fsm.actor.global_position and \
+		fsm.actor.move_to(random_cell.map_to_global()):
 		is_random_spot = true
 		NavigationHelper.toggle_layers(nav_agent, [NavigationHelper.LAYER.NO_IDLE_FLOOR, NavigationHelper.LAYER.ENTRANCE], true)
 		return

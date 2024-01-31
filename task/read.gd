@@ -1,12 +1,14 @@
+class_name Read
 extends Task
 
 @export var timer:Timer
+var book_list:Array[int]
 
 func _init():
 	required_previous_state = ['Sit']
 
 func is_task_needed() -> bool:
-	return actor.inventory.has_item_type(Item.ITEM_TYPE.BOOK)
+	return book_list.size() > 0
 	
 func enter(args:Dictionary):
 	if not actor.inventory.has_item_type(Item.ITEM_TYPE.BOOK):
@@ -18,11 +20,14 @@ func enter(args:Dictionary):
 		animation.play('sit')
 	timer.start(3)
 
+func leave():
+	animation.play('stand')
+
 func _on_read_timer_timeout():
 	# TODO change to StoreItem
 	# TODO if patron has a library card, chance of StoreItem/leaving with item
 	StationHelper.free_all_stations_by_type(fsm.actor, StationHelper.STATION_TYPE.SEAT)
-	var item = actor.inventory.items.pick_random()
+	var item:Item = fsm.inventory.get_all_items().pick_random()
 	if item:
 		fsm.set_state('StoreItem', { item_id=item.id })
 	else:

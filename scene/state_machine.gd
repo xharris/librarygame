@@ -84,5 +84,9 @@ func add_states(new_states:Array[Node]):
 			l.debug('%s++%s',[get_parent(),new_state.name])
 			add_state.emit(new_state)
 
+func find_state(state_name:String) -> State:
+	var found = states.filter(func(s:State): return s.name == state_name)
+	return found.front()
+
 func _ready():
 	add_states(get_children())

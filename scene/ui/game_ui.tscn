@@ -1,8 +1,9 @@
-[gd_scene load_steps=2 format=3 uid="uid://dwy4j6424166b"]
+[gd_scene load_steps=3 format=3 uid="uid://dwy4j6424166b"]
 
 [ext_resource type="Script" path="res://scene/ui/game_ui.gd" id="1_ovqxb"]
+[ext_resource type="PackedScene" uid="uid://cx3c7v8mgjrnr" path="res://scene/ui/add_resource_button.tscn" id="2_pa2x6"]
 
-[node name="GameUI" type="Control" node_paths=PackedStringArray("menu_buttons_container", "card_list")]
+[node name="GameUI" type="Control"]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -11,8 +12,6 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
 script = ExtResource("1_ovqxb")
-menu_buttons_container = NodePath("MarginContainer/VBoxContainer/MenuButtons")
-card_list = NodePath("MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/CardList")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1
@@ -55,19 +54,21 @@ size_flags_vertical = 8
 mouse_filter = 0
 theme_override_constants/separation = 32
 
-[node name="AddActor" type="Button" parent="MarginContainer/VBoxContainer/MenuButtons"]
+[node name="AddActor" parent="MarginContainer/VBoxContainer/MenuButtons" node_paths=PackedStringArray("card_container") instance=ExtResource("2_pa2x6")]
 layout_mode = 2
 text = "ACT"
+resource_path = "res://scene/actors"
+card_container = NodePath("../../ScrollContainer/MarginContainer/CardList")
 
-[node name="AddStation" type="Button" parent="MarginContainer/VBoxContainer/MenuButtons"]
+[node name="AddStation" parent="MarginContainer/VBoxContainer/MenuButtons" node_paths=PackedStringArray("card_container") instance=ExtResource("2_pa2x6")]
 layout_mode = 2
 text = "STA"
+resource_path = "res://scene/station"
+card_container = NodePath("../../ScrollContainer/MarginContainer/CardList")
 
 [node name="Delete" type="Button" parent="MarginContainer/VBoxContainer/MenuButtons"]
 layout_mode = 2
 text = "DEL"
 
 [connection signal="gui_input" from="." to="." method="_on_control_gui_input"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/MenuButtons/AddActor" to="." method="_on_add_actor_pressed"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/MenuButtons/AddStation" to="." method="_on_add_station_pressed"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/MenuButtons/Delete" to="." method="_on_delete_pressed"]

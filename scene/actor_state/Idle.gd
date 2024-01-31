@@ -1,6 +1,6 @@
 extends State
 
-@export var body: Actor
+@export var actor: Actor
 @export var nav_agent: NavigationAgent2D
 @export var animation: AnimationPlayer
 @onready var timer:Timer = $IdleTimer
@@ -27,5 +27,6 @@ func pick_new_state():
 			return fsm.set_state('Sit')
 	
 func enter(args:Dictionary):
-	nav_agent.target_desired_distance = 10
+	actor.stop_moving()
+	animation.play('stand')
 	timer.start(3)

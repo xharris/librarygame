@@ -8,7 +8,6 @@ extends State
 @export var chair_detection:Area2D
 
 var l = Log.new()
-#var chair:Station
 
 func get_distance(other:Node2D):
 	return body.global_position.distance_to(other.global_position)
@@ -16,7 +15,7 @@ func get_distance(other:Node2D):
 func find_seat() -> Station:
 	# find nearest chair
 	var chairs:Array[Station] = []
-	chairs.assign(get_tree().get_nodes_in_group(Station.GROUP).filter(func(n:Station):
+	chairs.assign(StationHelper.get_all().filter(func(n:Station):
 		return n.can_use() and n.type == StationHelper.STATION_TYPE.SEAT)
 	)
 	chairs.sort_custom(func(a:Station,b:Station):return get_distance(a) < get_distance(b))

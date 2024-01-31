@@ -11,7 +11,7 @@ var l = Log.new(Log.LEVEL.DEBUG)
 @export var title_description_separator:Control
 @export var icon:SubViewport
 
-signal pressed(event:InputEvent)
+signal pressed(event:InputEvent)	
 
 func _update_label_visibility(text:String, label:Control):
 	label.visible = text.length() > 0
@@ -43,6 +43,23 @@ func set_icon(node:Node2D = null):
 	else:
 		for child in icon.get_children():
 			icon.remove_child(child)
+
+func config(object:Node2D):
+	var child = object.find_child('Station') 
+	if not child:
+		child = object.find_child('Actor')
+	if child:
+		if 'title' in child:
+			set_title(child.title)
+		if 'description' in child:
+			set_description(child.description)
+		if 'flavor_text' in child:
+			set_flavor_text(child.flavor_text)
+		var icon = child.duplicate()
+		if icon is Station:
+			icon.enabled = false
+		set_icon(icon)
+	mouse_filter = Control.MOUSE_FILTER_STOP
 
 func _on_mouse_entered():
 	label_super_container.visible = true

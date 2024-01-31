@@ -10,8 +10,8 @@ enum ACTOR_MOOD {NONE,HAPPY,SAD,ANGRY}
 @export var nav_agent:NavigationAgent2D
 @export var sprite_transform:Node2D
 @export var animation:AnimationPlayer
-@export var fsm:ActorStateMachine 
-@export var inventory:Inventory
+@export var fsm:ActorStateMachine
+@onready var inventory := $Inventory
 
 var role:ACTOR_ROLE = ACTOR_ROLE.PATRON
 var mood:ACTOR_MOOD = ACTOR_MOOD.NONE
@@ -23,13 +23,13 @@ signal navigation_blocked
 ## Returns false if the target is too close
 func move_to(target:Vector2, speed:int = 50, target_distance:int = 15) -> bool:
 	nav_agent.target_desired_distance = target_distance
-	l.debug('move_to %s',[target])
+	l.debug('move_to from %s to %s',[global_position, target])
 	move_speed = speed
 	nav_agent.target_position = target
 	#if not nav_agent.is_target_reachable():
 		#nav_agent.target_position = global_position
 		#return false
-	return true	
+	return true
 
 func stop_moving():
 	velocity = Vector2.ZERO
