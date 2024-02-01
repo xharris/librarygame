@@ -14,6 +14,7 @@ static var GROUP = 'station'
 @export var type:StationHelper.STATION_TYPE
 @export var center:Node2D
 var enabled = true
+@export var has_inventory:bool = false
 
 var users:Array[Node2D] = []
 
@@ -48,6 +49,10 @@ func remove():
 	
 func _ready():
 	add_to_group(GROUP)
+
+func _process(delta):
+	if center:
+		inventory.position = center.position
 
 func _on_inventory_item_stored(item:Item):
 	animation.play('store_item')

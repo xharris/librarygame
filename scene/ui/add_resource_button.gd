@@ -16,6 +16,7 @@ func _on_place_object(event:InputEvent, global_position:Vector2, map_position:Ve
 		new_object.global_position = global_position
 		map.add_child(new_object)
 
+var _last_place_object:Callable
 func _on_card_pressed(event:InputEvent, object:Node2D):
 	clear_cards.emit()
 	selected_resource = object
@@ -24,7 +25,10 @@ func _on_card_pressed(event:InputEvent, object:Node2D):
 		return
 	map.selection_enabled = true
 	map.tile_outline_color = Palette.Blue500
-	map.tile_select.connect(_on_place_object.bind(map, object))
+	if _last_place_object:
+		map.tile_select.disconnect(_last_place_object)
+	_last_place_object = _on_place_object.bind(map, object)
+	map.tile_select.connect(_last_place_object)
 
 func get_resources(value:String = resource_path):
 	# Gather available scenes

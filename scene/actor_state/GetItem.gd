@@ -15,8 +15,7 @@ func item_not_found(happiness_loss:int):
 func item_got():
 	if fsm.get_task_manager().start_next_task():
 		return
-	else:
-		fsm.set_state('Walk')
+	fsm.set_state('Walk')
 
 func enter(args:Dictionary):
 	var item_filter := args.get('item_filter', Global.CALLABLE_TRUE) as Callable

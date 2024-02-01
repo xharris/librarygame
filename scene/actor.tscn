@@ -245,6 +245,7 @@ rotation = 1.5708
 shape = SubResource("CapsuleShape2D_rr7n6")
 
 [node name="Inventory" parent="." instance=ExtResource("16_e6b7f")]
+visible = false
 
 [node name="ActorStateMachine" type="Node2D" parent="." node_paths=PackedStringArray("actor", "nav_agent", "animation", "inventory")]
 script = ExtResource("2_rx4tf")
@@ -303,9 +304,11 @@ nav_agent = NodePath("../../NavigationAgent2D")
 animation = NodePath("../../AnimationPlayer")
 sprite_direction = NodePath("../../SpriteTransform")
 
+[connection signal="navigation_blocked" from="." to="ActorStateMachine/StoreItem" method="_on_actor_navigation_blocked"]
 [connection signal="path_changed" from="NavigationAgent2D" to="." method="_on_navigation_agent_2d_path_changed"]
 [connection signal="target_reached" from="NavigationAgent2D" to="ActorStateMachine/Idle" method="_on_navigation_agent_2d_target_reached"]
 [connection signal="target_reached" from="NavigationAgent2D" to="ActorStateMachine/GetItem" method="_on_nav_target_reached"]
+[connection signal="target_reached" from="NavigationAgent2D" to="ActorStateMachine/Sit" method="_on_navigation_agent_2d_target_reached"]
 [connection signal="target_reached" from="NavigationAgent2D" to="ActorStateMachine/StoreItem" method="_on_nav_target_reached"]
 [connection signal="target_reached" from="NavigationAgent2D" to="ActorStateMachine/Walk" method="_on_navigation_agent_2d_target_reached"]
 [connection signal="add_state" from="ActorStateMachine" to="ActorStateMachine" method="_on_add_state"]

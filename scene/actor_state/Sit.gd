@@ -7,6 +7,8 @@ extends State
 @export var animation: AnimationPlayer
 @export var chair_detection:Area2D
 
+var chair:Station
+
 var l = Log.new()
 
 func get_distance(other:Node2D):
@@ -21,14 +23,12 @@ func find_seat() -> Station:
 	chairs.sort_custom(func(a:Station,b:Station):return get_distance(a) < get_distance(b))
 	# go to chair
 	if chairs.size():
-		var chair = chairs.front()
+		chair = chairs.front()
 		if body.move_to(chair.global_position):
-			nav_agent.target_reached.connect(_on_navigation_agent_2d_target_reached_station.bind(chair), CONNECT_ONE_SHOT)
 			return
 	# sit on the ground somewhere
 	var random_tile := TileMapHelper.get_random_tilemap_cell()
 	if random_tile.is_valid() and body.move_to(random_tile.map_to_global()):
-		nav_agent.target_reached.connect(_on_navigation_agent_2d_target_reached, CONNECT_ONE_SHOT)
 		return
 	# nowhere to sit
 	return stop_and_sit()
@@ -38,6 +38,7 @@ func stop_and_sit(chair:Station = null):
 	if chair is Station and (chair as Station).type == StationHelper.STATION_TYPE.SEAT:
 		if chair.can_use():
 			chair.use(fsm.actor)
+			chair = null
 		else:
 			return find_seat()
 	# sit
@@ -52,12 +53,12 @@ func stop_and_sit(chair:Station = null):
 func enter(_args:Dictionary):
 	find_seat()
 
+func leave():
+	chair = null
+
 func _on_sit_timer_timeout():
 	StationHelper.free_all_stations_by_type(fsm.actor, StationHelper.STATION_TYPE.SEAT)
 	fsm.set_state('Walk')
-
-func _on_navigation_agent_2d_target_reached_station(station:Station):
-	stop_and_sit(station)
 	
 func _on_navigation_agent_2d_target_reached():
 	stop_and_sit()

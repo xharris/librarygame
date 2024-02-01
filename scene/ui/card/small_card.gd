@@ -58,6 +58,8 @@ func config(object:Node2D):
 		var icon = child.duplicate()
 		if icon is Station:
 			icon.enabled = false
+		if icon is Actor:
+			icon.process_mode = Node.PROCESS_MODE_DISABLED
 		set_icon(icon)
 	mouse_filter = Control.MOUSE_FILTER_STOP
 

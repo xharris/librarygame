@@ -2,9 +2,6 @@ extends Control
 
 var l = Log.new(Log.LEVEL.DEBUG)
 
-var STATION_PATH = 'res://scene/station'
-var ACTOR_PATH = 'res://scene/actors'
-
 @onready var menu_buttons_container := $MarginContainer/VBoxContainer/MenuButtons
 @onready var card_list := $MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/CardList
 

@@ -21,14 +21,17 @@ func enter(args:Dictionary):
 		return fsm.set_state('Idle')
 	# move to inventory
 	if not actor.move_to(found_inventory.node.global_position):
-		_on_nav_target_reached()
+		fsm.set_state('Walk')
 
 func leave():
 	item = null
 	found_inventory = null
 
 func _on_nav_target_reached():
-	if item.type == Item.ITEM_TYPE.BOOK and inventory.has_item(item.id):
+	if inventory.has_item(item.id):
 		inventory.transfer_item(item.id, found_inventory)
 	fsm.set_state('Walk')
 
+func _on_actor_navigation_blocked():
+	inventory.drop_item(item.id)
+	fsm.set_state('Walk')

@@ -13,9 +13,14 @@ flavor_text = "Not everyone likes to read while standing"
 sprite = NodePath("Sprite2D")
 center = NodePath("Center")
 
+[node name="Inventory" parent="Station" index="2"]
+disabled = true
+
 [node name="Sprite2D" type="Sprite2D" parent="Station"]
 texture = ExtResource("2_pbtm8")
 offset = Vector2(0, -9)
 
 [node name="Center" type="Marker2D" parent="Station"]
 position = Vector2(0, -13)
+
+[editable path="Station"]

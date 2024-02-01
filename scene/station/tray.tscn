@@ -1,0 +1,21 @@
+[gd_scene load_steps=3 format=3 uid="uid://chqp8ck8d254a"]
+
+[ext_resource type="PackedScene" uid="uid://daqdlgnvoww0t" path="res://scene/station.tscn" id="1_vi5na"]
+[ext_resource type="Texture2D" uid="uid://qvecq2g18cyx" path="res://image/station/tray.png" id="2_uidl6"]
+
+[node name="Tray" type="Node2D"]
+
+[node name="Station" parent="." node_paths=PackedStringArray("center") instance=ExtResource("1_vi5na")]
+center = NodePath("Marker2D")
+
+[node name="Inventory" parent="Station" index="2"]
+max_size = 1
+
+[node name="Sprite2D" type="Sprite2D" parent="Station"]
+position = Vector2(0, 2)
+texture = ExtResource("2_uidl6")
+
+[node name="Marker2D" type="Marker2D" parent="Station"]
+position = Vector2(0, 9)
+
+[editable path="Station"]

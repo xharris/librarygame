@@ -41,8 +41,8 @@ func nav_move() -> bool:
 	var next_pos: Vector2 = nav_agent.get_next_path_position()
 	var new_velocity = global_position.direction_to(next_pos)
 	if not nav_agent.is_target_reached() and not nav_agent.is_target_reachable():
-		stop_moving()
 		navigation_blocked.emit()
+		stop_moving()
 		return false
 	if new_velocity == Vector2.ZERO or nav_agent.is_target_reached() or _needs_to_stop_moving:
 		_needs_to_stop_moving = false

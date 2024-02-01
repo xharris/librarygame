@@ -6,8 +6,8 @@ static var l = Log.new()
 static var instances: Array[Inventory]
 static var scn_map_tile = preload('res://scene/map_tile.tscn')
 
-signal item_stored
-signal item_removed
+signal item_stored(item:Item)
+signal item_removed(item:Item)
 
 static func find_closest(to:Node2D) -> Inventory:
 	var other_instances = instances.filter(func(i:Inventory): return i.node != to)
@@ -21,7 +21,8 @@ static func find_inventory_with_item(item_id:int) -> Array[Inventory]:
 	return Inventory.instances.filter(func(i:Inventory): return i.has_item(item_id))
 
 var node:Node2D
-var disabled = false
+@export var disabled = false
+@export var max_size = 9999
 
 func _enter_tree():
 	node = get_parent()
@@ -34,37 +35,43 @@ func has_item(id:int) -> bool:
 func has_item_type(type:Item.ITEM_TYPE) -> bool:
 	var items := get_all_items()
 	return items.any(func(i:Item): return i.type == type)
-	
-func add_item(item:Item) -> Inventory:
-	add_child(item)
-	item_stored.emit(item)
+
+func is_full() -> bool:
+	l.info('Inventory is full')
+	return get_all_items().size() >= max_size
+
+func add_item(node:Node2D) -> Inventory:
+	var item = Item.get_item_node(node)
+	if not is_full() and item:
+		add_child(node)
+		item_stored.emit(item)
 	return self
 
 func get_all_items() -> Array[Item]:
 	var items:Array[Item]
-	items.assign(get_children().filter(func(c:Node): return c is Item))
+	items.assign(get_children().map(func(c:Node2D):return Item.get_item_node(c)).filter(func(c:Node): return c != null))
 	return items
 
 func get_items(id:int) -> Array[Item]:
 	var items := get_all_items()
 	return items.filter(func(i:Item): return i.id == id)
 
-func remove_item(item_id:int) -> Item:
+func remove_item(item_id:int) -> Node2D:
 	var items := get_all_items()
-	var found_item:Item
+	var found_child:Node2D
 	for item in items:
 		if item.id == item_id:
-			found_item = item
-	if found_item:
-		remove_child(found_item)
-		item_removed.emit(found_item)
-	return found_item
+			found_child = item.get_parent()
+	if found_child:
+		remove_child(found_child)
+		item_removed.emit(Item.get_item_node(found_child))
+	return found_child
 
 ## Move an item from one inventory to another
 ## Returns true on success
 ## TODO show item bouncing from this inventory to other one
 func transfer_item(item_id:int, to:Inventory) -> bool:
-	if to.disabled:
+	if not to or to.disabled or to.is_full():
 		return false
 	# find item
 	var removed_item = remove_item(item_id)

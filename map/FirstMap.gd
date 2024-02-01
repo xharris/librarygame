@@ -1,6 +1,6 @@
 extends Node2D
 
-@onready var first_box := $Map/Box
+@onready var first_box := $Map/Tray
 var first_book_id:int
 
 func _ready():
