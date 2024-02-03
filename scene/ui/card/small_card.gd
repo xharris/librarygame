@@ -1,6 +1,8 @@
 class_name SmallCard
 extends PanelContainer
 
+enum SCENE_TYPE {STATION,ACTOR}
+
 var l = Log.new(Log.LEVEL.DEBUG)
 
 @export var title_label:RichTextLabel
@@ -10,8 +12,10 @@ var l = Log.new(Log.LEVEL.DEBUG)
 @export var label_super_container:Container
 @export var title_description_separator:Control
 @export var icon:SubViewport
+var scene:PackedScene
+var scene_type:SCENE_TYPE
 
-signal pressed(event:InputEvent)	
+signal pressed(event:InputEvent)
 
 func _update_label_visibility(text:String, label:Control):
 	label.visible = text.length() > 0
@@ -34,9 +38,10 @@ func set_icon(node:Node2D = null):
 	icon.get_parent().visible = node != null
 	if node:
 		icon.add_child(node)
-		if 'center' in node and node.center is Marker2D:
+		var marker = Global.iterate_children_until(node, func(c):return c is Marker2D) as Marker2D
+		if marker:
 			var camera = $HBoxContainer/AspectRatioContainer/Icon/SubViewport/Camera2D
-			camera.global_position = node.center.global_position
+			camera.global_position = marker.global_position
 		#icon.get_camera_2d().global_position = node.global_position
 		#await RenderingServer.frame_post_draw
 		#(icon as SubViewport).get_texture()
@@ -44,24 +49,42 @@ func set_icon(node:Node2D = null):
 		for child in icon.get_children():
 			icon.remove_child(child)
 
-func config(object:Node2D):
-	var child = object.find_child('Station') 
+func config():
+	if not scene:
+		l.warn('`scene` not set')
+		return
+	var object = scene.instantiate()
+	object.process_mode = Node.PROCESS_MODE_DISABLED
+	var child = object.find_child('Station')
+	if child:
+		scene_type = SCENE_TYPE.STATION
 	if not child:
-		child = object.find_child('Actor')
+		child = object.find_child('Actor') as Actor
+		if child:
+			scene_type = SCENE_TYPE.ACTOR
+			## TODO disable the actor somehow
 	if child:
 		if 'title' in child:
 			set_title(child.title)
+		else:
+			set_title('')
 		if 'description' in child:
 			set_description(child.description)
+		else:
+			set_description('')
 		if 'flavor_text' in child:
 			set_flavor_text(child.flavor_text)
-		var icon = child.duplicate()
-		if icon is Station:
+		else:
+			set_flavor_text('')
+		if object is Station:
 			icon.enabled = false
-		if icon is Actor:
-			icon.process_mode = Node.PROCESS_MODE_DISABLED
-		set_icon(icon)
+		if object is Actor:
+			pass
+		set_icon(object)
 	mouse_filter = Control.MOUSE_FILTER_STOP
+
+func _ready():
+	config()
 
 func _on_mouse_entered():
 	label_super_container.visible = true

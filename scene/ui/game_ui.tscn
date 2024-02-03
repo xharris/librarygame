@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://dwy4j6424166b"]
 
 [ext_resource type="Script" path="res://scene/ui/game_ui.gd" id="1_ovqxb"]
-[ext_resource type="PackedScene" uid="uid://cx3c7v8mgjrnr" path="res://scene/ui/add_resource_button.tscn" id="2_pa2x6"]
+[ext_resource type="PackedScene" uid="uid://cx3c7v8mgjrnr" path="res://scene/ui/entity_menu_button.tscn" id="2_pa2x6"]
 
 [node name="GameUI" type="Control"]
 layout_mode = 3
@@ -53,12 +53,6 @@ size_flags_horizontal = 0
 size_flags_vertical = 8
 mouse_filter = 0
 theme_override_constants/separation = 32
-
-[node name="AddActor" parent="MarginContainer/VBoxContainer/MenuButtons" node_paths=PackedStringArray("card_container") instance=ExtResource("2_pa2x6")]
-layout_mode = 2
-text = "ACT"
-resource_path = "res://scene/actors"
-card_container = NodePath("../../ScrollContainer/MarginContainer/CardList")
 
 [node name="AddStation" parent="MarginContainer/VBoxContainer/MenuButtons" node_paths=PackedStringArray("card_container") instance=ExtResource("2_pa2x6")]
 layout_mode = 2

@@ -34,11 +34,10 @@ func drop_item(inventory:Inventory, item_id:int):
 	var tilemap := get_tree().get_nodes_in_group('tilemap').front() as Map
 	# get closest cell
 	var map_layer = get_layer_by_name(tilemap, 'map')
-	var node = inventory.node
 	var cells = tilemap.get_used_cells(map_layer)
 	cells.sort_custom(func(a:Vector2i,b:Vector2i): 
-		return 	node.global_position.distance_to(tilemap.to_global(tilemap.map_to_local(a))) < \
-				node.global_position.distance_to(tilemap.to_global(tilemap.map_to_local(b)))
+		return 	inventory.global_position.distance_to(tilemap.to_global(tilemap.map_to_local(a))) < \
+				inventory.global_position.distance_to(tilemap.to_global(tilemap.map_to_local(b)))
 	)
 	var closest_cell = cells.front()
 	# get/create tile_object

@@ -2,42 +2,47 @@ extends State
 
 var l = Log.new(Log.LEVEL.DEBUG)
 
-@export var nav_agent: NavigationAgent2D
-@export var actor: Actor
+var actor: Actor
 
 var item_template:Item.ItemTemplate
 var found_inventory:Inventory
+var happiness_loss:int
 
-func item_not_found(happiness_loss:int):
+func item_not_found():
 	# TODO lose happiness
-	get_parent().set_state('Walk')
+	fsm.set_state('Walk')
 
 func item_got():
-	if fsm.get_task_manager().start_next_task():
+	if actor.start_next_task():
 		return
 	fsm.set_state('Walk')
 
 func enter(args:Dictionary):
-	var item_filter := args.get('item_filter', Global.CALLABLE_TRUE) as Callable
-	var happiness_loss := args.get('happiness_loss', 0) as int
+	actor = find_parent('Actor')
+	actor.nav_agent.target_reached.connect(_on_nav_target_reached)
+	actor.navigation_blocked.connect(_on_actor_navigation_blocked)
 	
-	fsm.actor.move_speed = 50
+	var item_filter := args.get('item_filter', Global.CALLABLE_TRUE) as Callable
+	happiness_loss = args.get('happiness_loss', 0) as int
+	
 	item_template = Item.find_item(item_filter)
 	if not item_template:
-		l.debug('Item not found')
-		return item_not_found(happiness_loss)
+		l.info('Item not found')
+		return item_not_found()
+		
 	# find inventory (that doesnt belong to a actor) containing item
 	found_inventory = (
 		Inventory.find_inventory_with_item(item_template.id)
-		.filter(func(i:Inventory): return not i.node.is_in_group('actor'))
+		.filter(func(i:Inventory): return not i.parent.is_in_group(Actor.GROUP))
 		.front() as Inventory
 	)
 	if not found_inventory:
-		l.debug('Inventory not found, -%d happiness', [happiness_loss])
-		return item_not_found(happiness_loss)
+		l.info('Inventory not found, -%d happiness', [happiness_loss])
+		return item_not_found
+		
 	# move to inventory
-	if not fsm.actor.move_to(found_inventory.node.global_position):
-		item_got()
+	if not actor.move_to(found_inventory.global_position):
+		return item_not_found()
 
 func leave():
 	found_inventory = null
@@ -45,5 +50,8 @@ func leave():
 
 func _on_nav_target_reached():
 	if found_inventory and item_template:
-		found_inventory.transfer_item(item_template.id, fsm.inventory)
+		found_inventory.transfer_item(item_template.id, actor.inventory)
 	item_got()
+
+func _on_actor_navigation_blocked():
+	item_not_found()

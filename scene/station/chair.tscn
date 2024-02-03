@@ -5,22 +5,22 @@
 
 [node name="Chair" type="Node2D"]
 
-[node name="Station" parent="." node_paths=PackedStringArray("sprite", "center") instance=ExtResource("1_10ijf")]
+[node name="Station" parent="." instance=ExtResource("1_10ijf")]
 y_sort_enabled = false
+position = Vector2(0, -10)
 title = "Chair"
-description = "Can seat 1 patron"
+description = "Seats 1 patron"
 flavor_text = "Not everyone likes to read while standing"
-sprite = NodePath("Sprite2D")
-center = NodePath("Center")
 
 [node name="Inventory" parent="Station" index="2"]
-disabled = true
+position = Vector2(2, 3)
+max_size = 0
 
 [node name="Sprite2D" type="Sprite2D" parent="Station"]
+position = Vector2(1, 1)
 texture = ExtResource("2_pbtm8")
-offset = Vector2(0, -9)
 
-[node name="Center" type="Marker2D" parent="Station"]
-position = Vector2(0, -13)
+[node name="Marker2D" type="Marker2D" parent="Station"]
+position = Vector2(1, 3)
 
 [editable path="Station"]

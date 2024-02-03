@@ -9,8 +9,7 @@ func _ready():
 	if inventory:
 		inventory.add_item(Item.create_from_id(first_book_id))
 
-
-func _on_map_spawn_patron(actor:Actor):
-	var read_state := actor.fsm.find_state('Read') as Read
-	if read_state:
-		read_state.book_list = [first_book_id]
+func _on_map_patron_spawned(actor):
+	var read_task := actor.task_manager.find_task('Read') as Read
+	if read_task:
+		read_task.book_list = [first_book_id]

@@ -5,14 +5,14 @@
 
 [node name="Box" type="Node2D"]
 
-[node name="Station" parent="." node_paths=PackedStringArray("sprite", "center") instance=ExtResource("1_lmio4")]
+[node name="Station" parent="." instance=ExtResource("1_lmio4")]
 position = Vector2(0, 2)
 title = "Box"
-description = "Item storage for anyone"
-sprite = NodePath("Sprite2D")
+description = "Holds 5 items"
 type = 1
-center = NodePath("Marker2D")
-has_inventory = true
+
+[node name="Inventory" parent="Station" index="2"]
+max_size = 5
 
 [node name="Sprite2D" type="Sprite2D" parent="Station"]
 position = Vector2(0, -9)
@@ -20,3 +20,5 @@ texture = ExtResource("2_geb20")
 
 [node name="Marker2D" type="Marker2D" parent="Station"]
 position = Vector2(0, -8)
+
+[editable path="Station"]

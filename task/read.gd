@@ -1,34 +1,30 @@
 class_name Read
 extends Task
 
-@export var timer:Timer
+@onready var timer:Timer = $ReadTimer
+var actor:Actor
+var current_book:int = -1
 var book_list:Array[int]
-
-func _init():
-	required_previous_state = ['Sit']
 
 func is_task_needed() -> bool:
 	return book_list.size() > 0
-	
-func enter(args:Dictionary):
+
+func get_prep_steps():
+	actor = find_parent('Actor')
 	if not actor.inventory.has_item_type(Item.ITEM_TYPE.BOOK):
 		# go get a book
-		return fsm.set_state('GetItem', { item_filter=func(item:Item): return item.type == Item.ITEM_TYPE.BOOK })
-	# stop and read for a while
-	actor.stop_moving()
-	if animation.current_animation != 'sit':
-		animation.play('sit')
+		add_prep_state('GetItem', { item_filter=func(item:Item): return item.type == Item.ITEM_TYPE.BOOK })
+	if not StationHelper.get_using(actor).any(func(s:Station):return s.type == Station.STATION_TYPE.SEAT):
+		add_prep_state('Sit')
+
+func enter(args:Dictionary):
+	actor = find_parent('Actor')
+	current_book = book_list.pick_random()
 	timer.start(3)
 
 func leave():
-	animation.play('stand')
+	book_list = book_list.filter(func(b):return b != current_book)
+	current_book = -1
 
 func _on_read_timer_timeout():
-	# TODO change to StoreItem
-	# TODO if patron has a library card, chance of StoreItem/leaving with item
-	StationHelper.free_all_stations_by_type(fsm.actor, StationHelper.STATION_TYPE.SEAT)
-	var item:Item = fsm.inventory.get_all_items().pick_random()
-	if item:
-		fsm.set_state('StoreItem', { item_id=item.id })
-	else:
-		fsm.set_state('Walk')
+	fsm.set_state('Idle')

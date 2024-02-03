@@ -12,7 +12,7 @@ func weighted_choice(weights:Array[int]):
 
 func closest_node(to:Node2D, nodes:Array[Node2D]) -> Node2D:
 	nodes.sort_custom(func(a:Node2D,b:Node2D): 
-		return a.node.global_position.distance_to(to.global_position) <  b.node.global_position.distance_to(to.global_position)
+		return a.global_position.distance_to(to.global_position) <  b.global_position.distance_to(to.global_position)
 	)
 	return nodes.front()
 

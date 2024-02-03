@@ -1,22 +1,24 @@
 class_name StateMachine
 extends Node
 
-var l = Log.new(Log.LEVEL.DEBUG)
+static var l = Log.new(Log.LEVEL.DEBUG)
 
-var initial_state: String
+@export var initial_state:String
+@export var wait_timer:Timer
+
 var current_state: State
 var current_state_name = ''
 var states:Array[State] = []
 var last_process_mode:Dictionary = {}
 var connections:Dictionary = {}
 var previous_parent:Dictionary = {}
+var timed_state:State
+var timed_args:Dictionary = {}
 
 signal add_state(node:State)
 signal change_state(node:State)
 
 func _disable_state(node:Node):
-	if not node is State:
-		return
 	remove_child(node)
 	if previous_parent.has(node):
 		var new_parent = previous_parent[node] as Node
@@ -57,9 +59,17 @@ func state_callv(method_name:String, args:Dictionary = {}, state:Node = current_
 func state_call(method_name:String, state:Node = current_state):
 	if state and state.has_method(method_name):
 		state.call(method_name)
-		
-func set_state(state_name:String, args:Dictionary = {}):
-	l.debug('%s->%s%s',[get_parent(),state_name,args])
+
+func set_state_node(node:State, args:Dictionary = {}, after_sec:int = 0):
+	l.debug('%s->%s%s (%ds)',[get_parent(),node.name,args, after_sec])
+	timed_state = node
+	timed_args = args
+	if not wait_timer or after_sec <= 0:
+		_on_wait_timer_timeout()
+		return
+	wait_timer.start(after_sec)
+
+func set_state(state_name:String, args:Dictionary = {}, after_sec:int = 0):
 	# leave current state
 	if current_state:
 		change_state.emit(current_state)
@@ -68,10 +78,7 @@ func set_state(state_name:String, args:Dictionary = {}):
 	# enter next state
 	var next_state := states.filter(func(s:Node): return s.name == state_name).front() as Node
 	if next_state:
-		current_state = next_state
-		current_state_name = current_state.name
-		_enable_state(current_state)
-		state_callv('enter', args)
+		set_state_node(next_state, args, after_sec)
 	else:
 		l.error('State "%s" not found in %s',[state_name,states.map(func(s:State):return s.name)])
 
@@ -90,3 +97,12 @@ func find_state(state_name:String) -> State:
 
 func _ready():
 	add_states(get_children())
+	if initial_state:
+		set_state(initial_state)
+
+func _on_wait_timer_timeout():
+	if timed_state:
+		current_state = timed_state
+		current_state_name = current_state.name
+		_enable_state(current_state)
+		state_callv('enter', timed_args)

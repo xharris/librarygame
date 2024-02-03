@@ -1,18 +1,19 @@
 class_name Map
 extends TileMap
 
-var scn_patron = preload("res://scene/actors/patron.tscn")
+static var l = Log.new(Log.LEVEL.DEBUG)
+
+enum TILE_NAME {NORMAL,EMPTY,NO_IDLE,ENTRANCE}
+
 var inventories = {}
 var nav_layer_name = 'nav'
 var map_layer_name = 'map'
-## increases when average happiness increases
-var spawn_chance = 0 # / 100 
 var selection_enabled = false
 @export var initial_spawn_count = 3
 @export var tile_outline:Sprite2D
 var tile_outline_color:Color
 
-signal spawn_patron(actor:Actor)
+signal patron_spawned(actor:Actor)
 signal tile_select(event:InputEvent, global_position:Vector2, map_position:Vector2i)
 
 func get_layer_by_name(layer_name:String) -> int:
@@ -22,7 +23,8 @@ func get_layer_by_name(layer_name:String) -> int:
 			return l
 	return -1
 
-func get_tile_coords(tile_name:String):
+func get_tile_coords(_tile_name:TILE_NAME) -> Array[Vector2]:
+	var tile_name = (TILE_NAME.find_key(_tile_name) as String).to_lower()
 	var layers = get_layers_count()
 	var tiles:Array[Vector2] = []
 	for l in layers:
@@ -65,22 +67,44 @@ func update_navigation():
 func is_tile_empty(coords:Vector2i) -> bool:
 	var nav_layer = TileMapHelper.get_layer_by_name(self, nav_layer_name)
 	return get_used_cells(nav_layer).any(func(c:Vector2i):return c == coords)
-	
+
+func get_patron_count() -> int:
+	var actors = get_tree().get_nodes_in_group(Actor.GROUP)
+	return actors.filter(func(a:Actor): return a.role == Actor.ACTOR_ROLE.PATRON and a.is_active()).size()
+
+func is_max_patrons() -> bool:
+	var max_capacity := (get_used_cells(TileMapHelper.get_layer_by_name(self, map_layer_name)).size() * 2/3)
+	return get_patron_count() >= max_capacity
+
+## Return [0,100] chance of spawning patron
+func get_spawn_chance() -> int:
+	var seat_count = get_tree().get_nodes_in_group(Station.GROUP).filter(func(s:Station):return s.type == Station.STATION_TYPE.SEAT and s.is_active()).size()
+	var patron_count = get_patron_count()
+	var weights = [
+		(seat_count / patron_count) if patron_count > 0 else 0,
+	]
+	var spawn_chance = weights.reduce(func(prev,curr):return prev + curr, 0) / weights.size()
+	return (spawn_chance if get_patron_count() >= initial_spawn_count else 1) * 25
+
 func _ready():
 	add_to_group('tilemap')
 	update_navigation()
 	tile_outline_color = Palette.Blue500
 
+func spawn_patron():
+	var entrance_tiles = get_tile_coords(TILE_NAME.ENTRANCE)
+	if entrance_tiles.size():
+		var actor = Actor.build(['read'])
+		actor.global_position = entrance_tiles.pick_random()
+		add_child(actor)
+		patron_spawned.emit(actor)
+
 func _on_patron_spawner_timeout():
-	var entrance_tiles = get_tile_coords('entrance')
-	var patron_count := get_tree().get_nodes_in_group('actor').filter(func(a:Actor): return a.role == Actor.ACTOR_ROLE.PATRON).size()
-	var map_capacity := (get_used_cells(TileMapHelper.get_layer_by_name(self, map_layer_name)).size() * 2/3)
-	if entrance_tiles.size() and patron_count < map_capacity and (randi() % 100) < (spawn_chance if patron_count >= initial_spawn_count else 60):
-		var new_patron := scn_patron.instantiate()
-		new_patron.global_position = entrance_tiles.pick_random()
-		add_child(new_patron)
-		var actor = new_patron.find_child('Actor') as Actor
-		spawn_patron.emit(actor)
+	var random = randi() % 100
+	var spawn_chance = get_spawn_chance()
+	if not is_max_patrons() and random <= spawn_chance:
+		l.debug('Spawn patron with %d%% chance (rolled %d)', [spawn_chance, random])
+		spawn_patron()
 
 func _on_child_entered_tree(node):
 	update_navigation()

@@ -10,7 +10,7 @@ y_sort_enabled = true
 script = ExtResource("1_oggyn")
 
 [node name="Item" parent="." instance=ExtResource("1_pn8nx")]
-position = Vector2(0, -4)
+position = Vector2(0, -3)
 
 [node name="BookBase" type="Sprite2D" parent="Item"]
 texture = ExtResource("2_t52j6")

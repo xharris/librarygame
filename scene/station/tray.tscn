@@ -5,17 +5,17 @@
 
 [node name="Tray" type="Node2D"]
 
-[node name="Station" parent="." node_paths=PackedStringArray("center") instance=ExtResource("1_vi5na")]
-center = NodePath("Marker2D")
+[node name="Station" parent="." instance=ExtResource("1_vi5na")]
+position = Vector2(0, -7)
+title = "Tray"
+description = "Holds 1 item"
+type = 1
 
 [node name="Inventory" parent="Station" index="2"]
+position = Vector2(0, 7)
 max_size = 1
 
 [node name="Sprite2D" type="Sprite2D" parent="Station"]
-position = Vector2(0, 2)
 texture = ExtResource("2_uidl6")
-
-[node name="Marker2D" type="Marker2D" parent="Station"]
-position = Vector2(0, 9)
 
 [editable path="Station"]

@@ -5,7 +5,7 @@ var l = Log.new(Log.LEVEL.DEBUG)
 @onready var menu_buttons_container := $MarginContainer/VBoxContainer/MenuButtons
 @onready var card_list := $MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/CardList
 
-signal add_station(type:StationHelper.STATION_TYPE)
+signal add_station(type:Station.STATION_TYPE)
 
 ## Returns false if nothing was cleared
 func clear_cards() -> bool:
@@ -21,7 +21,7 @@ func _ready():
 	for b in menu_buttons.size():
 		var button = menu_buttons[b] as BaseButton
 		# connect signals
-		if button is AddResourceButton:
+		if button is EntityMenuButton:
 			button.clear_cards.connect(clear_cards)
 		# Setup neighbors
 		if b > 0:

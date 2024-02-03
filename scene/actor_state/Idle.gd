@@ -1,32 +1,39 @@
 extends State
 
-@export var actor: Actor
-@export var nav_agent: NavigationAgent2D
-@export var animation: AnimationPlayer
-@onready var timer:Timer = $IdleTimer
+var actor:Actor
+var sitting = false
 
-func pick_new_state():
+func enter(args:Dictionary):
+	actor = find_parent('Actor')
+	actor.stop_moving()
+	var stations = StationHelper.get_using(actor)
+	if stations.size():
+		for station in stations:
+			station.done_using(actor)
+		return fsm.set_state('Walk')
+		
 	# finish tasks
-	var task_man = fsm.get_task_manager()
-	if task_man and task_man.start_next_task():
+	if actor.start_next_task():
 		return
+		
 	# choose a random activity
-	match Util.weighted_choice([20, 20, 50]):
+	match Util.weighted_choice([30, 20, 50]):
 		0:
 			# walk to a random spot
-			return fsm.set_state('Walk')
+			return fsm.set_state('Walk', {wandering=true})
 		1:
 			# do nothing
-			animation.play('stand')
-			timer.start(3)
+			fsm.set_state('Idle', {}, 3)
 		2:
-			# perform a random task
-			if task_man and task_man.start_random_task():
-				return
 			# sit
-			return fsm.set_state('Sit')
-	
-func enter(args:Dictionary):
-	actor.stop_moving()
-	animation.play('stand')
-	timer.start(3)
+			sitting = StationHelper.get_using(actor).filter(func(s:Station):return s.type == Station.STATION_TYPE.SEAT).size() > 0
+			if sitting:
+				fsm.set_state('Idle', {}, 3)
+				return
+			else:
+				return fsm.set_state('Sit')
+
+func _on_idle_timer_timeout():
+	if sitting:
+		return fsm.set_state('Walk')
+	fsm.set_state('Idle')

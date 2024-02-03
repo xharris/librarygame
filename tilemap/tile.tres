@@ -11,10 +11,10 @@ texture_region_size = Vector2i(34, 19)
 0:0/next_alternative_id = 3
 0:0/0 = 0
 
-[sub_resource type="NavigationPolygon" id="NavigationPolygon_2fhof"]
-vertices = PackedVector2Array(16, 0, 0, 9, -16, 0, 0, -9)
+[sub_resource type="NavigationPolygon" id="NavigationPolygon_5gx26"]
+vertices = PackedVector2Array(16, 0, 0, 8, -16, 0, 0, -8)
 polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3)])
-outlines = Array[PackedVector2Array]([PackedVector2Array(0, -9, 16, 0, 0, 9, -16, 0)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(0, -8, 16, 0, 0, 8, -16, 0)])
 source_geometry_group_name = &"navigation_polygon_source_group"
 agent_radius = 0.0
 
@@ -24,7 +24,7 @@ texture = ExtResource("2_br6lj")
 margins = Vector2i(0, 8)
 texture_region_size = Vector2i(34, 19)
 0:0/0 = 0
-0:0/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_2fhof")
+0:0/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_5gx26")
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_nyuyc"]
 vertices = PackedVector2Array(16, 0, 0, 9, -16, 0, 0, -9)

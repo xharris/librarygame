@@ -1,14 +1,8 @@
-[gd_scene load_steps=25 format=3 uid="uid://b605xg1hw7sdr"]
+[gd_scene load_steps=19 format=3 uid="uid://b605xg1hw7sdr"]
 
 [ext_resource type="Script" path="res://scene/actor.gd" id="1_td06u"]
-[ext_resource type="Script" path="res://scene/actor_state/ActorStateMachine.gd" id="2_rx4tf"]
-[ext_resource type="Script" path="res://scene/actor_state/Idle.gd" id="3_74qp3"]
-[ext_resource type="Script" path="res://scene/actor_state/Leave.gd" id="5_hkclm"]
-[ext_resource type="Script" path="res://scene/actor_state/GetItem.gd" id="6_bm4gi"]
-[ext_resource type="Script" path="res://scene/actor_state/Sit.gd" id="7_cfde1"]
-[ext_resource type="Script" path="res://scene/actor_state/StoreItem.gd" id="8_ielna"]
-[ext_resource type="Script" path="res://scene/actor_state/Walk.gd" id="8_n5ehm"]
 [ext_resource type="Texture2D" uid="uid://cebukflmmmgg3" path="res://image/bird/bird_fill.png" id="9_4iuug"]
+[ext_resource type="PackedScene" uid="uid://85c1dxqyvini" path="res://scene/actor_state/actor_state_machine.tscn" id="10_he87i"]
 [ext_resource type="Texture2D" uid="uid://dja0ek61h5nmy" path="res://image/bird/bird_base.png" id="10_k2auc"]
 [ext_resource type="Texture2D" uid="uid://beksen7m2ygr6" path="res://image/bird/bird_eyes.png" id="11_5gryt"]
 [ext_resource type="Texture2D" uid="uid://vyfab613nxcw" path="res://image/bird/bird_feet_sit.png" id="12_02mln"]
@@ -16,6 +10,7 @@
 [ext_resource type="Texture2D" uid="uid://b0o1kdes8am2m" path="res://image/bird/bird_arm.png" id="14_gb18g"]
 [ext_resource type="Texture2D" uid="uid://c3y248giufovg" path="res://image/bird/bird_feet_walk.png" id="14_yantv"]
 [ext_resource type="PackedScene" uid="uid://bnwrpj700kxul" path="res://scene/inventory.tscn" id="16_e6b7f"]
+[ext_resource type="PackedScene" uid="uid://084d0pu0j073" path="res://scene/task_manager.tscn" id="17_o022d"]
 
 [sub_resource type="Animation" id="Animation_0ssif"]
 length = 0.001
@@ -29,7 +24,7 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Vector2(0, 4)]
+"values": [Vector2(0, 0)]
 }
 
 [sub_resource type="Animation" id="Animation_yi3xk"]
@@ -58,7 +53,7 @@ tracks/1/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Vector2(0, 4)]
+"values": [Vector2(0, 2)]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
@@ -98,7 +93,7 @@ tracks/1/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Vector2(0, 2)]
+"values": [Vector2(0, 0)]
 }
 
 [sub_resource type="Animation" id="Animation_vxr2p"]
@@ -127,7 +122,7 @@ tracks/1/keys = {
 "times": PackedFloat32Array(0, 0.1),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
-"values": [Vector2(0, 2), Vector2(0, -1)]
+"values": [Vector2(0, 0), Vector2(0, -2)]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
@@ -184,10 +179,7 @@ animations = [{
 radius = 1.0
 height = 2.0
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_sj276"]
-radius = 3.0
-
-[node name="Actor" type="CharacterBody2D" node_paths=PackedStringArray("nav_agent", "sprite_transform", "animation", "fsm") groups=["actor"]]
+[node name="Actor" type="CharacterBody2D" node_paths=PackedStringArray("nav_agent", "sprite_transform", "animation", "task_manager") groups=["actor"]]
 collision_layer = 2
 collision_mask = 3
 platform_floor_layers = 4294967292
@@ -196,7 +188,7 @@ script = ExtResource("1_td06u")
 nav_agent = NodePath("NavigationAgent2D")
 sprite_transform = NodePath("SpriteTransform")
 animation = NodePath("AnimationPlayer")
-fsm = NodePath("ActorStateMachine")
+task_manager = NodePath("TaskManager")
 
 [node name="NavigationAgent2D" type="NavigationAgent2D" parent="."]
 path_desired_distance = 5.0
@@ -213,10 +205,12 @@ libraries = {
 
 [node name="SpriteTransform" type="Node2D" parent="."]
 y_sort_enabled = true
-position = Vector2(0, 6)
 
 [node name="Sprite" type="Node2D" parent="SpriteTransform"]
-position = Vector2(0, 4)
+
+[node name="Inventory" parent="SpriteTransform/Sprite" node_paths=PackedStringArray("parent") instance=ExtResource("16_e6b7f")]
+position = Vector2(-7, -6)
+parent = NodePath("../../..")
 
 [node name="BirdFill" type="Sprite2D" parent="SpriteTransform/Sprite"]
 position = Vector2(0, -11)
@@ -233,85 +227,28 @@ texture = ExtResource("11_5gryt")
 [node name="BirdFeet" type="AnimatedSprite2D" parent="SpriteTransform/Sprite"]
 position = Vector2(0, -11)
 sprite_frames = SubResource("SpriteFrames_apiia")
-animation = &"stand"
+animation = &"walk"
 
 [node name="BirdArm" type="Sprite2D" parent="SpriteTransform/Sprite"]
 position = Vector2(0, -11)
 texture = ExtResource("14_gb18g")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, 7)
-rotation = 1.5708
+position = Vector2(0, -3)
+rotation = 3.14159
 shape = SubResource("CapsuleShape2D_rr7n6")
+disabled = true
 
-[node name="Inventory" parent="." instance=ExtResource("16_e6b7f")]
-visible = false
+[node name="ActorStateMachine" parent="." instance=ExtResource("10_he87i")]
 
-[node name="ActorStateMachine" type="Node2D" parent="." node_paths=PackedStringArray("actor", "nav_agent", "animation", "inventory")]
-script = ExtResource("2_rx4tf")
-actor = NodePath("..")
-nav_agent = NodePath("../NavigationAgent2D")
-animation = NodePath("../AnimationPlayer")
-inventory = NodePath("../Inventory")
+[node name="TaskManager" parent="." node_paths=PackedStringArray("fsm") instance=ExtResource("17_o022d")]
+fsm = NodePath("../ActorStateMachine")
 
-[node name="Idle" type="Node" parent="ActorStateMachine" node_paths=PackedStringArray("actor", "nav_agent", "animation")]
-script = ExtResource("3_74qp3")
-actor = NodePath("../..")
-nav_agent = NodePath("../../NavigationAgent2D")
-animation = NodePath("../../AnimationPlayer")
-
-[node name="IdleTimer" type="Timer" parent="ActorStateMachine/Idle"]
-wait_time = 3.0
-one_shot = true
-
-[node name="Leave" type="Node" parent="ActorStateMachine" node_paths=PackedStringArray("nav_agent")]
-script = ExtResource("5_hkclm")
-nav_agent = NodePath("../../NavigationAgent2D")
-
-[node name="GetItem" type="Node" parent="ActorStateMachine" node_paths=PackedStringArray("nav_agent", "actor")]
-script = ExtResource("6_bm4gi")
-nav_agent = NodePath("../../NavigationAgent2D")
-actor = NodePath("../..")
-
-[node name="Sit" type="Node2D" parent="ActorStateMachine" node_paths=PackedStringArray("body", "nav_agent", "sprite", "animation", "chair_detection")]
-script = ExtResource("7_cfde1")
-body = NodePath("../..")
-nav_agent = NodePath("../../NavigationAgent2D")
-sprite = NodePath("../../SpriteTransform/Sprite")
-animation = NodePath("../../AnimationPlayer")
-chair_detection = NodePath("ChairDetection")
-
-[node name="SitTimer" type="Timer" parent="ActorStateMachine/Sit"]
-wait_time = 3.0
-one_shot = true
-
-[node name="ChairDetection" type="Area2D" parent="ActorStateMachine/Sit"]
-collision_layer = 2
-collision_mask = 4
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="ActorStateMachine/Sit/ChairDetection"]
-shape = SubResource("CircleShape2D_sj276")
-
-[node name="StoreItem" type="Node" parent="ActorStateMachine" node_paths=PackedStringArray("nav_agent", "actor", "inventory")]
-script = ExtResource("8_ielna")
-nav_agent = NodePath("../../NavigationAgent2D")
-actor = NodePath("../..")
-inventory = NodePath("../../Inventory")
-
-[node name="Walk" type="Node" parent="ActorStateMachine" node_paths=PackedStringArray("nav_agent", "animation", "sprite_direction")]
-script = ExtResource("8_n5ehm")
-nav_agent = NodePath("../../NavigationAgent2D")
-animation = NodePath("../../AnimationPlayer")
-sprite_direction = NodePath("../../SpriteTransform")
-
-[connection signal="navigation_blocked" from="." to="ActorStateMachine/StoreItem" method="_on_actor_navigation_blocked"]
-[connection signal="path_changed" from="NavigationAgent2D" to="." method="_on_navigation_agent_2d_path_changed"]
-[connection signal="target_reached" from="NavigationAgent2D" to="ActorStateMachine/Idle" method="_on_navigation_agent_2d_target_reached"]
-[connection signal="target_reached" from="NavigationAgent2D" to="ActorStateMachine/GetItem" method="_on_nav_target_reached"]
-[connection signal="target_reached" from="NavigationAgent2D" to="ActorStateMachine/Sit" method="_on_navigation_agent_2d_target_reached"]
-[connection signal="target_reached" from="NavigationAgent2D" to="ActorStateMachine/StoreItem" method="_on_nav_target_reached"]
-[connection signal="target_reached" from="NavigationAgent2D" to="ActorStateMachine/Walk" method="_on_navigation_agent_2d_target_reached"]
-[connection signal="add_state" from="ActorStateMachine" to="ActorStateMachine" method="_on_add_state"]
-[connection signal="change_state" from="ActorStateMachine" to="." method="_on_actor_state_machine_change_state"]
-[connection signal="timeout" from="ActorStateMachine/Idle/IdleTimer" to="ActorStateMachine/Idle" method="pick_new_state"]
-[connection signal="timeout" from="ActorStateMachine/Sit/SitTimer" to="ActorStateMachine/Sit" method="_on_sit_timer_timeout"]
+[node name="Label" type="Label" parent="."]
+offset_left = 4.0
+offset_top = -37.0
+offset_right = 44.0
+offset_bottom = -14.0
+size_flags_vertical = 8
+theme_override_colors/font_color = Color(0, 0.654902, 0, 1)
+theme_override_font_sizes/font_size = 8

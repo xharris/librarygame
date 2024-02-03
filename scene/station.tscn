@@ -88,7 +88,8 @@ libraries = {
 }
 speed_scale = 5.0
 
-[node name="Inventory" parent="." instance=ExtResource("2_g14xj")]
+[node name="Inventory" parent="." node_paths=PackedStringArray("parent") instance=ExtResource("2_g14xj")]
+parent = NodePath("..")
 
 [connection signal="item_removed" from="Inventory" to="." method="_on_inventory_item_removed"]
 [connection signal="item_stored" from="Inventory" to="." method="_on_inventory_item_stored"]

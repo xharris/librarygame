@@ -1,7 +1,7 @@
 class_name State
 extends Node
 
-var fsm: ActorStateMachine
+var fsm: StateMachine
 
 func enter(args:Dictionary):
 	pass
