@@ -1,14 +1,19 @@
-[gd_scene load_steps=19 format=3 uid="uid://b605xg1hw7sdr"]
+[gd_scene load_steps=24 format=3 uid="uid://b605xg1hw7sdr"]
 
 [ext_resource type="Script" path="res://scene/actor.gd" id="1_td06u"]
 [ext_resource type="Texture2D" uid="uid://cebukflmmmgg3" path="res://image/bird/bird_fill.png" id="9_4iuug"]
-[ext_resource type="PackedScene" uid="uid://85c1dxqyvini" path="res://scene/actor_state/actor_state_machine.tscn" id="10_he87i"]
 [ext_resource type="Texture2D" uid="uid://dja0ek61h5nmy" path="res://image/bird/bird_base.png" id="10_k2auc"]
 [ext_resource type="Texture2D" uid="uid://beksen7m2ygr6" path="res://image/bird/bird_eyes.png" id="11_5gryt"]
+[ext_resource type="Script" path="res://state_machine.gd" id="11_rxvw5"]
 [ext_resource type="Texture2D" uid="uid://vyfab613nxcw" path="res://image/bird/bird_feet_sit.png" id="12_02mln"]
 [ext_resource type="Texture2D" uid="uid://cxlw7fdccyd8i" path="res://image/bird/bird_feet.png" id="12_gkc4j"]
+[ext_resource type="Script" path="res://scene/actor_state/Idle.gd" id="12_ygkju"]
+[ext_resource type="Script" path="res://scene/actor_state/GetItem.gd" id="13_338y4"]
+[ext_resource type="Script" path="res://scene/actor_state/Sit.gd" id="14_38ql3"]
 [ext_resource type="Texture2D" uid="uid://b0o1kdes8am2m" path="res://image/bird/bird_arm.png" id="14_gb18g"]
 [ext_resource type="Texture2D" uid="uid://c3y248giufovg" path="res://image/bird/bird_feet_walk.png" id="14_yantv"]
+[ext_resource type="Script" path="res://scene/actor_state/StoreItem.gd" id="15_s8xrs"]
+[ext_resource type="Script" path="res://scene/actor_state/Walk.gd" id="16_4cwew"]
 [ext_resource type="PackedScene" uid="uid://bnwrpj700kxul" path="res://scene/inventory.tscn" id="16_e6b7f"]
 [ext_resource type="PackedScene" uid="uid://084d0pu0j073" path="res://scene/task_manager.tscn" id="17_o022d"]
 
@@ -239,10 +244,9 @@ rotation = 3.14159
 shape = SubResource("CapsuleShape2D_rr7n6")
 disabled = true
 
-[node name="ActorStateMachine" parent="." instance=ExtResource("10_he87i")]
-
-[node name="TaskManager" parent="." node_paths=PackedStringArray("fsm") instance=ExtResource("17_o022d")]
-fsm = NodePath("../ActorStateMachine")
+[node name="TaskManager" parent="." node_paths=PackedStringArray("fsm", "actor") instance=ExtResource("17_o022d")]
+fsm = NodePath("../StateMachine")
+actor = NodePath("..")
 
 [node name="Label" type="Label" parent="."]
 offset_left = 4.0
@@ -252,3 +256,42 @@ offset_bottom = -14.0
 size_flags_vertical = 8
 theme_override_colors/font_color = Color(0, 0.654902, 0, 1)
 theme_override_font_sizes/font_size = 8
+vertical_alignment = 2
+
+[node name="StateMachine" type="Node2D" parent="." node_paths=PackedStringArray("wait_timer")]
+script = ExtResource("11_rxvw5")
+initial_state = "Walk"
+wait_timer = NodePath("StateTimer")
+
+[node name="StateTimer" type="Timer" parent="StateMachine"]
+one_shot = true
+
+[node name="Idle" type="Node" parent="StateMachine" node_paths=PackedStringArray("actor")]
+script = ExtResource("12_ygkju")
+actor = NodePath("../..")
+
+[node name="GetItem" type="Node" parent="StateMachine" node_paths=PackedStringArray("actor")]
+script = ExtResource("13_338y4")
+actor = NodePath("../..")
+
+[node name="Sit" type="Node" parent="StateMachine" node_paths=PackedStringArray("actor")]
+script = ExtResource("14_38ql3")
+actor = NodePath("../..")
+
+[node name="StoreItem" type="Node" parent="StateMachine" node_paths=PackedStringArray("actor")]
+script = ExtResource("15_s8xrs")
+actor = NodePath("../..")
+
+[node name="Walk" type="Node" parent="StateMachine" node_paths=PackedStringArray("actor")]
+script = ExtResource("16_4cwew")
+actor = NodePath("../..")
+
+[connection signal="navigation_blocked" from="." to="StateMachine/GetItem" method="_on_actor_navigation_blocked"]
+[connection signal="navigation_blocked" from="." to="StateMachine/Sit" method="_on_actor_navigation_blocked"]
+[connection signal="navigation_blocked" from="." to="StateMachine/StoreItem" method="_on_actor_navigation_blocked"]
+[connection signal="navigation_blocked" from="." to="StateMachine/Walk" method="_on_actor_navigation_blocked"]
+[connection signal="target_reached" from="NavigationAgent2D" to="StateMachine/GetItem" method="_on_nav_target_reached"]
+[connection signal="target_reached" from="NavigationAgent2D" to="StateMachine/Sit" method="_on_navigation_agent_2d_target_reached"]
+[connection signal="target_reached" from="NavigationAgent2D" to="StateMachine/StoreItem" method="_on_nav_target_reached"]
+[connection signal="target_reached" from="NavigationAgent2D" to="StateMachine/Walk" method="_on_navigation_agent_2d_target_reached"]
+[connection signal="timeout" from="StateMachine/StateTimer" to="StateMachine" method="_on_wait_timer_timeout"]

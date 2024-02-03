@@ -1,6 +1,6 @@
 extends State
 
-var actor:Actor
+@export var actor:Actor
 var chair:Station
 var duration:int = 0
 
@@ -43,11 +43,7 @@ func stop_and_sit():
 	actor.animation.play('sit')
 	fsm.set_state('Idle', {}, duration)
 
-func enter(args:Dictionary):
-	actor = find_parent('Actor')
-	actor.nav_agent.target_reached.connect(_on_navigation_agent_2d_target_reached, CONNECT_ONE_SHOT)
-	actor.navigation_blocked.connect(_on_actor_navigation_blocked, CONNECT_ONE_SHOT)
-	
+func enter(args:Dictionary):	
 	duration = args.get('duration', 0) as int
 	find_seat()
 	

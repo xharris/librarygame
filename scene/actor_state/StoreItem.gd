@@ -2,16 +2,12 @@ extends State
 
 static var l = Log.new(Log.LEVEL.DEBUG)
 
-var actor: Actor
+@export var actor: Actor
 
 var item:Item
 var found_inventory:Inventory
 
-func enter(args:Dictionary):
-	actor = find_parent('Actor')
-	actor.nav_agent.target_reached.connect(_on_nav_target_reached, CONNECT_ONE_SHOT)
-	actor.navigation_blocked.connect(_on_actor_navigation_blocked, CONNECT_ONE_SHOT)
-	
+func enter(args:Dictionary):	
 	var item_id := args.get('item_id') as int
 	
 	item = actor.inventory.get_items(item_id).front()

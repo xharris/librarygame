@@ -4,6 +4,8 @@ extends Node
 static var l = Log.new()
 
 @export var fsm:StateMachine
+@export var actor:Actor
+
 var queue:Array[Task] = []
 var current_task:Task
 var prep_steps:Array[Task.Step] = []
@@ -21,17 +23,15 @@ func find_task(task_name:String) -> Task:
 	return tasks.filter(func(t:Task):return t.name == task_name).front()
 
 func _get_needed_tasks():
-	var actor := find_parent('Actor') as Actor
 	var tasks = get_all_tasks()
-	queue = queue.filter(func(t:Task):return t.is_task_needed())
+	queue = queue.filter(func(t:Task):return t.is_task_needed(actor))
 	for task in tasks:
-		if task.is_task_needed() and not queue.any(func(t:Task): return t.name == task.name):
+		if task.is_task_needed(actor) and not queue.any(func(t:Task): return t.name == task.name):
 			l.debug('%s+!%s', [actor, task.name])
 			queue.append(task)
 
 ## returns true if a task is in progress
 func start_next_task() -> bool:
-	var actor := find_parent('Actor') as Actor
 	_get_needed_tasks()
 	if not current_task:
 		current_task = queue.pop_front() as Task
@@ -41,7 +41,7 @@ func start_next_task() -> bool:
 			return false
 		current_task.fsm = fsm
 		# populate task steps
-		current_task.get_prep_steps()
+		current_task.get_prep_steps(actor)
 		prep_steps = current_task.prep_steps
 	if prep_steps.size():
 		# do next prep step

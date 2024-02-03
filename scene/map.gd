@@ -42,7 +42,7 @@ func is_walkable(coords:Vector2i):
 	if get_child_count() == 0:
 		return false
 	for c in get_children():
-		if c is Station or c.get_children().any(func(c2:Node):return c2 is Station):
+		if c is Station or c.get_children().any(func(c2:Node):return c2 is Station and c2.type != Station.STATION_TYPE.SEAT):
 			var c_position = local_to_map(to_local(c.global_position))
 			if c_position == coords:
 				return false

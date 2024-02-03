@@ -28,10 +28,10 @@ func _ready():
 	var task_manager = get_parent() as TaskManager
 	fsm = task_manager.fsm
 
-func is_task_needed() -> bool:
+func is_task_needed(actor:Actor) -> bool:
 	return false
 
-func get_prep_steps():
+func get_prep_steps(actor:Actor):
 	pass
 
 func add_prep_state(state_name:String, args:Dictionary = {}):

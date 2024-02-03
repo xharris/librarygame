@@ -87,16 +87,10 @@ func start_next_task() -> bool:
 
 func _ready():
 	add_to_group(GROUP)
-	label.text = String.num(get_instance_id())
+	label.text = String.num(get_instance_id()).right(4)
 
 func _physics_process(delta):
 	if nav_move():
 		animation.play('walk')
 		face_move_direction()
 	move_and_slide()
-
-#func _on_navigation_agent_2d_path_changed():
-	#if not nav_agent.is_target_reachable():
-		#l.warn('%s Navigation is blocked', [self])
-		#stop_moving()
-		#navigation_blocked.emit()

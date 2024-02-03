@@ -2,15 +2,13 @@ class_name Read
 extends Task
 
 @onready var timer:Timer = $ReadTimer
-var actor:Actor
 var current_book:int = -1
 var book_list:Array[int]
 
-func is_task_needed() -> bool:
+func is_task_needed(actor:Actor) -> bool:
 	return book_list.size() > 0
 
-func get_prep_steps():
-	actor = find_parent('Actor')
+func get_prep_steps(actor:Actor):
 	if not actor.inventory.has_item_type(Item.ITEM_TYPE.BOOK):
 		# go get a book
 		add_prep_state('GetItem', { item_filter=func(item:Item): return item.type == Item.ITEM_TYPE.BOOK })
@@ -18,7 +16,6 @@ func get_prep_steps():
 		add_prep_state('Sit')
 
 func enter(args:Dictionary):
-	actor = find_parent('Actor')
 	current_book = book_list.pick_random()
 	timer.start(3)
 

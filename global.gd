@@ -2,6 +2,8 @@ extends Node
 
 var l = Log.new()
 
+
+
 ## Callable that returns true
 var CALLABLE_TRUE:Callable = func():return true
 

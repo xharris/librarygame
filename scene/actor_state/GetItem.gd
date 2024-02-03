@@ -2,7 +2,7 @@ extends State
 
 var l = Log.new(Log.LEVEL.DEBUG)
 
-var actor: Actor
+@export var actor: Actor
 
 var item_template:Item.ItemTemplate
 var found_inventory:Inventory
@@ -17,11 +17,7 @@ func item_got():
 		return
 	fsm.set_state('Walk')
 
-func enter(args:Dictionary):
-	actor = find_parent('Actor')
-	actor.nav_agent.target_reached.connect(_on_nav_target_reached)
-	actor.navigation_blocked.connect(_on_actor_navigation_blocked)
-	
+func enter(args:Dictionary):	
 	var item_filter := args.get('item_filter', Global.CALLABLE_TRUE) as Callable
 	happiness_loss = args.get('happiness_loss', 0) as int
 	

@@ -2,18 +2,14 @@ extends State
 
 var l = Log.new(Log.LEVEL.DEBUG)
 
-var actor:Actor
+@export var actor:Actor
 var wandering = false
 
 func _only_neighboring(cell:Vector2i, map:Map, target:Vector2):
 	var target_coord = map.local_to_map(map.to_local(target))
 	return (cell.x - target_coord.x) <= 1 and (cell.y - target_coord.y) <= 1 # TODO cell - target_coord <= Vector2i.ONE	
 
-func enter(args:Dictionary):
-	actor = find_parent('Actor') as Actor
-	actor.navigation_blocked.connect(_on_actor_navigation_blocked)
-	actor.nav_agent.target_reached.connect(_on_navigation_agent_2d_target_reached)
-	
+func enter(args:Dictionary):	
 	var target := args.get('target', actor.global_position) as Vector2
 	wandering = args.get('wandering', false) as bool
 	
