@@ -3,7 +3,7 @@ extends Node2D
 
 var l = Log.new(Log.LEVEL.DEBUG)
 static var GROUP = 'station'
-enum STATION_TYPE {SEAT,STORAGE}
+enum STATION_TYPE {SEAT,STORAGE,DOOR}
 
 @onready var animation:AnimationPlayer = $AnimationPlayer
 @onready var inventory:Inventory = $Inventory
@@ -14,6 +14,9 @@ enum STATION_TYPE {SEAT,STORAGE}
 @export var type:Station.STATION_TYPE
 var enabled = true
 var _previous_parent:Dictionary = {}
+
+func is_solid() -> bool:
+	return type != STATION_TYPE.DOOR
 
 func is_active() -> bool:
 	return find_parent('Map') != null

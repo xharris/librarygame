@@ -1,5 +1,7 @@
 extends State
 
+## TODO NEXT figure out navgiation layers so that actors arent walking through chairs but can still access them in sit state
+
 @export var actor:Actor
 var chair:Station
 var duration:int = 0

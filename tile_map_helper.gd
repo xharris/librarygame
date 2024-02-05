@@ -18,7 +18,7 @@ class RandomTile:
 		return tilemap.to_global(tilemap.map_to_local(cell))
 
 func get_random_tilemap_cell(layer_name: String = 'map', filter: Callable = Callable()) -> RandomTile:
-	var tilemap := get_tree().get_nodes_in_group('tilemap').front() as Map
+	var tilemap := get_tree().get_nodes_in_group(Map.GROUP).front() as Map
 	var rand_tile = RandomTile.new()
 	if tilemap:
 		var layer = get_layer_by_name(tilemap, layer_name)
@@ -31,7 +31,7 @@ func get_random_tilemap_cell(layer_name: String = 'map', filter: Callable = Call
 	return rand_tile
 
 func drop_item(inventory:Inventory, item_id:int):
-	var tilemap := get_tree().get_nodes_in_group('tilemap').front() as Map
+	var tilemap := get_tree().get_nodes_in_group(Map.GROUP).front() as Map
 	# get closest cell
 	var map_layer = get_layer_by_name(tilemap, 'map')
 	var cells = tilemap.get_used_cells(map_layer)
@@ -51,8 +51,8 @@ func drop_item(inventory:Inventory, item_id:int):
 
 func get_all_instances() -> Array[Map]:
 	var instances:Array[Map]
-	instances.assign(get_tree().get_nodes_in_group('tilemap'))
+	instances.assign(get_tree().get_nodes_in_group(Map.GROUP))
 	return instances
 
 func get_current_map() -> Map:
-	return get_tree().get_nodes_in_group('tilemap').front() as Map
+	return get_tree().get_nodes_in_group(Map.GROUP).front() as Map

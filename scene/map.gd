@@ -2,6 +2,8 @@ class_name Map
 extends TileMap
 
 static var l = Log.new(Log.LEVEL.DEBUG)
+static var GROUP = 'map'
+static var LAYER_MAP = 'map'
 
 enum TILE_NAME {NORMAL,EMPTY,NO_IDLE,ENTRANCE}
 
@@ -12,9 +14,28 @@ var selection_enabled = false
 @export var initial_spawn_count = 3
 @export var tile_outline:Sprite2D
 var tile_outline_color:Color
+@onready var floor_region = $Floor
+@onready var no_idle_floor_region = $NoIdleFloor
+@onready var no_floor_region = $NoFloor
+@onready var tile_polygon = $TilePolygon
+var nav_poly_outlines = {}
+var astar_grid: AStarGrid2D
 
 signal patron_spawned(actor:Actor)
 signal tile_select(event:InputEvent, global_position:Vector2, map_position:Vector2i)
+
+func get_navigation_path(from:Vector2, to:Vector2):
+	pass
+
+func is_walkable(coords:Vector2i):
+	if get_child_count() == 0:
+		return false
+	for c in get_children():
+		if c is Station or c.get_children().any(func(c2:Node):return c2 is Station and c2.type != Station.STATION_TYPE.SEAT):
+			var c_position = local_to_map(to_local(c.global_position))
+			if c_position == coords:
+				return false
+	return true
 
 func get_layer_by_name(layer_name:String) -> int:
 	var layer_count = get_layers_count()
@@ -37,32 +58,6 @@ func get_tile_coords(_tile_name:TILE_NAME) -> Array[Vector2]:
 			if src.resource_name == tile_name:
 				tiles.append(to_global(map_to_local(cell)))
 	return tiles
-
-func is_walkable(coords:Vector2i):
-	if get_child_count() == 0:
-		return false
-	for c in get_children():
-		if c is Station or c.get_children().any(func(c2:Node):return c2 is Station and c2.type != Station.STATION_TYPE.SEAT):
-			var c_position = local_to_map(to_local(c.global_position))
-			if c_position == coords:
-				return false
-	return true
-
-func update_navigation():
-	var tile_layer = TileMapHelper.get_layer_by_name(self, map_layer_name)
-	var nav_layer = TileMapHelper.get_layer_by_name(self, nav_layer_name)
-	if tile_layer < 0:
-		return
-	var tile_coords = get_used_cells(tile_layer)
-	for coords in tile_coords:
-		var has_nav = get_cell_source_id(nav_layer, coords) > -1
-		var walkable = is_walkable(coords)
-		if not has_nav and walkable:
-			# add nav cell
-			set_cell(nav_layer, coords, 1, Vector2i.ZERO)
-		if has_nav and not walkable:
-			# remove nav cell
-			erase_cell(nav_layer, coords)
 	
 func is_tile_empty(coords:Vector2i) -> bool:
 	var nav_layer = TileMapHelper.get_layer_by_name(self, nav_layer_name)
@@ -87,8 +82,6 @@ func get_spawn_chance() -> int:
 	return (spawn_chance if get_patron_count() >= initial_spawn_count else 1) * 25
 
 func _ready():
-	add_to_group('tilemap')
-	update_navigation()
 	tile_outline_color = Palette.Blue500
 
 func spawn_patron():
@@ -105,12 +98,6 @@ func _on_patron_spawner_timeout():
 	if not is_max_patrons() and random <= spawn_chance:
 		l.debug('Spawn patron with %d%% chance (rolled %d)', [spawn_chance, random])
 		spawn_patron()
-
-func _on_child_entered_tree(node):
-	update_navigation()
-
-func _on_child_exiting_tree(node):
-	update_navigation()
 
 func _unhandled_input(event):
 	var mouse_position = get_viewport().get_camera_2d().get_global_mouse_position()
