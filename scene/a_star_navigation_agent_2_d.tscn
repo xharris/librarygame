@@ -3,4 +3,5 @@
 [ext_resource type="Script" path="res://scene/a_star_navigation_agent_2_d.gd" id="1_4tgor"]
 
 [node name="AStarNavigationAgent2D" type="Node2D"]
+top_level = true
 script = ExtResource("1_4tgor")

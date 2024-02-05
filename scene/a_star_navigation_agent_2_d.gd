@@ -1,104 +1,156 @@
 class_name AStarNavigationAgent2D
 extends Node2D
 
-static var l = Log.new(Log.LEVEL.DEBUG)
+static var l = Log.new()
 static var GROUP = 'AStarNavigationAgent2D'
 
 @export var debug_enabled:bool
-var grid:AStarGrid2D
-var path:Array[Vector2i] = []
+@export var agent:Node2D
+@export var target_desired_distance:int = 1
+var grid:AStar2D
+var path:Array[int] = []
 var velocity:Vector2 = Vector2.ZERO
 var _map:Map
 var _target_position:Vector2
+var _needs_update = false
 
 signal target_reached
 signal blocked
 
+func _get_point_id(cell:Vector2i):
+	var rect = _map.get_used_rect()
+	return (cell.x - rect.position.x) + rect.size.x * (cell.y - rect.position.y) # int((cell.y - rect.position.y) + (cell.x - rect.position.x) * rect.size.y)
+
+func _map_to_global(coords:Vector2i) -> Vector2:
+	if not _map:
+		return Vector2.ZERO
+	return _map.to_global(_map.map_to_local(coords))
+	
 func get_nearest_used_cell(coords:Vector2):
 	var map_cells = _map.get_used_cells(0)
 	map_cells.sort_custom(func(a:Vector2i, b:Vector2i): return _map_to_global(a).distance_to(coords) < _map_to_global(b).distance_to(coords))
 	return map_cells.front()
 
-func update_navigation():
-	grid.diagonal_mode = AStarGrid2D.DIAGONAL_MODE_AT_LEAST_ONE_WALKABLE
+func _update_navigation():
 	var stations = StationHelper.get_all()
-	var tile_layer = TileMapHelper.get_layer_by_name(_map, Map.LAYER_MAP)
-	var map_cells = _map.get_used_cells(tile_layer)
+	var map_cells = _map.get_used_cells(0)
 	var rect = _map.get_used_rect()
+	grid.reserve_space(rect.size.x * rect.size.y)
+	grid.clear()
 	# iterate all tiles
-	for x in range(grid.region.position.x, grid.region.size.x):
-		for y in range(grid.region.position.y, grid.region.size.y):
-			var cell = Vector2i(x, y)
-			if _map.get_cell_tile_data(tile_layer, cell):
-				grid.set_point_solid(cell, true)
-				grid.set_point_weight_scale(cell, 1)
-				l.debug('cell %s solid=%s weight=%s', [cell, true, 1])
-			else:
-				grid.set_point_solid(cell, false)
+	for x in rect.size.x:
+		for y in rect.size.y:
+			var cell = Vector2i(x + rect.position.x, y + rect.position.y)
+			var id = _get_point_id(cell)
+			if map_cells.has(cell):
+				grid.add_point(id, _map_to_global(cell), 1)
+				grid.set_point_disabled(id, false)
+				l.debug('add point %s %s position=%s', [id, cell, _map_to_global(cell)])
+	# connect neighbors
+	for x in rect.size.x:
+		for y in rect.size.y:
+			var cell = Vector2i(x + rect.position.x, y + rect.position.y)
+			var id = _get_point_id(cell)
+			if not map_cells.has(cell):
+				continue
+			var neighbor_ids:Array[int] = []
+			var cell_Neighbor = [
+				TileSet.CELL_NEIGHBOR_RIGHT_SIDE,
+				TileSet.CELL_NEIGHBOR_RIGHT_CORNER,
+				TileSet.CELL_NEIGHBOR_BOTTOM_RIGHT_SIDE,
+				TileSet.CELL_NEIGHBOR_BOTTOM_RIGHT_CORNER,
+				TileSet.CELL_NEIGHBOR_BOTTOM_SIDE,
+				TileSet.CELL_NEIGHBOR_BOTTOM_CORNER,
+				TileSet.CELL_NEIGHBOR_BOTTOM_LEFT_SIDE,
+				TileSet.CELL_NEIGHBOR_BOTTOM_LEFT_CORNER,
+				TileSet.CELL_NEIGHBOR_TOP_LEFT_SIDE,
+				TileSet.CELL_NEIGHBOR_TOP_LEFT_CORNER,
+				TileSet.CELL_NEIGHBOR_TOP_SIDE,
+				TileSet.CELL_NEIGHBOR_TOP_CORNER,
+				TileSet.CELL_NEIGHBOR_TOP_RIGHT_SIDE,
+				TileSet.CELL_NEIGHBOR_TOP_RIGHT_CORNER
+			]
+			neighbor_ids.assign(
+				cell_Neighbor.\
+				map(func(n:int):return _map.get_neighbor_cell(cell, n)).\
+				map(_get_point_id).\
+				filter(func(n:int):return grid.has_point(n) and not grid.is_point_disabled(n))
+			)
+			l.debug('connect %d -> %s', [id, neighbor_ids])
+			for neighbor_id in neighbor_ids:
+				grid.connect_points(id, neighbor_id)
 	# iterate stations
 	for station in stations:
-		var cell = get_nearest_used_cell(station.global_position)
-		if not grid.is_in_bounds(cell.x, cell.y):
+		var id = grid.get_closest_point(station.global_position)
+		if not grid.has_point(id):
 			continue
 		var walkable = station and not station.is_solid()
-		grid.set_point_solid(cell, walkable)
+		grid.set_point_disabled(id, not walkable)
 		var weight = 1
 		if station and station.type == Station.STATION_TYPE.DOOR:
 			weight = 2
 		if station and station.type == Station.STATION_TYPE.SEAT:
 			weight = 3
-		grid.set_point_weight_scale(cell, weight)
-		l.debug('cell %s solid=%s weight=%s', [cell, walkable, weight])
+		grid.set_point_weight_scale(id, weight)
+		l.debug('cell %s disabled=%s weight=%s', [id, not walkable, weight])
 	l.debug('navigation updated')
 	queue_redraw()
+
+func _update_path():
+	var previous_path_size = path.size()
+	var from_id = grid.get_closest_point(agent.global_position)
+	var to_id = grid.get_closest_point(_target_position)
+	path.assign(grid.get_id_path(from_id, to_id))
+	if path.size() == 0 and previous_path_size > 0:
+		blocked.emit()
+	queue_redraw()
+	l.debug('target_position %s -> %s path=%s', [from_id, to_id, path])
 
 var target_position:Vector2:
 	set(value):
 		if _map:
 			_target_position = value
-			var current_cell = get_nearest_used_cell(global_position)
-			var target = get_nearest_used_cell(value)
-			path = grid.get_id_path(current_cell, target)
-			queue_redraw()
-			l.debug('target_position %s -> %s path=%s', [current_cell, target, path])
+			_update_path()
 	get:
 		return _target_position
 
 func is_pathing() -> bool:
 	return not path.is_empty()
 
-func _map_to_global(coords:Vector2i) -> Vector2:
-	if not _map:
-		return Vector2.ZERO
-	return _map.to_global(_map.map_to_local(coords))
-
 func get_next_position() -> Vector2:
 	if path.is_empty():
-		return global_position
-	return _map_to_global(path.front())
-
+		return agent.global_position
+	return grid.get_point_position(path.front())
+	
 func stop():
 	velocity = Vector2.ZERO
 	path = []
 
+func update():
+	_needs_update = true
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	add_to_group(GROUP)
-	grid = AStarGrid2D.new()
+	grid = AStar2D.new()
 	_get_map()
 
 func _get_map():
-	_map = TileMapHelper.get_current_map()
+	_map = TileMapHelper.get_current_map() as Map
 	# connect new map
 	_map.child_entered_tree.connect(_map_tree_changed)
 	_map.child_exiting_tree.connect(_map_tree_changed)
-	grid.region = _map.get_used_rect()
-	grid.cell_size = _map.tile_set.tile_size
-	grid.update()
-	update_navigation()
+	update()
 
 func _map_tree_changed(node:Node):
-	update_navigation()
+	update()
+
+func _process(delta):
+	if _needs_update:
+		_needs_update = false
+		_update_navigation()
+		if agent.global_position != _target_position:
+			_update_path()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta):
@@ -107,32 +159,41 @@ func _physics_process(delta):
 	if path.is_empty():
 		return stop()
 	var target_position = get_next_position()
-	if target_position == global_position:
+	if target_position.distance_to(agent.global_position) <= target_desired_distance:
 		# reached next point
 		path.pop_front()
 		target_position = get_next_position()
-	if path.is_empty():
+	if _target_position.distance_to(agent.global_position) <= target_desired_distance and path.is_empty():
 		# navigation finished
+		l.info('%s target reached', [agent])
 		target_reached.emit()
 		return
-	## TODO try this vvv
-	#if not _map.get_used_cells(Map.LAYER_MAP).has(_map.local_to_map(_map.to_local(target_position))):
-		## navigation blocked
-		#blocked.emit()
-		#return
-	#velocity = global_position.move_toward(target_position, 1)
+	velocity = agent.global_position.direction_to(target_position)
 
 func _draw():
 	if debug_enabled and _map:
-		var inverse = global_transform.inverse()
-		draw_set_transform(inverse.get_origin(), inverse.get_rotation(), inverse.get_scale())
-		var rect = Rect2(_map_to_global(grid.region.position), _map_to_global(grid.region.size))
+		#var inverse = global_transform.inverse()
+		#draw_set_transform(inverse.get_origin(), inverse.get_rotation(), inverse.get_scale())
+		var map_rect = _map.get_used_rect()
+		var rect = Rect2(_map_to_global(map_rect.position), _map_to_global(map_rect.size))
+		var tile_size = Vector2(8, 8) # _map_to_global(_map.tile_set.tile_size) / 2
+		for id in grid.get_point_ids():
+			var _position = grid.get_point_position(id)
+			var color = Color.DIM_GRAY
+			if not grid.is_point_disabled(id):
+				color = Color.LIGHT_GREEN.lerp(Color.DARK_GREEN, grid.get_point_weight_scale(id) / 2)
+			draw_rect(Rect2(_position - tile_size/2, tile_size), color, false)
+			color.a = 0.2
+			draw_rect(Rect2(_position - tile_size/2, tile_size), color)
+			# neighbors
+			for neighbor in grid.get_point_connections(id):
+				var neigh_position = grid.get_point_position(neighbor)
+				color = Color.LIGHT_GREEN
+				color.a = 0.2
+				draw_line(_position, neigh_position, color, 1)
+		# draw path
 		if path.size():
-			path.assign(path.map(func(p:Vector2i):return _map_to_global(p)) as Array[Vector2])
-			draw_polyline(path, Color.BLUE)
-		for x in grid.region.size.x:
-			for y in grid.region.size.y:
-				var cell = Vector2i(x + grid.region.position.x, y + grid.region.position.y)
-				if grid.is_point_solid(cell):
-					var color = Color.LIGHT_GREEN.lerp(Color.DARK_GREEN, grid.get_point_weight_scale(cell) / 2)
-					draw_rect(Rect2(_map_to_global(cell) - Vector2(2, 2), Vector2(4, 4)), color)
+			var point_path:Array[Vector2] = []
+			for id in path:
+				point_path.append(grid.get_point_position(id))
+			draw_polyline(point_path, Color.BLUE, 1)

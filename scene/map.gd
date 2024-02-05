@@ -14,28 +14,13 @@ var selection_enabled = false
 @export var initial_spawn_count = 3
 @export var tile_outline:Sprite2D
 var tile_outline_color:Color
-@onready var floor_region = $Floor
-@onready var no_idle_floor_region = $NoIdleFloor
-@onready var no_floor_region = $NoFloor
-@onready var tile_polygon = $TilePolygon
-var nav_poly_outlines = {}
-var astar_grid: AStarGrid2D
 
 signal patron_spawned(actor:Actor)
 signal tile_select(event:InputEvent, global_position:Vector2, map_position:Vector2i)
 
-func get_navigation_path(from:Vector2, to:Vector2):
-	pass
-
-func is_walkable(coords:Vector2i):
-	if get_child_count() == 0:
-		return false
-	for c in get_children():
-		if c is Station or c.get_children().any(func(c2:Node):return c2 is Station and c2.type != Station.STATION_TYPE.SEAT):
-			var c_position = local_to_map(to_local(c.global_position))
-			if c_position == coords:
-				return false
-	return true
+func is_tile_empty(coords:Vector2i) -> bool:
+	var nav_layer = TileMapHelper.get_layer_by_name(self, nav_layer_name)
+	return get_used_cells(nav_layer).any(func(c:Vector2i):return c == coords)
 
 func get_layer_by_name(layer_name:String) -> int:
 	var layer_count = get_layers_count()
@@ -59,10 +44,6 @@ func get_tile_coords(_tile_name:TILE_NAME) -> Array[Vector2]:
 				tiles.append(to_global(map_to_local(cell)))
 	return tiles
 	
-func is_tile_empty(coords:Vector2i) -> bool:
-	var nav_layer = TileMapHelper.get_layer_by_name(self, nav_layer_name)
-	return get_used_cells(nav_layer).any(func(c:Vector2i):return c == coords)
-
 func get_patron_count() -> int:
 	var actors = get_tree().get_nodes_in_group(Actor.GROUP)
 	return actors.filter(func(a:Actor): return a.role == Actor.ACTOR_ROLE.PATRON and a.is_active()).size()

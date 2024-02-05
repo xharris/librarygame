@@ -197,8 +197,9 @@ fsm = NodePath("StateMachine")
 navigation = NodePath("AStarNavigationAgent2D")
 task_manager = NodePath("TaskManager")
 
-[node name="AStarNavigationAgent2D" parent="." instance=ExtResource("2_fassv")]
+[node name="AStarNavigationAgent2D" parent="." node_paths=PackedStringArray("agent") instance=ExtResource("2_fassv")]
 debug_enabled = true
+agent = NodePath("..")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
