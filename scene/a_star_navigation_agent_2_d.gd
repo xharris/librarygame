@@ -115,7 +115,7 @@ var target_position:Vector2:
 	set(value):
 		if _map:
 			_target_position = value
-			update()
+			_update_path()
 	get:
 		return _target_position
 
@@ -168,8 +168,8 @@ func _physics_process(delta):
 		if not is_pathing() and not _done:
 			# navigation finished
 			l.info('%s target reached', [agent])
-			target_reached.emit()
 			stop()
+			target_reached.emit()
 			return
 		else:
 			path.pop_front()
@@ -195,7 +195,7 @@ func _draw():
 			for neighbor in grid.get_point_connections(id):
 				var neighbor_position = grid.get_point_position(neighbor)
 				color = Color.LIGHT_GREEN
-				color.a = 0.25
+				color.a = 0.2
 				draw_line(_position, neighbor_position, color, 1)
 		# draw path
 		if path.size():

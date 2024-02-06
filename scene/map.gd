@@ -80,6 +80,12 @@ func _on_patron_spawner_timeout():
 		l.debug('Spawn patron with %d%% chance (rolled %d)', [spawn_chance, random])
 		spawn_patron()
 
+func get_closest_cell(coords:Vector2) -> Vector2i:
+	var used_cells = get_used_cells(0)
+	used_cells.sort_custom(func(a:Vector2i, b:Vector2i):
+		return to_global(map_to_local(a)).distance_to(coords) < to_global(map_to_local(b)).distance_to(coords))
+	return used_cells.front()
+
 func _unhandled_input(event):
 	var mouse_position = get_viewport().get_camera_2d().get_global_mouse_position()
 	var tile_coords = local_to_map(to_local(mouse_position))

@@ -112,7 +112,7 @@ func drop_item(item_id:int):
 		l.error('Not on map (%s)', [get_instance_id()])
 		return false
 	l.debug('%s drop item %d', [parent, item_id])
-	var node_cell = map.map_to_local(map.to_local(parent.global_position))
+	var node_cell = map.get_closest_cell(parent.global_position)
 	# Get MapTile at node (if it exists)
 	var map_tiles = get_tree().get_nodes_in_group(MapTile.GROUP).filter(func(m:MapTile):return m.cell == node_cell)
 	var map_tile:MapTile
@@ -120,7 +120,8 @@ func drop_item(item_id:int):
 		map_tile = map_tiles.front()
 	if not map_tile:
 		# Create a new map tile under the node
-		map_tile = scn_map_tile.instantiate()
+		map_tile = scn_map_tile.instantiate() as MapTile
+		map_tile.cell = node_cell
 		map_tile.global_position = map.to_global(map.map_to_local(node_cell))
 		map.add_child(map_tile)
 	return transfer_item(item_id, map_tile.inventory)

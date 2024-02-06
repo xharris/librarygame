@@ -15,6 +15,7 @@ enum STATION_TYPE {SEAT,STORAGE,DOOR}
 @export var center:Node2D
 var enabled = true
 var _previous_parent:Dictionary = {}
+var map_cell:Vector2i
 
 func is_solid() -> bool:
 	return type != STATION_TYPE.DOOR
@@ -71,11 +72,18 @@ func remove():
 	for user in get_users():
 		done_using(user)
 		user.fsm.set_state('Walk')
-	get_parent().remove_child(self)
+	# drop inventory
+	inventory.remove()
+	# remove from tree
+	var parent = get_parent()
+	parent.get_parent().remove_child(parent)
 	remove_from_group(GROUP)
 	
 func _ready():
 	add_to_group(GROUP)
+	var map = TileMapHelper.get_current_map() as Map
+	if map:
+		map_cell = map.get_closest_cell(global_position)
 
 func _on_inventory_item_stored(item:Item):
 	animation.play('store_item')
