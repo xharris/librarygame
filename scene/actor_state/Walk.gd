@@ -1,6 +1,6 @@
 extends State
 
-var l = Log.new(Log.LEVEL.DEBUG)
+var l = Log.new()
 
 @export var actor:Actor
 var wandering = false

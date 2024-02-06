@@ -31,4 +31,4 @@ func enter(args:Dictionary):
 				fsm.set_state('Idle', {}, 3)
 				return
 			else:
-				return fsm.set_state('Sit', {duration=3})
+				return fsm.set_state('Sit', {duration=randi_range(3,6)})

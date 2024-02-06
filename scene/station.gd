@@ -12,6 +12,7 @@ enum STATION_TYPE {SEAT,STORAGE,DOOR}
 @export var flavor_text:String = ''
 @export var max_occupancy = 1
 @export var type:Station.STATION_TYPE
+@export var center:Node2D
 var enabled = true
 var _previous_parent:Dictionary = {}
 
@@ -32,8 +33,14 @@ func get_user_count() -> int:
 func can_use(node:Actor):
 	return (get_user_count() < max_occupancy or has_user(node)) and enabled and is_active()
 
-func get_center() -> Marker2D:
-	return find_child('Marker2D')
+func get_center() -> Node2D:
+	if not center:
+		return self
+	return center
+
+var real_global_position:Vector2:
+	get:
+		return get_parent().global_position
 
 func has_user(node:Actor) -> bool:
 	return get_users().has(node)

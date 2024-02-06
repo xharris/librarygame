@@ -33,7 +33,6 @@ static func build(tasks:Array[String] = []) -> Actor:
 @onready var label := $Label
 @export var navigation:AStarNavigationAgent2D
 @export var task_manager:TaskManager
-var astar_grid:AStarGrid2D
 
 static func get_actor_node(node:Node2D) -> Actor:
 	return node.find_child('Actor')
@@ -72,7 +71,6 @@ func start_next_task() -> bool:
 
 func _ready():
 	add_to_group(GROUP)
-	astar_grid = AStarGrid2D.new()
 	label.text = String.num(get_instance_id()).right(4)
 
 func _physics_process(delta):
