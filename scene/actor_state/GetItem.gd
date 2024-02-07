@@ -1,6 +1,6 @@
 extends State
 
-var l = Log.new(Log.LEVEL.DEBUG)
+var l = Log.new()
 
 @export var actor: Actor
 
@@ -18,10 +18,16 @@ func item_got():
 	fsm.set_state('Walk')
 
 func enter(args:Dictionary):	
+	var item_id := args.get('item_id', Item.ID_NONE) as int
 	var item_filter := args.get('item_filter', Global.CALLABLE_TRUE) as Callable
 	happiness_loss = args.get('happiness_loss', 0) as int
 	
-	item_template = Item.find_item(item_filter)
+	if item_id != Item.ID_NONE:
+		item_template = Item.find_by_id(item_id)
+	else:
+		var found = Item.get_all().filter(item_filter)
+		if found.size():
+			item_template = found.front()
 	if not item_template:
 		l.info('Item not found')
 		return item_not_found()

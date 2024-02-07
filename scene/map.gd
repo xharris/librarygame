@@ -1,7 +1,7 @@
 class_name Map
 extends TileMap
 
-static var l = Log.new(Log.LEVEL.DEBUG)
+static var l = Log.new()
 static var GROUP = 'map'
 static var LAYER_MAP = 'map'
 
@@ -56,11 +56,19 @@ func is_max_patrons() -> bool:
 func get_spawn_chance() -> int:
 	var seat_count = get_tree().get_nodes_in_group(Station.GROUP).filter(func(s:Station):return s.type == Station.STATION_TYPE.SEAT and s.is_active()).size()
 	var patron_count = get_patron_count()
+	var book_count = Item.get_all().filter(func(i:Item.ItemTemplate):return i.type == Item.ITEM_TYPE.BOOK).size()
 	var weights = [
 		(seat_count / patron_count) if patron_count > 0 else 0,
+		(book_count / patron_count) if patron_count > 0 else 0
 	]
 	var spawn_chance = weights.reduce(func(prev,curr):return prev + curr, 0) / weights.size()
 	return (spawn_chance if get_patron_count() >= initial_spawn_count else 1) * 25
+
+func global_to_map(coords:Vector2) -> Vector2i:
+	return local_to_map(to_local(coords))
+
+func map_to_global(coords:Vector2i) -> Vector2:
+	return to_global(map_to_local(coords))
 
 func _ready():
 	tile_outline_color = Palette.Blue500
@@ -68,13 +76,13 @@ func _ready():
 func spawn_patron():
 	var entrance_tiles = get_tile_coords(TILE_NAME.ENTRANCE)
 	if entrance_tiles.size():
-		var actor = Actor.build(['read'])
+		var actor = Actor.build(Actor.ACTOR_ROLE.PATRON)
 		actor.global_position = entrance_tiles.pick_random()
 		add_child(actor)
 		patron_spawned.emit(actor)
 
 func _on_patron_spawner_timeout():
-	var random = randi() % 100
+	var random = randi_range(1, 100)
 	var spawn_chance = get_spawn_chance()
 	if not is_max_patrons() and random <= spawn_chance:
 		l.debug('Spawn patron with %d%% chance (rolled %d)', [spawn_chance, random])

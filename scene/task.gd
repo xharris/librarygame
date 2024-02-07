@@ -2,7 +2,7 @@
 class_name Task
 extends State
 
-static var l = Log.new()
+static var l = Log.new(Log.LEVEL.DEBUG)
 static var _scn_tasks:Dictionary = {}
 static var TASKS_PATH = 'res://task'
 
@@ -12,7 +12,7 @@ static func _static_init():
 			var scene = load(TASKS_PATH+'/'+task_file)
 			_scn_tasks[task_file.replace('.tscn', '')] = scene
 
-static func create_by_name(task_name:String) -> Task:
+static func create_by_name(task_name:String, args:Dictionary = {}) -> Task:
 	if not _scn_tasks.has(task_name):
 		return
 	var scene := _scn_tasks[task_name] as PackedScene
@@ -22,16 +22,23 @@ class Step:
 	var state_name:String
 	var state_args:Dictionary = {}
 
+var actor:Actor
 var prep_steps:Array[Step] = []
+var args:Dictionary = {}
 
 func _ready():
-	var task_manager = get_parent() as TaskManager
-	fsm = task_manager.fsm
+	fsm = get_manager().fsm
 
-func is_task_needed(actor:Actor) -> bool:
+func get_manager() -> TaskManager:
+	return get_parent()
+
+func is_task_needed() -> bool:
 	return false
 
-func get_prep_steps(actor:Actor):
+func can_start_task() -> bool:
+	return true
+
+func get_prep_steps():
 	pass
 
 func add_prep_state(state_name:String, args:Dictionary = {}):

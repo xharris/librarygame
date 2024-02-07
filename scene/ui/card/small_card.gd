@@ -3,7 +3,7 @@ extends PanelContainer
 
 enum SCENE_TYPE {STATION,ACTOR}
 
-var l = Log.new(Log.LEVEL.DEBUG)
+var l = Log.new()
 
 @export var title_label:RichTextLabel
 @export var description_label:RichTextLabel

@@ -4,6 +4,7 @@ extends Node2D
 static var l = Log.new()
 
 static var ITEM_PATH = 'res://scene/item'
+static var ID_NONE = -1
 
 enum ITEM_TYPE {BOOK,FOOD,DRINK}
 static var next_id = 1
@@ -16,6 +17,7 @@ class ItemTemplate:
 	var item_name:String
 	var type:ITEM_TYPE
 	var scene:PackedScene
+	var args:Dictionary
 
 static func register_item(item_name:String, type:ITEM_TYPE, args:Dictionary = {}) -> int:
 	var templates = get_all()
@@ -25,6 +27,7 @@ static func register_item(item_name:String, type:ITEM_TYPE, args:Dictionary = {}
 	template.id = next_id
 	template.item_name = item_name
 	template.type = type
+	template.args = args
 	# get packed scene
 	var item_scene:Node2D
 	var scene_path = ITEM_PATH+'/'+(ITEM_TYPE.find_key(template.type) as String).to_lower()+'.tscn'
@@ -42,6 +45,12 @@ static func find_item(filter:Callable) -> ItemTemplate:
 		return templates.front()
 	return
 
+static func find_by_id(id:int) -> ItemTemplate:
+	var found = get_all().filter(func(i:ItemTemplate): return i.id == id)
+	if found.size():
+		return found.front()
+	return
+
 static func create_from_id(id:int) -> Node2D:
 	if not _templates.has(id):
 		push_error('Item not found. id=',id)
@@ -55,13 +64,17 @@ static func create_from_id(id:int) -> Node2D:
 			return
 		item.id = template.id
 		item.item_name = template.item_name
+		# Pass args to item's 'wrapper'
+		for key in template.args:
+			if key in node:
+				node[key] = template.args[key]
 		return node
 	return
 
 static func get_all() -> Array[ItemTemplate]:
-	var templates:Array[ItemTemplate]
-	templates.assign(_templates.values())
-	return templates
+	var all:Array[ItemTemplate] = []
+	all.assign(_templates.values())
+	return all
 
 static func get_item_node(node:Node2D) -> Item:
 	return node.find_child('Item') as Item
@@ -75,3 +88,7 @@ func _ready():
 	var parent = get_parent()
 	if parent and 'config' in parent:
 		parent.config(args)
+
+## Example Item -> Book
+func get_wrapper() -> Node2D:
+	return get_parent()

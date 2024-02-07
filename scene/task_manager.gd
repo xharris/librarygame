@@ -24,9 +24,9 @@ func find_task(task_name:String) -> Task:
 
 func _get_needed_tasks():
 	var tasks = get_all_tasks()
-	queue = queue.filter(func(t:Task):return t.is_task_needed(actor))
+	queue = queue.filter(func(t:Task):return t.is_task_needed())
 	for task in tasks:
-		if task.is_task_needed(actor) and not queue.any(func(t:Task): return t.name == task.name):
+		if task.is_task_needed() and not queue.any(func(t:Task): return t.name == task.name):
 			l.debug('%s+!%s', [actor, task.name])
 			queue.append(task)
 
@@ -40,8 +40,9 @@ func start_next_task() -> bool:
 			prep_steps = []
 			return false
 		current_task.fsm = fsm
+		current_task.actor = actor
 		# populate task steps
-		current_task.get_prep_steps(actor)
+		current_task.get_prep_steps()
 		prep_steps = current_task.prep_steps
 	if prep_steps.size():
 		# do next prep step
@@ -49,6 +50,9 @@ func start_next_task() -> bool:
 		l.debug('%s prep step %s %s', [actor, step.state_name, step.state_args])
 		fsm.set_state(step.state_name, step.state_args)
 		return true
+	if not current_task.can_start_task():
+		l.info('%s could not start task %s', [actor, current_task.name])
+		return false
 	fsm.set_state_node(current_task)
 	l.debug('%s!>%s',[actor,current_task.name])
 	current_task = null

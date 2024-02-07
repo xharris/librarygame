@@ -185,7 +185,7 @@ animations = [{
 radius = 1.0
 height = 2.0
 
-[node name="Actor" type="CharacterBody2D" node_paths=PackedStringArray("sprite_transform", "animation", "fsm", "navigation", "task_manager") groups=["actor"]]
+[node name="Actor" type="CharacterBody2D" node_paths=PackedStringArray("sprite_transform", "animation", "fsm", "navigation", "task_manager") groups=["actors"]]
 collision_layer = 2
 collision_mask = 3
 platform_floor_layers = 4294967292
@@ -198,7 +198,6 @@ navigation = NodePath("AStarNavigationAgent2D")
 task_manager = NodePath("TaskManager")
 
 [node name="AStarNavigationAgent2D" parent="." node_paths=PackedStringArray("agent") instance=ExtResource("2_fassv")]
-debug_enabled = true
 agent = NodePath("..")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]

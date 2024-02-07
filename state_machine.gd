@@ -60,6 +60,10 @@ func state_call(method_name:String, state:Node = current_state):
 	if state and state.has_method(method_name):
 		state.call(method_name)
 
+func restart_state():
+	if timed_state:
+		set_state_node(timed_state, timed_args)
+
 func set_state_node(node:State, args:Dictionary = {}, after_sec:int = 0):
 	l.debug('%s->%s%s (%ds)',[get_parent(),node.name,args, after_sec])
 	timed_state = node

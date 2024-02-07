@@ -22,11 +22,6 @@ signal blocked
 func _get_point_id(cell:Vector2i):
 	var rect = _map.get_used_rect()
 	return (cell.x - rect.position.x) + rect.size.x * (cell.y - rect.position.y) # int((cell.y - rect.position.y) + (cell.x - rect.position.x) * rect.size.y)
-
-func _map_to_global(coords:Vector2i) -> Vector2:
-	if not _map:
-		return Vector2.ZERO
-	return _map.to_global(_map.map_to_local(coords))
 	
 func _update_navigation():
 	var stations = StationHelper.get_all()
@@ -40,9 +35,9 @@ func _update_navigation():
 			var cell = Vector2i(x + rect.position.x, y + rect.position.y)
 			var id = _get_point_id(cell)
 			if map_cells.has(cell):
-				grid.add_point(id, _map_to_global(cell), 1)
+				grid.add_point(id, _map.map_to_global(cell), 0)
 				grid.set_point_disabled(id, false)
-				#l.debug('add point %s %s position=%s', [id, cell, _map_to_global(cell)])
+				#l.debug('add point %s %s position=%s', [id, cell, _map.map_to_global(cell)])
 	# connect neighbors
 	for x in rect.size.x:
 		for y in rect.size.y:
@@ -78,16 +73,16 @@ func _update_navigation():
 				grid.connect_points(id, neighbor_id)
 	# iterate stations
 	for station in stations:
-		## TODO NEXT not working properly for chairs. closest point returned is above chair.
 		var id = grid.get_closest_point(station.global_position)
 		if not grid.has_point(id) or not station.is_active():
 			continue
-		var weight = 1
+		var weight = 0
+		var cell_data = _map.get_cell_tile_data(0, station.map_cell)
 		match station.type:
 			Station.STATION_TYPE.DOOR:
-				weight = 2
+				weight = 1
 			Station.STATION_TYPE.SEAT:
-				weight = 3
+				weight = 2
 			Station.STATION_TYPE.STORAGE:
 				grid.set_point_disabled(id, true)
 		grid.set_point_weight_scale(id, weight)
@@ -101,6 +96,7 @@ func _update_path():
 	var to_id = grid.get_closest_point(_target_position)
 	if from_id == to_id:
 		l.info('%s target reached (no movement)', [agent])
+		stop()
 		target_reached.emit()
 		return
 	path.assign(grid.get_id_path(from_id, to_id))
@@ -181,13 +177,13 @@ func _draw():
 		#var inverse = global_transform.inverse()
 		#draw_set_transform(inverse.get_origin(), inverse.get_rotation(), inverse.get_scale())
 		var map_rect = _map.get_used_rect()
-		var rect = Rect2(_map_to_global(map_rect.position), _map_to_global(map_rect.size))
-		var tile_size = Vector2(8, 8) # _map_to_global(_map.tile_set.tile_size) / 2
+		var rect = Rect2(_map.map_to_global(map_rect.position), _map.map_to_global(map_rect.size))
+		var tile_size = Vector2(8, 8) # _map.map_to_global(_map.tile_set.tile_size) / 2
 		for id in grid.get_point_ids():
 			var _position = grid.get_point_position(id)
 			var color = Color.DIM_GRAY
 			if not grid.is_point_disabled(id):
-				color = weight_colors[grid.get_point_weight_scale(id)-1] # Color.LIGHT_GREEN.lerp(Color.DARK_GREEN, grid.get_point_weight_scale(id) / 2)
+				color = weight_colors[grid.get_point_weight_scale(id)] # Color.LIGHT_GREEN.lerp(Color.DARK_GREEN, grid.get_point_weight_scale(id) / 2)
 			draw_rect(Rect2(_position - tile_size/2, tile_size), color, false)
 			color.a = 0.2
 			draw_rect(Rect2(_position - tile_size/2, tile_size), color)

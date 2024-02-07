@@ -9,7 +9,7 @@ func enter(args:Dictionary):
 	# finish tasks
 	if actor.start_next_task():
 		return
-		
+
 	var stations = StationHelper.get_using(actor)
 	if stations.size():
 		for station in stations:

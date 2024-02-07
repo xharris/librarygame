@@ -1,56 +1,72 @@
 class_name Actor
 extends CharacterBody2D
 
-static var GROUP = 'actor'
+static var GROUP = 'actors'
+static var scn_read = preload("res://task/read.tscn")
+static var scn_actor = preload('res://scene/actor.tscn')
+static var scn_task_mgr = preload('res://scene/task_manager.tscn')
 
-static var l = Log.new(Log.LEVEL.DEBUG)
+static var l = Log.new()
 
 enum ACTOR_ROLE {PATRON,LIBRARIAN,SECURITY,JANITOR}
 enum ACTOR_MOOD {NONE,HAPPY,SAD,ANGRY}
 
-static var scn_actor = preload('res://scene/actor.tscn')
-static var scn_task_mgr = preload('res://scene/task_manager.tscn')
-
-static func build(tasks:Array[String] = []) -> Actor:
-	var actor = scn_actor.instantiate()
-	if tasks.size():
-		var task_mgr = actor.find_child('TaskManager')
-		if task_mgr:
-			for task_name in tasks:
-				var task = Task.create_by_name(task_name)
-				if task:
-					task_mgr.add_child(task)
-			actor.add_child(task_mgr)
-		else:
-			l.warn('%s does not have TaskManager', [actor])
+static func build(role:ACTOR_ROLE) -> Actor:
+	var actor = scn_actor.instantiate() as Actor
+	match role:
+		ACTOR_ROLE.PATRON:
+			var read_task := scn_read.instantiate() as Read
+			actor.add_task(read_task)
 	return actor
-
-# TODO unable to use @onready (see todo in stop_moving method)
-@export var sprite_transform:Node2D
-@export var animation:AnimationPlayer
-@export var fsm:StateMachine
-@onready var inventory := $SpriteTransform/Sprite/Inventory
-@onready var label := $Label
-@export var navigation:AStarNavigationAgent2D
-@export var task_manager:TaskManager
 
 static func get_actor_node(node:Node2D) -> Actor:
 	return node.find_child('Actor')
+
+static func get_all() -> Array[Actor]:
+	var actors:Array[Actor] = []
+	actors.assign(Global.get_tree().get_nodes_in_group(GROUP))
+	return actors
+
+static func get_at_map_cell(cell:Vector2i) -> Array[Actor]:
+	var map := TileMapHelper.get_current_map() as Map
+	if not map:
+		return []
+	return get_all().filter(func(a:Actor):return a.global_position.distance_to(map.map_to_global(cell)) < 3)
+
+@export var sprite_transform:Node2D
+@export var animation:AnimationPlayer
+@export var fsm:StateMachine
+@onready var inventory:Inventory = $SpriteTransform/Sprite/Inventory
+@onready var label := $Label
+@export var navigation:AStarNavigationAgent2D
+@export var task_manager:TaskManager
 
 var role:ACTOR_ROLE = ACTOR_ROLE.PATRON
 var mood:ACTOR_MOOD = ACTOR_MOOD.NONE
 var move_speed = 50
 
+func add_task(task:Task):
+	var task_mgr = find_child('TaskManager')
+	if not task_mgr:
+		return l.warn('%s does not have TaskManager', [self])
+	task_mgr.add_child(task)
+
+func random_tile_filter(cell:Vector2i, map:Map):
+	var cell_source = map.get_cell_source_id(0, cell)
+	var stations = StationHelper.get_all()
+	var has_station = stations.any(func(s:Station):return s.map_cell == cell)
+	return not has_station and cell_source != Map.TILE_NAME.ENTRANCE and cell_source != Map.TILE_NAME.NO_IDLE
+
 func is_active() -> bool:
 	return find_parent('Map') != null
 
 ## Returns false if the target is too close
-func move_to(target:Vector2, speed:int = 50, target_distance:int = 15) -> bool:
+func move_to(target:Vector2, speed:int = 50, _target_distance:int = 1) -> bool:
 	l.debug('%s move_to from %s to %s',[self, global_position, target])
 	navigation.target_position = target
 	move_speed = speed
 	return true
-	
+
 func stop_moving():
 	navigation.stop()
 
@@ -60,7 +76,7 @@ func nav_move() -> bool:
 	return navigation.is_pathing()
 
 func face_move_direction():
-	if velocity != Vector2.ZERO:
+	if velocity.x != 0:
 		# face left/right
 		sprite_transform.scale.x = velocity.sign().x * -1
 
@@ -73,7 +89,7 @@ func _ready():
 	add_to_group(GROUP)
 	label.text = String.num(get_instance_id()).right(4)
 
-func _physics_process(delta):
+func _physics_process(_delta):
 	if nav_move():
 		animation.play('walk')
 		face_move_direction()

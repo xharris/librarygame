@@ -1,6 +1,6 @@
 extends Control
 
-var l = Log.new(Log.LEVEL.DEBUG)
+var l = Log.new()
 
 @onready var menu_buttons_container := $MarginContainer/VBoxContainer/MenuButtons
 @onready var card_list := $MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/CardList
@@ -32,7 +32,7 @@ func _ready():
 func _on_remove_object(event:InputEvent, global_position:Vector2, map_position:Vector2i, map:Map):
 	var stations = StationHelper.get_all()
 	for station in stations:
-		if station.map_cell == map_position:
+		if station.is_active() and station.map_cell == map_position:
 			station.remove()
 
 func _gui_input(event):

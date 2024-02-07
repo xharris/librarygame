@@ -1,7 +1,7 @@
 class_name Inventory
 extends Node2D
 
-static var l = Log.new(Log.LEVEL.DEBUG)
+static var l = Log.new()
 
 static var GROUP = 'inventory'
 static var scn_map_tile = preload('res://scene/map_tile.tscn')
@@ -18,9 +18,8 @@ static func find_closest(to:Node2D, filter:Callable = Global.CALLABLE_TRUE) -> I
 	var inventory_in_to:Inventory = to.find_child('Inventory')
 	var inventories = get_all().\
 		filter(func(i:Inventory): return i != inventory_in_to and filter.call(i))
-	inventories\
-		.sort_custom(func(a:Inventory,b:Inventory): 
-			return a.global_position.distance_to(to.global_position) <  b.global_position.distance_to(to.global_position))
+	inventories.sort_custom(func(a:Inventory,b:Inventory): 
+		return a.global_position.distance_to(to.global_position) <  b.global_position.distance_to(to.global_position))
 	return inventories.front()
 
 ## Search all inventories for an item
@@ -68,6 +67,12 @@ func get_all_items() -> Array[Item]:
 func get_items(id:int) -> Array[Item]:
 	var items := get_all_items()
 	return items.filter(func(i:Item): return i.id == id)
+
+func get_item(id:int) -> Item:
+	var items = get_items(id)
+	if items.size():
+		return items.front()
+	return
 
 func remove_item(item_id:int) -> Node2D:
 	var items := get_all_items()

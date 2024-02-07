@@ -1,9 +1,17 @@
 class_name Station
 extends Node2D
 
-var l = Log.new(Log.LEVEL.DEBUG)
+static var l = Log.new()
 static var GROUP = 'station'
 enum STATION_TYPE {SEAT,STORAGE,DOOR}
+
+static func get_all() -> Array[Station]:
+	var stations:Array[Station] = []
+	stations.assign(Global.get_tree().get_nodes_in_group(GROUP))
+	return stations
+
+static func is_using_type(actor:Actor, type:STATION_TYPE) -> bool:
+	return get_all().any(func(s:Station):return s.type == type and s.has_user(actor))
 
 @onready var animation:AnimationPlayer = $AnimationPlayer
 @onready var inventory:Inventory = $Inventory
@@ -16,6 +24,8 @@ enum STATION_TYPE {SEAT,STORAGE,DOOR}
 var enabled = true
 var _previous_parent:Dictionary = {}
 var map_cell:Vector2i
+
+signal removed
 
 func is_solid() -> bool:
 	return type != STATION_TYPE.DOOR
@@ -65,9 +75,10 @@ func done_using(node:Actor):
 	if not map:
 		return
 	node.reparent(map)
-	
+
 ## Remove from map
 func remove():
+	removed.emit()
 	# make users walk away
 	for user in get_users():
 		done_using(user)
@@ -84,6 +95,10 @@ func _ready():
 	var map = TileMapHelper.get_current_map() as Map
 	if map:
 		map_cell = map.get_closest_cell(global_position)
+		# move actors at cell
+		var actors = Actor.get_at_map_cell(map_cell)
+		for actor in actors:
+			actor.fsm.set_state('Walk')
 
 func _on_inventory_item_stored(item:Item):
 	animation.play('store_item')

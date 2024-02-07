@@ -2,5 +2,5 @@
 
 [ext_resource type="Script" path="res://scene/item.gd" id="1_pjfbc"]
 
-[node name="Item" type="Node2D"]
+[node name="Item" type="Node2D" groups=["items"]]
 script = ExtResource("1_pjfbc")

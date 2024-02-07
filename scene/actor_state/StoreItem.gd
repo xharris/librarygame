@@ -1,6 +1,6 @@
 extends State
 
-static var l = Log.new(Log.LEVEL.DEBUG)
+static var l = Log.new()
 
 @export var actor: Actor
 
