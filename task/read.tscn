@@ -1,11 +1,45 @@
-[gd_scene load_steps=2 format=3 uid="uid://bxv5rbx6nrgnk"]
+[gd_scene load_steps=4 format=3 uid="uid://bxv5rbx6nrgnk"]
 
 [ext_resource type="Script" path="res://task/read.gd" id="1_fcpfs"]
 
-[node name="Read" type="Node"]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jm1bd"]
+bg_color = Color(0.933333, 0.933333, 0.933333, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_i78vr"]
+bg_color = Color(0.129412, 0.129412, 0.129412, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.8, 0.8, 0.8, 0)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+anti_aliasing = false
+
+[node name="Read" type="Node2D"]
 script = ExtResource("1_fcpfs")
 
 [node name="ReadTimer" type="Timer" parent="."]
 one_shot = true
+
+[node name="ProgressBar" type="ProgressBar" parent="."]
+visible = false
+offset_left = -8.0
+offset_top = 2.0
+offset_right = 8.0
+offset_bottom = 6.0
+grow_horizontal = 2
+size_flags_vertical = 8
+theme_override_styles/background = SubResource("StyleBoxFlat_jm1bd")
+theme_override_styles/fill = SubResource("StyleBoxFlat_i78vr")
+value = 50.0
+show_percentage = false
 
 [connection signal="timeout" from="ReadTimer" to="." method="_on_read_timer_timeout"]

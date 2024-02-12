@@ -2,10 +2,13 @@ class_name Read
 extends Task
 
 @onready var timer:Timer = $ReadTimer
+@onready var progress_bar:ProgressBar = $ProgressBar
 var current_book:int = Item.ID_NONE
 var book_list:Array[int]
 ## Stores how many pages have been read in a book
 var bookmarks:Dictionary = {}
+var progress:int = 0
+var inspection:Array[Dictionary] = [InspectProgress.build('progress', 'read')]
 
 func is_task_needed() -> bool:
 	return book_list.size() > 0
@@ -33,9 +36,12 @@ func enter(args:Dictionary):
 			time = randi_range(20, 30)
 		Book.LENGTH.LONG:
 			time = randi_range(30, 40)
-	l.debug('%s started reading, starting page=%d length remaining=%s time=%d', 
+	progress_bar.value = pages_read / book.pages * 100
+	l.debug('%s started reading, start_page=%d length_remaining=%s time=%d', 
 		[actor, pages_read, Book.LENGTH.find_key(remaining_length), time])
 	timer.start(time)
+	progress_bar.show()
+	InspectCard.add_properties(actor, inspection, self)
 
 func leave():
 	timer.paused = true
@@ -55,6 +61,8 @@ func leave():
 			bookmarks.erase(current_book)
 		current_book = Item.ID_NONE
 	timer.stop()
+	progress_bar.hide()
+	InspectCard.remove_properties(actor, inspection)
 
 func _ready():
 	# create a list of books to read
@@ -63,6 +71,13 @@ func _ready():
 		var book = available_books.pick_random() as Item.ItemTemplate
 		book_list.append(book.id)
 		available_books = available_books.filter(func(i:Item.ItemTemplate):return i.id == book.id)
+
+func _process(delta):
+	var weight = 0
+	if timer.wait_time > 0:
+		weight = (timer.wait_time - timer.time_left) / timer.wait_time
+	progress_bar.value = lerp(0, 100, weight)
+	progress = progress_bar.value
 
 func _on_read_timer_timeout():
 	fsm.set_state('Idle')

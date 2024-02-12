@@ -8,7 +8,7 @@ static var scn_task_mgr = preload('res://scene/task_manager.tscn')
 
 static var l = Log.new()
 
-enum ACTOR_ROLE {PATRON,LIBRARIAN,SECURITY,JANITOR}
+enum ACTOR_ROLE {PATRON,STAFF,SERVICE}
 enum ACTOR_MOOD {NONE,HAPPY,SAD,ANGRY}
 
 static func build(role:ACTOR_ROLE) -> Actor:
@@ -41,9 +41,15 @@ static func get_at_map_cell(cell:Vector2i) -> Array[Actor]:
 @export var navigation:AStarNavigationAgent2D
 @export var task_manager:TaskManager
 
+var actor_name:String = 'Mr. Bigglesworth'
 var role:ACTOR_ROLE = ACTOR_ROLE.PATRON
 var mood:ACTOR_MOOD = ACTOR_MOOD.NONE
+var happiness = 100
 var move_speed = 50
+var inspection:Array[Dictionary] = [
+	InspectText.build('actor_name', 'name'),
+	InspectProgress.build('happiness', 'happiness'),
+]
 
 func add_task(task:Task):
 	var task_mgr = find_child('TaskManager')
@@ -88,9 +94,14 @@ func start_next_task() -> bool:
 func _ready():
 	add_to_group(GROUP)
 	label.text = String.num(get_instance_id()).right(4)
+	InspectCard.add_properties(self, inspection)
 
 func _physics_process(_delta):
 	if nav_move():
 		animation.play('walk')
 		face_move_direction()
 	move_and_slide()
+
+func _on_input_event(viewport, event, shape_idx):
+	if event.is_action_pressed('select'):
+		InspectCard.show_card(self)

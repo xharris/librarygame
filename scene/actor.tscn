@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://b605xg1hw7sdr"]
+[gd_scene load_steps=27 format=3 uid="uid://b605xg1hw7sdr"]
 
 [ext_resource type="Script" path="res://scene/actor.gd" id="1_td06u"]
 [ext_resource type="PackedScene" uid="uid://br3ya57h0dhty" path="res://scene/a_star_navigation_agent_2_d.tscn" id="2_fassv"]
@@ -17,6 +17,8 @@
 [ext_resource type="Script" path="res://scene/actor_state/Walk.gd" id="16_4cwew"]
 [ext_resource type="PackedScene" uid="uid://bnwrpj700kxul" path="res://scene/inventory.tscn" id="16_e6b7f"]
 [ext_resource type="PackedScene" uid="uid://084d0pu0j073" path="res://scene/task_manager.tscn" id="17_o022d"]
+[ext_resource type="Script" path="res://scene/inspect.gd" id="18_ge5y0"]
+[ext_resource type="Script" path="res://scene/ui/icon_marker.gd" id="19_xhymj"]
 
 [sub_resource type="Animation" id="Animation_0ssif"]
 length = 0.001
@@ -181,13 +183,12 @@ animations = [{
 "speed": 5.0
 }]
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_rr7n6"]
-radius = 1.0
-height = 2.0
+[sub_resource type="CircleShape2D" id="CircleShape2D_1yteg"]
 
 [node name="Actor" type="CharacterBody2D" node_paths=PackedStringArray("sprite_transform", "animation", "fsm", "navigation", "task_manager") groups=["actors"]]
 collision_layer = 2
-collision_mask = 3
+collision_mask = 0
+input_pickable = true
 platform_floor_layers = 4294967292
 platform_wall_layers = 1
 script = ExtResource("1_td06u")
@@ -235,11 +236,10 @@ animation = &"walk"
 position = Vector2(0, -11)
 texture = ExtResource("14_gb18g")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, -3)
+[node name="InputShape" type="CollisionShape2D" parent="."]
+position = Vector2(0, -9)
 rotation = 3.14159
-shape = SubResource("CapsuleShape2D_rr7n6")
-disabled = true
+shape = SubResource("CircleShape2D_1yteg")
 
 [node name="TaskManager" parent="." node_paths=PackedStringArray("fsm", "actor") instance=ExtResource("17_o022d")]
 fsm = NodePath("../StateMachine")
@@ -283,6 +283,16 @@ actor = NodePath("../..")
 script = ExtResource("16_4cwew")
 actor = NodePath("../..")
 
+[node name="Inspect" type="Node2D" parent="."]
+script = ExtResource("18_ge5y0")
+properties = Array[String](["actor_name"])
+
+[node name="IconMarker" type="Marker2D" parent="."]
+position = Vector2(0, -9)
+scale = Vector2(2, 2)
+script = ExtResource("19_xhymj")
+
+[connection signal="input_event" from="." to="." method="_on_input_event"]
 [connection signal="blocked" from="AStarNavigationAgent2D" to="StateMachine/GetItem" method="_on_actor_navigation_blocked"]
 [connection signal="blocked" from="AStarNavigationAgent2D" to="StateMachine/Sit" method="_on_actor_navigation_blocked"]
 [connection signal="blocked" from="AStarNavigationAgent2D" to="StateMachine/StoreItem" method="_on_actor_navigation_blocked"]

@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://bxm5sd1depqes"]
+[gd_scene load_steps=4 format=3 uid="uid://bxm5sd1depqes"]
 
 [ext_resource type="PackedScene" uid="uid://daqdlgnvoww0t" path="res://scene/station.tscn" id="1_10ijf"]
+[ext_resource type="Script" path="res://scene/ui/icon_marker.gd" id="2_3c3q8"]
 [ext_resource type="Texture2D" uid="uid://bnaspjbmiacqt" path="res://image/station/chair.png" id="2_pbtm8"]
 
 [node name="Chair" type="Node2D"]
@@ -9,15 +10,16 @@
 position = Vector2(0, -10)
 texture = ExtResource("2_pbtm8")
 
-[node name="Marker2D" type="Marker2D" parent="."]
+[node name="IconMarker" type="Marker2D" parent="."]
 position = Vector2(0, -8)
+script = ExtResource("2_3c3q8")
 
 [node name="Station" parent="." node_paths=PackedStringArray("center") instance=ExtResource("1_10ijf")]
 y_sort_enabled = false
 title = "Chair"
 description = "Seats 1 patron"
 flavor_text = "Not everyone likes to read while standing"
-center = NodePath("../Marker2D")
+center = NodePath("../IconMarker")
 
 [node name="Inventory" parent="Station" index="2"]
 position = Vector2(2, 3)

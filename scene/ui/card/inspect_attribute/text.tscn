@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=3 uid="uid://573pg0ljf37"]
+
+[ext_resource type="Script" path="res://scene/ui/card/inspect_attribute/text.gd" id="1_7baga"]
+[ext_resource type="Theme" uid="uid://b8o36u0dt0fx" path="res://scene/ui/theme/game.tres" id="1_etooc"]
+
+[node name="PanelContainer" type="PanelContainer"]
+offset_right = 31.0
+offset_bottom = 23.0
+script = ExtResource("1_7baga")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme = ExtResource("1_etooc")
+
+[node name="Label" type="Label" parent="MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+text = "text"

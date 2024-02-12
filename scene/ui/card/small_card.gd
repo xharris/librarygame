@@ -11,9 +11,9 @@ var l = Log.new()
 @export var label_container:Container
 @export var label_super_container:Container
 @export var title_description_separator:Control
-@export var icon:SubViewport
+@export var icon:Icon
 var scene:PackedScene
-var scene_type:SCENE_TYPE
+var scene_type:SCENE_TYPE ## TODO is this needed? remove?
 
 signal pressed(event:InputEvent)
 
@@ -33,21 +33,6 @@ func set_description(description:String = ''):
 func set_flavor_text(flavor_text:String = ''):
 	flavor_text_label.text = flavor_text
 	_update_label_visibility(flavor_text, flavor_text_label)
-
-func set_icon(node:Node2D = null):
-	icon.get_parent().visible = node != null
-	if node:
-		icon.add_child(node)
-		var marker = Global.iterate_children_until(node, func(c):return c is Marker2D) as Marker2D
-		if marker:
-			var camera = $HBoxContainer/AspectRatioContainer/Icon/SubViewport/Camera2D
-			camera.global_position = marker.global_position
-		#icon.get_camera_2d().global_position = node.global_position
-		#await RenderingServer.frame_post_draw
-		#(icon as SubViewport).get_texture()
-	else:
-		for child in icon.get_children():
-			icon.remove_child(child)
 
 func config():
 	if not scene:
@@ -80,7 +65,7 @@ func config():
 			icon.enabled = false
 		if object is Actor:
 			pass
-		set_icon(object)
+		icon.set_icon(object)
 	mouse_filter = Control.MOUSE_FILTER_STOP
 
 func _ready():

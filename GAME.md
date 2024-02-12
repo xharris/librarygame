@@ -37,25 +37,23 @@ actor:
 	- schedule: work, break, off
 	- being on break will slowly replenish happiness
 	- happiness resets after returning from 'off' (full - slightly full)
-- contractor
+- service
 	- staff but expires after X cycles
 	- schedule: work
 - pet?
 
-structure:
+station:
 - ALL
-	- can have hp
+	- can have hp/durability
 		- decreases after being used
 		- increases via maintenance
-	- can hold X items
+	- has inventory
 	- can hold X patrons for Y-Z time 
 	- can be operated by X patrons for Y time
 	- can cost X dollars to operate
 - wall
 	- 0 operation
 	- hp does not deplete?
-- tile
-	- entities can only walk on connected tiles
 - station (chair, vending machine, security check)
 - storage (bookshelf)
 - door

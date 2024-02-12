@@ -1,17 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://wop0l75iqvv1"]
+[gd_scene load_steps=7 format=3 uid="uid://wop0l75iqvv1"]
 
 [ext_resource type="Script" path="res://scene/ui/card/small_card.gd" id="1_laef3"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3fk0j"]
-bg_color = Color(0.129412, 0.129412, 0.129412, 1)
-border_width_left = 1
-border_width_top = 1
-border_width_right = 1
-border_width_bottom = 1
-border_color = Color(0.619608, 0.619608, 0.619608, 1)
-shadow_color = Color(0.619608, 0.619608, 0.619608, 1)
-shadow_size = 1
-shadow_offset = Vector2(2, 2)
+[ext_resource type="Theme" uid="uid://b8o36u0dt0fx" path="res://scene/ui/theme/game.tres" id="2_bo5vk"]
+[ext_resource type="PackedScene" uid="uid://dlulbffqiut2y" path="res://scene/ui/card/icon.tscn" id="3_54p3j"]
 
 [sub_resource type="FontVariation" id="FontVariation_b4g6r"]
 variation_embolden = 0.5
@@ -29,7 +20,7 @@ offset_bottom = 66.0
 size_flags_horizontal = 0
 size_flags_vertical = 0
 focus_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_3fk0j")
+theme = ExtResource("2_bo5vk")
 script = ExtResource("1_laef3")
 title_label = NodePath("HBoxContainer/LabelSuperContainer/VBoxContainer/HBoxContainer/Title")
 description_label = NodePath("HBoxContainer/LabelSuperContainer/VBoxContainer/HBoxContainer/Description")
@@ -37,27 +28,20 @@ flavor_text_label = NodePath("HBoxContainer/LabelSuperContainer/VBoxContainer/Fl
 label_container = NodePath("HBoxContainer/LabelSuperContainer/VBoxContainer")
 label_super_container = NodePath("HBoxContainer/LabelSuperContainer")
 title_description_separator = NodePath("HBoxContainer/LabelSuperContainer/VBoxContainer/HBoxContainer/ColorRect")
-icon = NodePath("HBoxContainer/AspectRatioContainer/Icon/SubViewport")
+icon = NodePath("HBoxContainer/AspectRatioContainer/Icon")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 2
 theme_override_constants/separation = 0
 
 [node name="AspectRatioContainer" type="AspectRatioContainer" parent="HBoxContainer"]
+clip_contents = true
 layout_mode = 2
 size_flags_horizontal = 3
+theme = ExtResource("2_bo5vk")
 
-[node name="Icon" type="SubViewportContainer" parent="HBoxContainer/AspectRatioContainer"]
+[node name="Icon" parent="HBoxContainer/AspectRatioContainer" instance=ExtResource("3_54p3j")]
 layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="SubViewport" type="SubViewport" parent="HBoxContainer/AspectRatioContainer/Icon"]
-disable_3d = true
-handle_input_locally = false
-size = Vector2i(64, 48)
-render_target_update_mode = 4
-
-[node name="Camera2D" type="Camera2D" parent="HBoxContainer/AspectRatioContainer/Icon/SubViewport"]
 
 [node name="LabelSuperContainer" type="MarginContainer" parent="HBoxContainer"]
 visible = false

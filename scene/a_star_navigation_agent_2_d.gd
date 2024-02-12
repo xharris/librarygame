@@ -70,7 +70,8 @@ func _update_navigation():
 			)
 			#l.debug('connect %d -> %s', [id, neighbor_ids])
 			for neighbor_id in neighbor_ids:
-				grid.connect_points(id, neighbor_id)
+				if id != neighbor_id:
+					grid.connect_points(id, neighbor_id)
 	# iterate stations
 	for station in stations:
 		var id = grid.get_closest_point(station.global_position)

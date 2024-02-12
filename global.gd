@@ -2,7 +2,7 @@ extends Node
 
 var l = Log.new()
 
-
+signal EMPTY_SIGNAL
 
 ## Callable that returns true
 var CALLABLE_TRUE:Callable = func():return true

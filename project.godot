@@ -24,6 +24,7 @@ Util="*res://util.gd"
 StationHelper="*res://station_helper.gd"
 Global="*res://global.gd"
 Palette="*res://palette.gd"
+Events="*res://events.gd"
 
 [editor]
 

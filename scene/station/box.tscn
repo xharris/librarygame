@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://c7gqdrqj1kull"]
+[gd_scene load_steps=4 format=3 uid="uid://c7gqdrqj1kull"]
 
 [ext_resource type="PackedScene" uid="uid://daqdlgnvoww0t" path="res://scene/station.tscn" id="1_lmio4"]
 [ext_resource type="Texture2D" uid="uid://dwrtxvcmdead2" path="res://image/station/box.png" id="2_geb20"]
+[ext_resource type="Script" path="res://scene/ui/icon_marker.gd" id="2_x086h"]
 
 [node name="Box" type="Node2D"]
 
@@ -11,6 +12,7 @@ texture = ExtResource("2_geb20")
 
 [node name="Marker2D" type="Marker2D" parent="."]
 position = Vector2(0, -6)
+script = ExtResource("2_x086h")
 
 [node name="Station" parent="." node_paths=PackedStringArray("center") instance=ExtResource("1_lmio4")]
 title = "Box"

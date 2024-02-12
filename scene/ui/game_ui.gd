@@ -1,11 +1,19 @@
+class_name GameUI
 extends Control
 
-var l = Log.new()
+static var l = Log.new()
+static var GROUP = 'game_ui'
+static var scn_inspect_card = preload('res://scene/ui/card/inspect_card.tscn')
+
+static func get_ui() -> GameUI:
+	return Global.get_tree().get_nodes_in_group(GROUP).front()
 
 @onready var menu_buttons_container := $MarginContainer/VBoxContainer/MenuButtons
-@onready var card_list := $MarginContainer/VBoxContainer/ScrollContainer/MarginContainer/CardList
+@onready var card_list := $MarginContainer/VBoxContainer/HBoxContainer/CardContainer/MarginContainer/CardList
+@onready var inspect_list := $MarginContainer/VBoxContainer/HBoxContainer/InspectContainer/MarginContainer/InspectList
 
 signal add_station(type:Station.STATION_TYPE)
+
 
 ## Returns false if nothing was cleared
 func clear_cards() -> bool:
@@ -16,7 +24,7 @@ func clear_cards() -> bool:
 		map.selection_enabled = false
 	return !nothing_cleared
 	
-func _ready():
+func _ready():	
 	var menu_buttons = menu_buttons_container.get_children()
 	for b in menu_buttons.size():
 		var button = menu_buttons[b] as BaseButton
