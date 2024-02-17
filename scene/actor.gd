@@ -47,7 +47,7 @@ var mood:ACTOR_MOOD = ACTOR_MOOD.NONE
 var happiness = 100
 var move_speed = 50
 var inspection:Array[Dictionary] = [
-	InspectText.build('actor_name', 'name'),
+	InspectText.build('actor_name'),
 	InspectProgress.build('happiness', 'happiness'),
 ]
 

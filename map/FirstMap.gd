@@ -12,4 +12,4 @@ func _ready():
 	inventory.add_item(book)
 
 func _on_map_patron_spawned(actor):
-	pass
+	Modifier.add_modifier(actor, Modifiers.COMFORTABLE)

@@ -4,7 +4,7 @@
 [ext_resource type="Script" path="res://scene/ui/card/inspect_card.gd" id="2_kq0nx"]
 [ext_resource type="PackedScene" uid="uid://dlulbffqiut2y" path="res://scene/ui/card/icon.tscn" id="3_6jc03"]
 
-[node name="InspectCard" type="PanelContainer" node_paths=PackedStringArray("icon", "attribute_list") groups=["inspect_card"]]
+[node name="InspectCard" type="PanelContainer" node_paths=PackedStringArray("icon", "section_list") groups=["inspect_card"]]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -14,8 +14,8 @@ size_flags_horizontal = 0
 size_flags_vertical = 0
 theme = ExtResource("1_wjwgh")
 script = ExtResource("2_kq0nx")
-icon = NodePath("MarginContainer/HBoxContainer/Icon")
-attribute_list = NodePath("MarginContainer/HBoxContainer/AttributeList")
+icon = NodePath("MarginContainer/HBoxContainer/VBoxContainer/Icon")
+section_list = NodePath("MarginContainer/HBoxContainer/SectionList")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
@@ -23,12 +23,23 @@ theme = ExtResource("1_wjwgh")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
 layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
 size_flags_horizontal = 0
 
-[node name="Icon" parent="MarginContainer/HBoxContainer" instance=ExtResource("3_6jc03")]
+[node name="Icon" parent="MarginContainer/HBoxContainer/VBoxContainer" instance=ExtResource("3_6jc03")]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
 
-[node name="AttributeList" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
+[node name="CloseButton" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer"]
 layout_mode = 2
+size_flags_vertical = 10
+text = "X"
+
+[node name="SectionList" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[connection signal="pressed" from="MarginContainer/HBoxContainer/VBoxContainer/CloseButton" to="." method="_on_close_button_pressed"]

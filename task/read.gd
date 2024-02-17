@@ -37,6 +37,9 @@ func enter(args:Dictionary):
 		Book.LENGTH.LONG:
 			time = randi_range(30, 40)
 	progress_bar.value = pages_read / book.pages * 100
+	# are they comfy?
+	if Modifier.has_modifier(actor, Modifiers.COMFORTABLE):
+		time *= .8
 	l.debug('%s started reading, start_page=%d length_remaining=%s time=%d', 
 		[actor, pages_read, Book.LENGTH.find_key(remaining_length), time])
 	timer.start(time)
@@ -77,7 +80,8 @@ func _process(delta):
 	if timer.wait_time > 0:
 		weight = (timer.wait_time - timer.time_left) / timer.wait_time
 	progress_bar.value = lerp(0, 100, weight)
-	progress = progress_bar.value
+	progress = weight * 100
+	Events.inspect_card_update_value.emit(actor, inspection)
 
 func _on_read_timer_timeout():
 	fsm.set_state('Idle')

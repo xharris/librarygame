@@ -34,3 +34,9 @@ var maps = [
 		scene=preload("res://map/FirstMap.tscn")
 	}
 ]
+
+var INSPECT_SECTION = {
+	BUFF = 'good',
+	DEBUFF = 'bad',
+	NEUTRAL = 'neutral',
+}

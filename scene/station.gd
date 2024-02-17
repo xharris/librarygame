@@ -64,6 +64,7 @@ func use(node:Actor):
 			node.reparent(self)
 		else:
 			add_child(node)
+		Events.actor_use_station.emit(node, self)
 		var center = get_center()
 		if center:
 			node.position = center.position
@@ -75,6 +76,7 @@ func done_using(node:Actor):
 	if not map:
 		return
 	node.reparent(map)
+	Events.actor_free_station.emit(node, self)
 
 ## Remove from map
 func remove():
