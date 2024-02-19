@@ -1,3 +1,4 @@
+@icon('../icon/check-circle.svg')
 class_name BTSucceeder
 extends BTDecorator
 

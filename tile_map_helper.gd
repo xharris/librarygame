@@ -16,7 +16,8 @@ class RandomTile:
 		return tilemap != null && cell != null
 	func map_to_global():
 		return tilemap.to_global(tilemap.map_to_local(cell))
-
+		
+## TODO deprecate for Map.get_random_cell
 func get_random_tilemap_cell(filter: Callable = Callable()) -> RandomTile:
 	var tilemap := get_tree().get_nodes_in_group(Map.GROUP).front() as Map
 	var rand_tile = RandomTile.new()

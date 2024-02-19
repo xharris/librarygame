@@ -46,7 +46,7 @@ func _update_navigation():
 			if not map_cells.has(cell):
 				continue
 			var neighbor_ids:Array[int] = []
-			var cell_Neighbor = [
+			var cell_neighbor = [
 				TileSet.CELL_NEIGHBOR_RIGHT_SIDE,
 				TileSet.CELL_NEIGHBOR_RIGHT_CORNER,
 				TileSet.CELL_NEIGHBOR_BOTTOM_RIGHT_SIDE,
@@ -63,7 +63,7 @@ func _update_navigation():
 				TileSet.CELL_NEIGHBOR_TOP_RIGHT_CORNER
 			]
 			neighbor_ids.assign(
-				cell_Neighbor.\
+				cell_neighbor.\
 				map(func(n:int):return _map.get_neighbor_cell(cell, n)).\
 				map(_get_point_id).\
 				filter(func(n:int):return grid.has_point(n) and not grid.is_point_disabled(n))
@@ -95,7 +95,7 @@ func _update_path():
 	var previous_path_size = path.size()
 	var from_id = grid.get_closest_point(agent.global_position)
 	var to_id = grid.get_closest_point(_target_position)
-	if from_id == to_id:
+	if from_id == to_id and not _done:
 		l.info('%s target reached (no movement)', [agent])
 		stop()
 		target_reached.emit()
@@ -110,7 +110,7 @@ func _update_path():
 
 var target_position:Vector2:
 	set(value):
-		if _map:
+		if _map and value != _target_position:
 			_target_position = value
 			_update_path()
 	get:

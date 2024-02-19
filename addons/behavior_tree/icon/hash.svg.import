@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://41ef33fvqsmf"
-path="res://.godot/imported/Tree.svg-fafbeea0ddd31eb015ccef3074ec055e.ctex"
+uid="uid://bi4is4w63tfsi"
+path="res://.godot/imported/hash.svg-21ecddb59bb11fa8ee677221dee0ac21.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/behavior_tree/icon/Tree.svg"
-dest_files=["res://.godot/imported/Tree.svg-fafbeea0ddd31eb015ccef3074ec055e.ctex"]
+source_file="res://addons/behavior_tree/icon/hash.svg"
+dest_files=["res://.godot/imported/hash.svg-21ecddb59bb11fa8ee677221dee0ac21.ctex"]
 
 [params]
 

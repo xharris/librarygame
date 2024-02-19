@@ -51,11 +51,21 @@ var inspection:Array[Dictionary] = [
 	InspectProgress.build('happiness', 'happiness'),
 ]
 
+func move_to(target:Vector2, speed:int = 50, _target_distance:int = 1):
+	l.debug('%s move_to from %s to %s',[self, global_position, target])
+	navigation.target_position = target
+	move_speed = speed
+	animation.play('walk')
+
+func stop_moving():
+	navigation.stop()
+	animation.play('stand')
+	
 func add_task(task:Task):
 	var task_mgr = find_child('TaskManager')
 	if not task_mgr:
 		return l.warn('%s does not have TaskManager', [self])
-	task_mgr.add_child(task)
+	#task_mgr.add_child(task)
 
 func random_tile_filter(cell:Vector2i, map:Map):
 	var cell_source = map.get_cell_source_id(0, cell)
@@ -66,15 +76,6 @@ func random_tile_filter(cell:Vector2i, map:Map):
 func is_active() -> bool:
 	return find_parent('Map') != null
 
-## Returns false if the target is too close
-func move_to(target:Vector2, speed:int = 50, _target_distance:int = 1) -> bool:
-	l.debug('%s move_to from %s to %s',[self, global_position, target])
-	navigation.target_position = target
-	move_speed = speed
-	return true
-
-func stop_moving():
-	navigation.stop()
 
 ## Returns true if moving
 func nav_move() -> bool:
@@ -105,3 +106,4 @@ func _physics_process(_delta):
 func _on_input_event(viewport, event, shape_idx):
 	if event.is_action_pressed('select'):
 		InspectCard.show_card(self)
+

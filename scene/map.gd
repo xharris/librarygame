@@ -10,6 +10,14 @@ enum TILE_NAME {NORMAL,EMPTY,NO_IDLE,ENTRANCE}
 static func get_current_map() -> Map:
 	return Global.get_tree().get_nodes_in_group(GROUP).front() as Map
 
+class RandomTile:
+	var tilemap: Map
+	var cell: Vector2i
+	func is_valid():
+		return tilemap != null && cell != null
+	func map_to_global() -> Vector2:
+		return tilemap.to_global(tilemap.map_to_local(cell))
+
 var inventories = {}
 var nav_layer_name = 'nav'
 var map_layer_name = 'map'
@@ -20,6 +28,16 @@ var tile_outline_color:Color
 
 signal patron_spawned(actor:Actor)
 signal tile_select(event:InputEvent, global_position:Vector2, map_position:Vector2i)
+
+func get_random_cell(filter: Callable = Callable()) -> RandomTile:
+	var rand_tile = RandomTile.new()
+	rand_tile.tilemap = self
+	var cells = get_used_cells(0)
+	if filter.is_valid():
+		cells = cells.filter(filter.bind(self))
+	if cells.size():
+		rand_tile.cell = cells.pick_random()
+	return rand_tile
 
 func is_tile_empty(coords:Vector2i) -> bool:
 	var nav_layer = TileMapHelper.get_layer_by_name(self, nav_layer_name)

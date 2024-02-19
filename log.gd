@@ -9,13 +9,14 @@ func new(_level:LEVEL = LEVEL.INFO) -> Logger:
 class Logger:
 	var log_name:String = '_'
 	var level:LEVEL = LEVEL.INFO
+	var stack_offset:int = 0
 
 	func _init(_level:LEVEL = LEVEL.INFO):
 		level = _level
 
 	func _log(_level:LEVEL, icon:String, message:Variant, args:Array = []) -> bool:
 		if Log.global_level <= _level or level <= _level:
-			var stack = get_stack().pop_at(2)
+			var stack = get_stack().pop_at(2+stack_offset)
 			var content = str(message)
 			if args.size():
 				content = message % args

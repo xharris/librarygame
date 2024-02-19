@@ -1,3 +1,4 @@
+@icon('../icon/hash.svg')
 class_name BTLimiter
 extends BTDecorator
 

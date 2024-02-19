@@ -1,3 +1,4 @@
+@icon('../icon/alert-circle.svg')
 class_name BTInverter
 extends BTDecorator
 

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://begnqu7xu65ah"
-path="res://.godot/imported/sequence.svg-13620e54ff9cdb72ff55a1410f44301e.ctex"
+uid="uid://ciw5ebckur6j6"
+path="res://.godot/imported/help-circle.svg-a7edee10203ebf0edb007023dc4b0485.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/behavior_tree/icon/sequence.svg"
-dest_files=["res://.godot/imported/sequence.svg-13620e54ff9cdb72ff55a1410f44301e.ctex"]
+source_file="res://addons/behavior_tree/icon/help-circle.svg"
+dest_files=["res://.godot/imported/help-circle.svg-a7edee10203ebf0edb007023dc4b0485.ctex"]
 
 [params]
 

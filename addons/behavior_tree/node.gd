@@ -3,5 +3,5 @@ extends BehaviorTree
 
 enum STATUS { RUNNING, SUCCESS, FAILURE }
 
-func tick(actor:Node2D, data:Dictionary) -> STATUS:
+func tick(actor, data:Dictionary) -> STATUS:
 	return STATUS.FAILURE
