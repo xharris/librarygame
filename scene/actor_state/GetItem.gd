@@ -6,7 +6,6 @@ var l = Log.new()
 
 var item_template:Item.ItemTemplate
 var found_inventory:Inventory
-var happiness_loss:int
 
 func item_not_found():
 	# TODO lose happiness
@@ -20,7 +19,6 @@ func item_got():
 func enter(args:Dictionary):	
 	var item_id := args.get('item_id', Item.ID_NONE) as int
 	var item_filter := args.get('item_filter', Global.CALLABLE_TRUE) as Callable
-	happiness_loss = args.get('happiness_loss', 0) as int
 	
 	if item_id != Item.ID_NONE:
 		item_template = Item.find_by_id(item_id)
@@ -39,7 +37,7 @@ func enter(args:Dictionary):
 		.front() as Inventory
 	)
 	if not found_inventory:
-		l.info('Inventory not found, -%d happiness', [happiness_loss])
+		l.info('Inventory not found')
 		return item_not_found
 		
 	# move to inventory

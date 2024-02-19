@@ -5,6 +5,7 @@ extends State
 static var l = Log.new(Log.LEVEL.DEBUG)
 static var _scn_tasks:Dictionary = {}
 static var TASKS_PATH = 'res://task'
+static var SECTION = 'task'
 
 static func _static_init():
 	for task_file in DirAccess.get_files_at(TASKS_PATH):

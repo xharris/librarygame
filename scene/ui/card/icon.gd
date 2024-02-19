@@ -20,7 +20,6 @@ func _get_sprites(node:Node2D, sprites:Array[Node2D] = [], parent:Node2D = node)
 			copy.texture = texture
 		if copy:
 			copy.position = parent.to_local(child.global_position)
-			l.info('%s %s', [child, child.position])
 			sprites.append(copy)
 		elif child is Node2D:
 			_get_sprites(child, sprites, parent)

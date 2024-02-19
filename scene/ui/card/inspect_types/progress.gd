@@ -12,5 +12,5 @@ func update_value():
 	var property = args.get('property') as String
 	var label = args.get('label', property) as String
 	
-	label_node.text = property
+	label_node.text = label
 	progress_bar.value = node[property] as int

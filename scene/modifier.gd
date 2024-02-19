@@ -68,7 +68,7 @@ func _ready():
 	modifier_name = _modifier_data.get(id) as String
 	# inspection
 	inspection = [
-		InspectText.build('inspect_args', '{0} x{1}') ## TODO fix formatting
+		InspectText.build('inspect_args', '{0} x{1}')
 	]
 	_update_inspection_args()
 	var parent = get_parent()

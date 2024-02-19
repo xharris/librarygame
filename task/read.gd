@@ -43,8 +43,8 @@ func enter(args:Dictionary):
 	l.debug('%s started reading, start_page=%d length_remaining=%s time=%d', 
 		[actor, pages_read, Book.LENGTH.find_key(remaining_length), time])
 	timer.start(time)
-	progress_bar.show()
-	InspectCard.add_properties(actor, inspection, self)
+	#progress_bar.show() ## TODO remove progress bar
+	InspectCard.add_properties(actor, inspection, self, Task.SECTION)
 
 func leave():
 	timer.paused = true
@@ -54,11 +54,9 @@ func leave():
 		l.info('%s reading progress %d%%', [actor, progress * 100])
 		var book := actor.inventory.get_item(current_book).get_wrapper() as Book
 		bookmarks[current_book] = progress * book.pages
-		# TODO happiness--
 	else:
 		# finished reading 
 		l.info('%s finished reading', [actor])
-		# TODO happiness++
 		book_list = book_list.filter(func(b:int):return b != current_book)
 		if bookmarks.has(current_book):
 			bookmarks.erase(current_book)

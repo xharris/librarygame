@@ -7,6 +7,9 @@ static var LAYER_MAP = 'map'
 
 enum TILE_NAME {NORMAL,EMPTY,NO_IDLE,ENTRANCE}
 
+static func get_current_map() -> Map:
+	return Global.get_tree().get_nodes_in_group(GROUP).front() as Map
+
 var inventories = {}
 var nav_layer_name = 'nav'
 var map_layer_name = 'map'
