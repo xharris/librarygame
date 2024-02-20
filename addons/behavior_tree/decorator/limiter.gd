@@ -6,7 +6,7 @@ extends BTDecorator
 
 var _called = 0
 
-func transform(response:STATUS):
+func transform(response:STATUS, data:Dictionary):
 	_called += 1
 	if _called >= limit:
 		return STATUS.FAILURE

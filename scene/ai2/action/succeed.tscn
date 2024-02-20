@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://payyoaw032g6"]
+
+[ext_resource type="Script" path="res://addons/beehave/nodes/leaves/action.gd" id="1_bv60t"]
+
+[node name="Succeed" type="Node"]
+script = ExtResource("1_bv60t")

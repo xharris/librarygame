@@ -1,7 +1,7 @@
 class_name BTDecorator
 extends BTNode
 
-func transform(response:STATUS) -> STATUS:
+func transform(response:STATUS, data:Dictionary) -> STATUS:
 	return response
 
 func tick(actor:Node, data:Dictionary):
@@ -9,5 +9,5 @@ func tick(actor:Node, data:Dictionary):
 		var child = get_children().front()
 		if child is BTNode:
 			var response = child.tick(actor, data)
-			return transform(response)
+			return transform(response, data)
 	return STATUS.SUCCESS

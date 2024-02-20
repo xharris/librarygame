@@ -7,12 +7,14 @@ extends BTDecorator
 ## child node. The delayer resets its time after its child returns either 
 ## SUCCESS or FAILURE.
 
-@export var duration:int
+@export var duration:int = 0
+@export var duration_key:String = ''
 var _t = 0
 
-func tick(actor:Node, data:Dictionary):
+func transform(response:STATUS, data:Dictionary):
+	var _duration = data.get(duration_key, duration) as int
 	if _t >= duration:
 		_t = 0
-		return super(actor, data)
+		return response
 	_t += get_physics_process_delta_time()
-	return STATUS.RUNNING
+	return running('Wait %ds' % [duration])

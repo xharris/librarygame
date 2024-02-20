@@ -20,7 +20,7 @@ class Logger:
 			var content = str(message)
 			if args.size():
 				content = message % args
-			print('['+icon+'] '+content+' \t\t('+stack.get('source')+':'+str(stack.get('line'))+')')
+			print('['+icon+'] '+content+' \t\t('+stack.get('source').get_file()+':'+str(stack.get('line'))+')')
 			return true
 		return false
 

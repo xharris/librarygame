@@ -59,11 +59,7 @@ func has_user(node:Actor) -> bool:
 func use(node:Actor):
 	l.debug('%s use %s (%s)', [node, STATION_TYPE.find_key(type), get_instance_id()])
 	if type == STATION_TYPE.SEAT:
-		node.stop_moving()
-		if node.get_parent():
-			node.reparent(self)
-		else:
-			add_child(node)
+		node.reparent(self)
 		Events.actor_use_station.emit(node, self)
 		var center = get_center()
 		if center:

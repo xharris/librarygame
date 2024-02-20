@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://bm4mjp25oddde"]
+
+[ext_resource type="Script" path="res://scene/ai/action/use_seat.gd" id="1_iu4jd"]
+
+[node name="UseSeat" type="Node"]
+script = ExtResource("1_iu4jd")

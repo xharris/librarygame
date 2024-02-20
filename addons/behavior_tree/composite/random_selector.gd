@@ -2,15 +2,16 @@
 class_name BTRandomSelector
 extends BTComposite
 
-var _random_child:BTNode
+var _children:Array[BTNode]
+
+func _ready():
+	_children.assign(get_children())
+	_children.shuffle()
 
 func tick(actor:Node, data:Dictionary):
-	if not _random_child:
-		_random_child = get_children().pick_random()
-	if _random_child:
-		var response = _random_child.tick(actor, data)
-		log_node_status(_random_child, response)
-		if response != STATUS.RUNNING:
-			_random_child = null
-			return response
+	for child in _children:
+		if child is BTNode:
+			var response = child.tick(actor, data)
+			if response != STATUS.FAILURE:
+				return response
 	return STATUS.FAILURE

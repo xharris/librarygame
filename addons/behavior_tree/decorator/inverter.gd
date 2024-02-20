@@ -2,7 +2,7 @@
 class_name BTInverter
 extends BTDecorator
 
-func transform(response:STATUS):
+func transform(response:STATUS, data:Dictionary):
 	match response:
 		STATUS.SUCCESS:
 			return STATUS.FAILURE

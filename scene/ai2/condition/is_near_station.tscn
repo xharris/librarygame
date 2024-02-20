@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://dl2tvkolt3imi"]
+
+[ext_resource type="Script" path="res://scene/ai2/condition/is_near_station.gd" id="1_k5r85"]
+
+[node name="IsNearStation" type="Node"]
+script = ExtResource("1_k5r85")

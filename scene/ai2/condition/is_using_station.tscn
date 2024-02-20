@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://dfj6frf461btp"]
+
+[ext_resource type="Script" path="res://scene/ai2/condition/is_using_station.gd" id="1_fgodv"]
+
+[node name="IsUsingStation" type="Node"]
+script = ExtResource("1_fgodv")

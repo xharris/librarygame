@@ -1,4 +1,8 @@
-build a library
+# TODO NEXT (only one at a time)
+
+> Turn GetItem state into Behavior Tree sequence
+
+# build a library
 
 start with a small room and a box of random books
 

@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://0jgf5c4v3lah"]
+
+[ext_resource type="Script" path="res://addons/beehave/nodes/decorators/delayer.gd" id="1_dv2e1"]
+
+[node name="Wait" type="Node"]
+script = ExtResource("1_dv2e1")

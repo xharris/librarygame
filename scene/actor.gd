@@ -56,11 +56,21 @@ func move_to(target:Vector2, speed:int = 50, _target_distance:int = 1):
 	navigation.target_position = target
 	move_speed = speed
 	animation.play('walk')
+	if global_position.distance_to(target) <= _target_distance:
+		stop_moving()
 
 func stop_moving():
 	navigation.stop()
 	animation.play('stand')
+
+func sit():
+	stop_moving()
+	animation.play('sit')
 	
+func stand():
+	stop_moving()
+	animation.play('stand')
+
 func add_task(task:Task):
 	var task_mgr = find_child('TaskManager')
 	if not task_mgr:
@@ -98,9 +108,8 @@ func _ready():
 	InspectCard.add_properties(self, inspection)
 
 func _physics_process(_delta):
-	if nav_move():
-		animation.play('walk')
-		face_move_direction()
+	nav_move()
+	face_move_direction()
 	move_and_slide()
 
 func _on_input_event(viewport, event, shape_idx):

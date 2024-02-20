@@ -11,7 +11,7 @@ var grid:AStar2D
 var path:Array[int] = []
 var velocity:Vector2 = Vector2.ZERO
 var _map:Map
-var _target_position:Vector2
+var _target_position:Vector2 = Vector2.INF
 var _needs_update = false
 var _done = true
 var weight_colors = [Color.GREEN, Color.YELLOW, Color.RED]
@@ -47,27 +47,29 @@ func _update_navigation():
 				continue
 			var neighbor_ids:Array[int] = []
 			var cell_neighbor = [
-				TileSet.CELL_NEIGHBOR_RIGHT_SIDE,
+				TileSet.CELL_NEIGHBOR_LEFT_CORNER,
+				#TileSet.CELL_NEIGHBOR_RIGHT_SIDE,
 				TileSet.CELL_NEIGHBOR_RIGHT_CORNER,
 				TileSet.CELL_NEIGHBOR_BOTTOM_RIGHT_SIDE,
-				TileSet.CELL_NEIGHBOR_BOTTOM_RIGHT_CORNER,
-				TileSet.CELL_NEIGHBOR_BOTTOM_SIDE,
+				#TileSet.CELL_NEIGHBOR_BOTTOM_RIGHT_CORNER,
+				#TileSet.CELL_NEIGHBOR_BOTTOM_SIDE,
 				TileSet.CELL_NEIGHBOR_BOTTOM_CORNER,
 				TileSet.CELL_NEIGHBOR_BOTTOM_LEFT_SIDE,
-				TileSet.CELL_NEIGHBOR_BOTTOM_LEFT_CORNER,
+				#TileSet.CELL_NEIGHBOR_BOTTOM_LEFT_CORNER,
 				TileSet.CELL_NEIGHBOR_TOP_LEFT_SIDE,
-				TileSet.CELL_NEIGHBOR_TOP_LEFT_CORNER,
-				TileSet.CELL_NEIGHBOR_TOP_SIDE,
+				#TileSet.CELL_NEIGHBOR_TOP_LEFT_CORNER,
+				#TileSet.CELL_NEIGHBOR_TOP_SIDE,
 				TileSet.CELL_NEIGHBOR_TOP_CORNER,
 				TileSet.CELL_NEIGHBOR_TOP_RIGHT_SIDE,
-				TileSet.CELL_NEIGHBOR_TOP_RIGHT_CORNER
+				#TileSet.CELL_NEIGHBOR_TOP_RIGHT_CORNER
 			]
-			neighbor_ids.assign(
-				cell_neighbor.\
-				map(func(n:int):return _map.get_neighbor_cell(cell, n)).\
-				map(_get_point_id).\
-				filter(func(n:int):return grid.has_point(n) and not grid.is_point_disabled(n))
-			)
+			for n in cell_neighbor:
+				var neighbor = _map.get_neighbor_cell(cell, n)
+				if not neighbor:
+					continue
+				var point_id = _get_point_id(neighbor)
+				if grid.has_point(point_id) and not grid.is_point_disabled(point_id):
+					neighbor_ids.append(point_id)
 			#l.debug('connect %d -> %s', [id, neighbor_ids])
 			for neighbor_id in neighbor_ids:
 				if id != neighbor_id:
@@ -92,11 +94,12 @@ func _update_navigation():
 	queue_redraw()
 
 func _update_path():
+	_done = false
 	var previous_path_size = path.size()
 	var from_id = grid.get_closest_point(agent.global_position)
 	var to_id = grid.get_closest_point(_target_position)
 	if from_id == to_id and not _done:
-		l.info('%s target reached (no movement)', [agent])
+		l.debug('%s target reached (no movement)', [agent])
 		stop()
 		target_reached.emit()
 		return
@@ -104,7 +107,6 @@ func _update_path():
 	if path.size() == 0 and previous_path_size > 0:
 		l.info('%s blocked', [agent])
 		blocked.emit()
-	_done = false
 	l.debug('target_position %s -> %s path=%s', [from_id, to_id, path])
 	queue_redraw()
 
@@ -162,9 +164,9 @@ func _physics_process(delta):
 	var target_position = get_next_position()
 	if target_position.distance_to(agent.global_position) <= target_desired_distance:
 		# reached next point
-		if not is_pathing() and not _done:
+		if path.size() <= 1 and not _done:
 			# navigation finished
-			l.info('%s target reached', [agent])
+			l.debug('%s target reached', [agent])
 			stop()
 			target_reached.emit()
 			return
