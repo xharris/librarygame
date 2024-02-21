@@ -64,6 +64,9 @@ func get_all_items() -> Array[Item]:
 	items.assign(get_children().map(func(c:Node2D):return Item.get_item_node(c)).filter(func(c:Node): return c != null))
 	return items
 
+func size() -> int:
+	return get_children().size()
+
 func get_items(id:int) -> Array[Item]:
 	var items := get_all_items()
 	return items.filter(func(i:Item): return i.id == id)

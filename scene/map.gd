@@ -5,7 +5,7 @@ static var l = Log.new()
 static var GROUP = 'map'
 static var LAYER_MAP = 'map'
 
-enum TILE_NAME {NORMAL,EMPTY,NO_IDLE,ENTRANCE}
+enum TILE_NAME {NORMAL,EMPTY,NO_IDLE,ENTRANCE,NONE}
 
 static func get_current_map() -> Map:
 	return Global.get_tree().get_nodes_in_group(GROUP).front() as Map
@@ -49,6 +49,14 @@ func get_layer_by_name(layer_name:String) -> int:
 		if get_layer_name(l) == layer_name:
 			return l
 	return -1
+
+func get_tile_name(cell:Vector2i) -> TILE_NAME:
+	var src := tile_set.get_source(get_cell_source_id(0, cell))
+	if not src:
+		return TILE_NAME.NONE
+	return TILE_NAME.get(src.resource_name.to_upper())
+	
+	
 
 func get_tile_coords(_tile_name:TILE_NAME) -> Array[Vector2]:
 	var tile_name = (TILE_NAME.find_key(_tile_name) as String).to_lower()

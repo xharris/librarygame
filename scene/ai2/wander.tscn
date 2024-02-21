@@ -1,0 +1,25 @@
+[gd_scene load_steps=7 format=3 uid="uid://biyib4li8fqpa"]
+
+[ext_resource type="Script" path="res://addons/beehave/nodes/composites/sequence.gd" id="1_5p1am"]
+[ext_resource type="PackedScene" uid="uid://c05skhuap770e" path="res://scene/ai2/action/get_random_cell.tscn" id="2_g7aoh"]
+[ext_resource type="PackedScene" uid="uid://x4djpvux2qnq" path="res://scene/ai2/action/walk_to.tscn" id="3_sifq0"]
+[ext_resource type="PackedScene" uid="uid://b6m4wykfi626h" path="res://scene/ai2/action/stand.tscn" id="4_0jps8"]
+[ext_resource type="Script" path="res://addons/beehave/nodes/decorators/delayer.gd" id="5_qkvvs"]
+[ext_resource type="PackedScene" uid="uid://payyoaw032g6" path="res://scene/ai2/action/succeed.tscn" id="6_rwl4q"]
+
+[node name="Wander" type="Node"]
+script = ExtResource("1_5p1am")
+
+[node name="GetRandomCell" parent="." instance=ExtResource("2_g7aoh")]
+random_cell_key = "random_cell"
+
+[node name="WalkTo" parent="." instance=ExtResource("3_sifq0")]
+target_key = "random_cell"
+
+[node name="Stand" parent="." instance=ExtResource("4_0jps8")]
+
+[node name="Wait" type="Node" parent="."]
+script = ExtResource("5_qkvvs")
+wait_time = 3.0
+
+[node name="Succeed" parent="Wait" instance=ExtResource("6_rwl4q")]

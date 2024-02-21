@@ -1,6 +1,7 @@
-# TODO NEXT (only one at a time)
+# TODOS
 
-> Turn GetItem state into Behavior Tree sequence
+> Prevent wandering on a cell containing a station
+> Wander after SitAround is finished
 
 # build a library
 
