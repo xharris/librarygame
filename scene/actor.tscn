@@ -193,7 +193,7 @@ animations = [{
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_1yteg"]
 
-[node name="Actor" type="CharacterBody2D" node_paths=PackedStringArray("sprite_transform", "animation", "navigation", "task_manager") groups=["actors"]]
+[node name="Actor" type="CharacterBody2D" node_paths=PackedStringArray("sprite_transform", "animation", "navigation", "task_manager") groups=["actors", "persistent"]]
 collision_layer = 2
 collision_mask = 0
 input_pickable = true
@@ -273,7 +273,7 @@ script = ExtResource("19_xhymj")
 
 [node name="AI" type="Node" parent="." node_paths=PackedStringArray("blackboard", "actor")]
 script = ExtResource("14_omcwp")
-blackboard = NodePath("@Node@17484")
+blackboard = NodePath("@Node@26228")
 actor = NodePath("..")
 
 [node name="PickATask" type="Node" parent="AI"]

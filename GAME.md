@@ -1,7 +1,6 @@
 # TODOS
 
-> Prevent wandering on a cell containing a station
-> Wander after SitAround is finished
+> Add behavior: Deliver a book to a station
 
 # build a library
 

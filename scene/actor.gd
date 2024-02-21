@@ -11,6 +11,8 @@ static var l = Log.new()
 enum ACTOR_ROLE {PATRON,STAFF,SERVICE}
 enum ACTOR_MOOD {NONE,HAPPY,SAD,ANGRY}
 
+static var actor_name_gen:Callable
+
 static func build(role:ACTOR_ROLE) -> Actor:
 	var actor = scn_actor.instantiate() as Actor
 	match role:
@@ -41,7 +43,7 @@ static func get_at_map_cell(cell:Vector2i) -> Array[Actor]:
 @export var navigation:AStarNavigationAgent2D
 @export var task_manager:TaskManager
 
-var actor_name:String = 'Mr. Bigglesworth'
+var actor_name:String
 var role:ACTOR_ROLE = ACTOR_ROLE.PATRON
 var mood:ACTOR_MOOD = ACTOR_MOOD.NONE
 var happiness = 100
@@ -70,6 +72,12 @@ func sit():
 func stand():
 	stop_moving()
 	animation.play('stand')
+
+func save():
+	return {
+		'actor_name':actor_name,
+		'role':role
+	}
 
 func add_task(task:Task):
 	var task_mgr = find_child('TaskManager')
@@ -103,6 +111,7 @@ func start_next_task() -> bool:
 	return task_manager.start_next_task()
 
 func _ready():
+	actor_name = NameGenerator.actor_name.call()
 	add_to_group(GROUP)
 	label.text = String.num(get_instance_id()).right(4)
 	InspectCard.add_properties(self, inspection)

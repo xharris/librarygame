@@ -1,0 +1,15 @@
+[gd_scene load_steps=4 format=3 uid="uid://mcib6ni56q7o"]
+
+[ext_resource type="Script" path="res://addons/beehave/nodes/composites/sequence.gd" id="1_qce4h"]
+[ext_resource type="PackedScene" uid="uid://c05skhuap770e" path="res://scene/ai2/action/get_random_cell.tscn" id="2_iapgw"]
+[ext_resource type="PackedScene" uid="uid://x4djpvux2qnq" path="res://scene/ai2/action/walk_to.tscn" id="3_au8yx"]
+
+[node name="Leave" type="Node"]
+script = ExtResource("1_qce4h")
+
+[node name="GetRandomCell" parent="." instance=ExtResource("2_iapgw")]
+random_cell_key = "entrance"
+is_tile_name = 3
+
+[node name="WalkTo" parent="." instance=ExtResource("3_au8yx")]
+target_key = "entrance"

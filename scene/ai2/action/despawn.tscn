@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://cg7cwo6gvmwoh"]
+
+[ext_resource type="Script" path="res://scene/ai2/action/despawn.gd" id="1_yw4ix"]
+
+[node name="Despawn" type="Node"]
+script = ExtResource("1_yw4ix")
