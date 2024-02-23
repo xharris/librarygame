@@ -78,13 +78,17 @@ theme_override_constants/separation = 32
 
 [node name="AddStation" parent="MarginContainer/VBoxContainer/MenuButtons" node_paths=PackedStringArray("card_container") instance=ExtResource("2_pa2x6")]
 layout_mode = 2
-text = "STA"
+text = "STATION"
 resource_path = "res://scene/station"
 card_container = NodePath("../../HBoxContainer/CardContainer/MarginContainer/CardList")
 
+[node name="BuyBook" type="Button" parent="MarginContainer/VBoxContainer/MenuButtons"]
+layout_mode = 2
+text = "BOOK"
+
 [node name="Delete" type="Button" parent="MarginContainer/VBoxContainer/MenuButtons"]
 layout_mode = 2
-text = "DEL"
+text = "DELETE"
 
 [connection signal="gui_input" from="." to="." method="_on_control_gui_input"]
 [connection signal="pressed" from="MarginContainer/VBoxContainer/MenuButtons/Delete" to="." method="_on_delete_pressed"]

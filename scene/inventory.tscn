@@ -1,8 +1,13 @@
-[gd_scene load_steps=2 format=3 uid="uid://bnwrpj700kxul"]
+[gd_scene load_steps=4 format=3 uid="uid://bnwrpj700kxul"]
 
 [ext_resource type="Script" path="res://scene/inventory.gd" id="1_y13mj"]
+[ext_resource type="PackedScene" uid="uid://b84re4ema3cr6" path="res://scene/persistent/persistent_data.tscn" id="2_4mmq8"]
+[ext_resource type="Script" path="res://scene/persistent/inventory.gd" id="3_dhv08"]
 
 [node name="Inventory" type="Node2D"]
 script = ExtResource("1_y13mj")
+
+[node name="PersistentData" parent="." instance=ExtResource("2_4mmq8")]
+script = ExtResource("3_dhv08")
 
 [connection signal="tree_exiting" from="." to="." method="_on_tree_exiting"]

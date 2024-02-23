@@ -1,0 +1,13 @@
+[gd_scene load_steps=2 format=3 uid="uid://bwyrki1px6tcl"]
+
+[sub_resource type="GDScript" id="GDScript_0m3ac"]
+script/source = "class_name CardInfo
+extends Node
+
+@export var title:String
+@export var description:String
+@export var flavor_text:String
+"
+
+[node name="CardInfo" type="Node"]
+script = SubResource("GDScript_0m3ac")

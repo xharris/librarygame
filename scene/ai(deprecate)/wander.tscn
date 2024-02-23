@@ -1,11 +1,11 @@
 [gd_scene load_steps=7 format=3 uid="uid://d00e0nf8swfc"]
 
 [ext_resource type="Script" path="res://addons/behavior_tree/composite/sequencer.gd" id="1_cf2l8"]
-[ext_resource type="PackedScene" uid="uid://ccjpo14xfg45v" path="res://scene/ai/action/get_random_cell.tscn" id="2_66ujq"]
-[ext_resource type="PackedScene" uid="uid://btcc0niqklci2" path="res://scene/ai/action/walk_to.tscn" id="3_xmx2q"]
-[ext_resource type="PackedScene" uid="uid://bghcgt1kdxucb" path="res://scene/ai/action/get_random_int.tscn" id="4_fjd40"]
+[ext_resource type="PackedScene" uid="uid://ccjpo14xfg45v" path="res://scene/ai(deprecate)/action/get_random_cell.tscn" id="2_66ujq"]
+[ext_resource type="PackedScene" uid="uid://btcc0niqklci2" path="res://scene/ai(deprecate)/action/walk_to.tscn" id="3_xmx2q"]
+[ext_resource type="PackedScene" uid="uid://bghcgt1kdxucb" path="res://scene/ai(deprecate)/action/get_random_int.tscn" id="4_fjd40"]
 [ext_resource type="Script" path="res://addons/behavior_tree/decorator/delayer.gd" id="4_hm6nn"]
-[ext_resource type="PackedScene" uid="uid://bm0yvr4n870ax" path="res://scene/ai/action/clear_keys.tscn" id="6_yto8b"]
+[ext_resource type="PackedScene" uid="uid://bm0yvr4n870ax" path="res://scene/ai(deprecate)/action/clear_keys.tscn" id="6_yto8b"]
 
 [node name="Wander" type="Node"]
 script = ExtResource("1_cf2l8")

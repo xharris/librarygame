@@ -11,14 +11,9 @@ static var l = Log.new()
 enum ACTOR_ROLE {PATRON,STAFF,SERVICE}
 enum ACTOR_MOOD {NONE,HAPPY,SAD,ANGRY}
 
-static var actor_name_gen:Callable
-
 static func build(role:ACTOR_ROLE) -> Actor:
 	var actor = scn_actor.instantiate() as Actor
-	match role:
-		ACTOR_ROLE.PATRON:
-			var read_task := scn_read.instantiate() as Read
-			actor.add_task(read_task)
+	actor.role = role
 	return actor
 
 static func get_actor_node(node:Node2D) -> Actor:
@@ -73,27 +68,13 @@ func stand():
 	stop_moving()
 	animation.play('stand')
 
-func save():
-	return {
-		'actor_name':actor_name,
-		'role':role
-	}
-
-func add_task(task:Task):
-	var task_mgr = find_child('TaskManager')
-	if not task_mgr:
-		return l.warn('%s does not have TaskManager', [self])
-	#task_mgr.add_child(task)
-
-func random_tile_filter(cell:Vector2i, map:Map):
-	var cell_source = map.get_cell_source_id(0, cell)
-	var stations = StationHelper.get_all()
-	var has_station = stations.any(func(s:Station):return s.map_cell == cell)
-	return not has_station and cell_source != Map.TILE_NAME.ENTRANCE and cell_source != Map.TILE_NAME.NO_IDLE
+func despawn():
+	var parent = get_parent()
+	if parent:
+		parent.remove_child(self)
 
 func is_active() -> bool:
 	return find_parent('Map') != null
-
 
 ## Returns true if moving
 func nav_move() -> bool:
@@ -104,11 +85,6 @@ func face_move_direction():
 	if velocity.x != 0:
 		# face left/right
 		sprite_transform.scale.x = velocity.sign().x * -1
-
-func start_next_task() -> bool:
-	if not is_node_ready():
-		return false
-	return task_manager.start_next_task()
 
 func _ready():
 	actor_name = NameGenerator.actor_name.call()

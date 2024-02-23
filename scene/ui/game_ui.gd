@@ -4,6 +4,7 @@ extends Control
 static var l = Log.new()
 static var GROUP = 'game_ui'
 static var scn_inspect_card = preload('res://scene/ui/card/inspect_card.tscn')
+static var scn_small_card := preload("res://scene/ui/card/small_card.tscn")
 
 static func get_ui() -> GameUI:
 	return Global.get_tree().get_nodes_in_group(GROUP).front()
@@ -14,6 +15,16 @@ static func get_ui() -> GameUI:
 
 signal add_station(type:Station.STATION_TYPE)
 
+var _card_list:Array[SmallCard]
+
+func add_card(node:Variant) -> SmallCard:
+	var new_card := scn_small_card.instantiate() as SmallCard
+	if node is Node:
+		new_card.node = node
+	if node is PackedScene:
+		new_card.scene = node
+	_card_list.append(new_card)
+	return new_card
 
 ## Returns false if nothing was cleared
 func clear_cards() -> bool:

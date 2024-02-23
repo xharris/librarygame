@@ -1,7 +1,9 @@
-[gd_scene load_steps=8 format=3 uid="uid://daqdlgnvoww0t"]
+[gd_scene load_steps=10 format=3 uid="uid://daqdlgnvoww0t"]
 
 [ext_resource type="Script" path="res://scene/station.gd" id="1_kmw1x"]
+[ext_resource type="PackedScene" uid="uid://b84re4ema3cr6" path="res://scene/persistent/persistent_data.tscn" id="2_7wifs"]
 [ext_resource type="PackedScene" uid="uid://bnwrpj700kxul" path="res://scene/inventory.tscn" id="2_g14xj"]
+[ext_resource type="Script" path="res://scene/persistent/station.gd" id="3_8plif"]
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_b0itx"]
 outlines = Array[PackedVector2Array]([PackedVector2Array(0, 8, 14, 0, 0, -7, -14, 0)])
@@ -76,6 +78,9 @@ _data = {
 [node name="Station" type="Node2D" groups=["station"]]
 y_sort_enabled = true
 script = ExtResource("1_kmw1x")
+
+[node name="PersistentData" parent="." instance=ExtResource("2_7wifs")]
+script = ExtResource("3_8plif")
 
 [node name="NavigationRegion2D" type="NavigationRegion2D" parent="."]
 navigation_polygon = SubResource("NavigationPolygon_b0itx")

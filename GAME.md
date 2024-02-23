@@ -1,6 +1,8 @@
 # TODOS
 
+> Reworking Item class (current Book node is not great for serialization/architecture)
 > Add behavior: Deliver a book to a station
+> Add behavior: Move away if on the same cell as a station
 
 # build a library
 

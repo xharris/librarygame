@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://c7gqdrqj1kull"]
+[gd_scene load_steps=5 format=3 uid="uid://c7gqdrqj1kull"]
 
 [ext_resource type="PackedScene" uid="uid://daqdlgnvoww0t" path="res://scene/station.tscn" id="1_lmio4"]
 [ext_resource type="Texture2D" uid="uid://dwrtxvcmdead2" path="res://image/station/box.png" id="2_geb20"]
 [ext_resource type="Script" path="res://scene/ui/icon_marker.gd" id="2_x086h"]
+[ext_resource type="PackedScene" uid="uid://fsgkdmrqigpe" path="res://scene/ui/card/card_info.tscn" id="4_b1jj2"]
 
 [node name="Box" type="Node2D"]
 
@@ -20,7 +21,11 @@ description = "Holds 5 items"
 type = 1
 center = NodePath("../Marker2D")
 
-[node name="Inventory" parent="Station" index="2"]
+[node name="Inventory" parent="Station" index="3"]
 max_size = 5
+
+[node name="CardInfo" parent="." instance=ExtResource("4_b1jj2")]
+title = "Box"
+description = "Holds 5 items"
 
 [editable path="Station"]

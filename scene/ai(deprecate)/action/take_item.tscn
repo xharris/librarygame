@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://b4uw7e00m8shl"]
 
-[ext_resource type="Script" path="res://scene/ai/action/take_item.gd" id="1_16sn8"]
+[ext_resource type="Script" path="res://scene/ai(deprecate)/action/take_item.gd" id="1_16sn8"]
 
 [node name="TakeItem" type="Node"]
 script = ExtResource("1_16sn8")

@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://bghcgt1kdxucb"]
 
-[ext_resource type="Script" path="res://scene/ai/action/get_random_int.gd" id="1_qq00f"]
+[ext_resource type="Script" path="res://scene/ai(deprecate)/action/get_random_int.gd" id="1_qq00f"]
 
 [node name="GetRandomInt" type="Node"]
 script = ExtResource("1_qq00f")

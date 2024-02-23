@@ -43,25 +43,24 @@ func has_item(id:int) -> bool:
 	var items := get_all_items()
 	return items.any(func(i:Item): return i.id == id)
 	
-func has_item_type(type:Item.ITEM_TYPE) -> bool:
+func has_item_type(type:Item.TYPE) -> bool:
 	var items := get_all_items()
 	return items.any(func(i:Item): return i.type == type)
 
 func is_full() -> bool:
 	return get_all_items().size() >= max_size
 
-func add_item(node:Node2D) -> Inventory:
+func add_item(item:Item) -> Inventory:
 	if not is_active():
 		return self
-	var item = Item.get_item_node(node)
-	if not is_full() and item:
-		add_child(node)
+	if not is_full():
+		add_child(item)
 		item_stored.emit(item)
 	return self
 
 func get_all_items() -> Array[Item]:
 	var items:Array[Item]
-	items.assign(get_children().map(func(c:Node2D):return Item.get_item_node(c)).filter(func(c:Node): return c != null))
+	items.assign(get_children().filter(func(c:Node): return c is Item))
 	return items
 
 func size() -> int:
@@ -77,15 +76,15 @@ func get_item(id:int) -> Item:
 		return items.front()
 	return
 
-func remove_item(item_id:int) -> Node2D:
+func remove_item(item_id:int) -> Item:
 	var items := get_all_items()
-	var found_child:Node2D
+	var found_child:Item
 	for item in items:
 		if item.id == item_id:
-			found_child = item.get_parent()
+			found_child = item
 	if found_child:
 		remove_child(found_child)
-		item_removed.emit(Item.get_item_node(found_child))
+		item_removed.emit(found_child)
 	return found_child
 
 ## Move an item from one inventory to another

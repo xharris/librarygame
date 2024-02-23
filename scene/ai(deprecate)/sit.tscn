@@ -1,10 +1,10 @@
 [gd_scene load_steps=6 format=3 uid="uid://dyhnv1dd7lion"]
 
 [ext_resource type="Script" path="res://addons/behavior_tree/composite/sequencer.gd" id="1_du7rv"]
-[ext_resource type="PackedScene" uid="uid://d1ramik60lsos" path="res://scene/ai/action/find_nearest_station.tscn" id="2_c0kbk"]
-[ext_resource type="PackedScene" uid="uid://btcc0niqklci2" path="res://scene/ai/action/walk_to.tscn" id="3_j58oj"]
-[ext_resource type="PackedScene" uid="uid://bm4mjp25oddde" path="res://scene/ai/action/use_seat.tscn" id="4_jgmqe"]
-[ext_resource type="PackedScene" uid="uid://myoclu66j1is" path="res://scene/ai/condition/can_use_station.tscn" id="4_qtrp5"]
+[ext_resource type="PackedScene" uid="uid://d1ramik60lsos" path="res://scene/ai(deprecate)/action/find_nearest_station.tscn" id="2_c0kbk"]
+[ext_resource type="PackedScene" uid="uid://btcc0niqklci2" path="res://scene/ai(deprecate)/action/walk_to.tscn" id="3_j58oj"]
+[ext_resource type="PackedScene" uid="uid://bm4mjp25oddde" path="res://scene/ai(deprecate)/action/use_seat.tscn" id="4_jgmqe"]
+[ext_resource type="PackedScene" uid="uid://myoclu66j1is" path="res://scene/ai(deprecate)/condition/can_use_station.tscn" id="4_qtrp5"]
 
 [node name="Sit" type="Node"]
 script = ExtResource("1_du7rv")

@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://btcc0niqklci2"]
 
-[ext_resource type="Script" path="res://scene/ai/action/walk_to.gd" id="1_rsyuc"]
+[ext_resource type="Script" path="res://scene/ai(deprecate)/action/walk_to.gd" id="1_rsyuc"]
 
 [node name="WalkTo" type="Node"]
 script = ExtResource("1_rsyuc")

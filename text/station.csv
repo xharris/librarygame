@@ -1,0 +1,10 @@
+keys,en
+BOX_TITLE,"Box"
+BOX_DESCRIPTION,"Holds 5 items"
+BOX_FLAVOR_TEXT," "
+CHAIR_TITLE,"Chair"
+CHAIR_DESCRIPTION,"Seats 1 patron"
+CHAIR_FLAVOR_TEXT,"Not eveyrone likes to read while standing"
+TRAY_TITLE,"Tray"
+TRAY_DESCRIPTION,"Holds 1 item"
+TRAY_FLAVOR_TEXT," "

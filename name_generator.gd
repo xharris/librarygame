@@ -36,3 +36,15 @@ var actor_name = build(
 		lastname=["Bigglesworth", "Stewart", "Johnson"],
 	}
 )
+
+var book_name = build(
+	[
+		"The {adj1} {noun1}", 
+		"{noun1} of {noun2}", 
+		"{adj1} {noun1}, {adj2} {noun2}"
+	],
+	{
+		adj=['poor', 'rich', 'bloody', 'wild', 'secret'],
+		noun=['dad', 'mom', 'heart', 'man', 'woman', 'kid', 'agent', 'killer'],
+	}
+)

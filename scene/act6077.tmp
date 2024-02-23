@@ -1,9 +1,7 @@
-[gd_scene load_steps=38 format=3 uid="uid://b605xg1hw7sdr"]
+[gd_scene load_steps=36 format=3 uid="uid://b605xg1hw7sdr"]
 
 [ext_resource type="Script" path="res://scene/actor.gd" id="1_td06u"]
-[ext_resource type="PackedScene" uid="uid://b84re4ema3cr6" path="res://scene/persistent/persistent_data.tscn" id="2_43jed"]
 [ext_resource type="PackedScene" uid="uid://br3ya57h0dhty" path="res://scene/a_star_navigation_agent_2_d.tscn" id="2_fassv"]
-[ext_resource type="Script" path="res://scene/persistent/actor.gd" id="3_xltda"]
 [ext_resource type="Texture2D" uid="uid://cebukflmmmgg3" path="res://image/bird/bird_fill.png" id="9_4iuug"]
 [ext_resource type="Texture2D" uid="uid://dja0ek61h5nmy" path="res://image/bird/bird_base.png" id="10_k2auc"]
 [ext_resource type="Texture2D" uid="uid://beksen7m2ygr6" path="res://image/bird/bird_eyes.png" id="11_5gryt"]
@@ -196,7 +194,7 @@ animations = [{
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_1yteg"]
 
-[node name="Actor" type="CharacterBody2D" node_paths=PackedStringArray("sprite_transform", "animation", "navigation", "task_manager") groups=["actors", "persistent"]]
+[node name="Actor" type="CharacterBody2D" node_paths=PackedStringArray("sprite_transform", "animation", "navigation", "task_manager") groups=["actors"]]
 collision_layer = 2
 collision_mask = 0
 input_pickable = true
@@ -208,9 +206,6 @@ sprite_transform = NodePath("SpriteTransform")
 animation = NodePath("AnimationPlayer")
 navigation = NodePath("AStarNavigationAgent2D")
 task_manager = NodePath("TaskManager")
-
-[node name="PersistentData" parent="." instance=ExtResource("2_43jed")]
-script = ExtResource("3_xltda")
 
 [node name="AStarNavigationAgent2D" parent="." node_paths=PackedStringArray("agent") instance=ExtResource("2_fassv")]
 agent = NodePath("..")
@@ -225,115 +220,6 @@ y_sort_enabled = true
 
 [node name="Sprite" type="Node2D" parent="SpriteTransform"]
 
-[node name="Inventory" parent="SpriteTransform/Sprite" node_paths=PackedStringArray("parent") instance=ExtResource("16_e6b7f")]
+[node name="Inventory" parent="SpriteTransform/Sprite" instance=ExtResource("16_e6b7f")]
 position = Vector2(-7, -7)
-parent = NodePath("../../..")
-
-[node name="BirdFill" type="Sprite2D" parent="SpriteTransform/Sprite"]
-position = Vector2(0, -11)
-texture = ExtResource("9_4iuug")
-
-[node name="BirdBase" type="Sprite2D" parent="SpriteTransform/Sprite"]
-position = Vector2(0, -11)
-texture = ExtResource("10_k2auc")
-
-[node name="BirdEyes" type="Sprite2D" parent="SpriteTransform/Sprite"]
-position = Vector2(0, -11)
-texture = ExtResource("11_5gryt")
-
-[node name="BirdFeet" type="AnimatedSprite2D" parent="SpriteTransform/Sprite"]
-position = Vector2(0, -11)
-sprite_frames = SubResource("SpriteFrames_apiia")
-animation = &"sit"
-
-[node name="BirdArm" type="Sprite2D" parent="SpriteTransform/Sprite"]
-position = Vector2(0, -11)
-texture = ExtResource("14_gb18g")
-
-[node name="InputShape" type="CollisionShape2D" parent="."]
-position = Vector2(0, -9)
-rotation = 3.14159
-shape = SubResource("CircleShape2D_1yteg")
-
-[node name="TaskManager" parent="." node_paths=PackedStringArray("actor") instance=ExtResource("17_o022d")]
-actor = NodePath("..")
-
-[node name="Label" type="Label" parent="."]
-offset_left = 4.0
-offset_top = -37.0
-offset_right = 44.0
-offset_bottom = -14.0
-size_flags_vertical = 8
-theme_override_colors/font_color = Color(0, 0.654902, 0, 1)
-theme_override_font_sizes/font_size = 8
-vertical_alignment = 2
-
-[node name="Inspect" type="Node2D" parent="."]
-script = ExtResource("18_ge5y0")
-properties = Array[String](["actor_name"])
-
-[node name="IconMarker" type="Marker2D" parent="."]
-position = Vector2(0, -9)
-scale = Vector2(2, 2)
-script = ExtResource("19_xhymj")
-
-[node name="AI" type="Node" parent="." node_paths=PackedStringArray("blackboard", "actor")]
-script = ExtResource("14_omcwp")
-blackboard = NodePath("@Node@30044")
-actor = NodePath("..")
-
-[node name="PickATask" type="Node" parent="AI"]
-script = ExtResource("15_oyntp")
-
-[node name="DeliverItems" type="Node" parent="AI/PickATask"]
-script = ExtResource("22_mrw4u")
-
-[node name="ActorHasRole" parent="AI/PickATask/DeliverItems" instance=ExtResource("17_w2h6y")]
-role = 2
-
-[node name="InventorySizeGT" parent="AI/PickATask/DeliverItems" instance=ExtResource("18_dpiwa")]
-
-[node name="Leave" type="Node" parent="AI/PickATask/DeliverItems/InventorySizeGT"]
-script = ExtResource("22_mrw4u")
-
-[node name="GetRandomExit" parent="AI/PickATask/DeliverItems/InventorySizeGT/Leave" instance=ExtResource("17_hsi7v")]
-random_cell_key = "exit"
-avoid_stations = false
-is_tile_name = 3
-
-[node name="Bored" type="Node" parent="AI/PickATask"]
-script = ExtResource("16_2llwd")
-
-[node name="Wander" parent="AI/PickATask/Bored" instance=ExtResource("20_0xmml")]
-
-[node name="SitAround" type="Node" parent="AI/PickATask/Bored"]
-script = ExtResource("22_mrw4u")
-
-[node name="Sit" type="Node" parent="AI/PickATask/Bored/SitAround"]
-script = ExtResource("22_mrw4u")
-
-[node name="FindNearestStation" parent="AI/PickATask/Bored/SitAround/Sit" instance=ExtResource("25_v1a7d")]
-station_key = "station"
-
-[node name="WalkTo" parent="AI/PickATask/Bored/SitAround/Sit" instance=ExtResource("18_iyp14")]
-target_key = "station"
-
-[node name="CanUseStation" parent="AI/PickATask/Bored/SitAround/Sit" instance=ExtResource("26_u3mdy")]
-station_key = "station"
-
-[node name="IsNearStation" parent="AI/PickATask/Bored/SitAround/Sit" instance=ExtResource("25_860y8")]
-station_key = "station"
-
-[node name="UseStation" parent="AI/PickATask/Bored/SitAround/Sit" instance=ExtResource("27_4oevp")]
-station_key = "station"
-
-[node name="Wait" type="Node" parent="AI/PickATask/Bored/SitAround"]
-script = ExtResource("20_0stl3")
-wait_time = 3.0
-
-[node name="DoneUsingStation" parent="AI/PickATask/Bored/SitAround/Wait" instance=ExtResource("28_lw78f")]
-station_key = "station"
-
-[node name="Wander" parent="AI/PickATask/Bored/SitAround" instance=ExtResource("20_0xmml")]
-
-[connection signal="input_event" from="." to="." method="_on_input_event"]
+max_si

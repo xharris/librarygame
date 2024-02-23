@@ -15,9 +15,6 @@ static func is_using_type(actor:Actor, type:STATION_TYPE) -> bool:
 
 @onready var animation:AnimationPlayer = $AnimationPlayer
 @onready var inventory:Inventory = $Inventory
-@export var title:String = 'Station'
-@export var description:String = ''
-@export var flavor_text:String = ''
 @export var max_occupancy = 1
 @export var type:Station.STATION_TYPE
 @export var center:Node2D
@@ -93,10 +90,6 @@ func _ready():
 	var map = TileMapHelper.get_current_map() as Map
 	if map:
 		map_cell = map.get_closest_cell(global_position)
-		# move actors at cell
-		var actors = Actor.get_at_map_cell(map_cell)
-		for actor in actors:
-			actor.fsm.set_state('Walk')
 
 func _on_inventory_item_stored(item:Item):
 	animation.play('store_item')

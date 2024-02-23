@@ -85,7 +85,7 @@ func is_max_patrons() -> bool:
 func get_spawn_chance() -> int:
 	var seat_count = get_tree().get_nodes_in_group(Station.GROUP).filter(func(s:Station):return s.type == Station.STATION_TYPE.SEAT and s.is_active()).size()
 	var patron_count = get_patron_count()
-	var book_count = Item.get_all().filter(func(i:Item.ItemTemplate):return i.type == Item.ITEM_TYPE.BOOK).size()
+	var book_count = Item.get_all().filter(func(i:Item):return i.type == Item.TYPE.BOOK).size()
 	var weights = [
 		(seat_count / patron_count) if patron_count > 0 else 0,
 		(book_count / patron_count) if patron_count > 0 else 0
