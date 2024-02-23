@@ -30,7 +30,7 @@ func get_random_tilemap_cell(filter: Callable = Callable()) -> RandomTile:
 			rand_tile.cell = cells.pick_random()
 	return rand_tile
 
-func drop_item(inventory:Inventory, item_id:int):
+func drop_item(inventory:Inventory, item:Item):
 	var tilemap := get_tree().get_nodes_in_group(Map.GROUP).front() as Map
 	# get closest cell
 	var map_layer = get_layer_by_name(tilemap, 'map')
@@ -47,7 +47,7 @@ func drop_item(inventory:Inventory, item_id:int):
 		map_tile.cell = closest_cell
 		map_tile.global_position = tilemap.to_global(tilemap.map_to_local(closest_cell))
 		tilemap.add_child(map_tile)
-		inventory.transfer_item(item_id, map_tile.inventory)
+		inventory.transfer_item(item, map_tile.inventory)
 
 func get_all_instances() -> Array[Map]:
 	var instances:Array[Map]

@@ -26,6 +26,9 @@ static func find_closest(to:Node2D, filter:Callable = Global.CALLABLE_TRUE) -> I
 static func find_inventory_with_item(item_id:int) -> Array[Inventory]:
 	return get_all().filter(func(i:Inventory): return i.has_item(item_id))
 
+static func get_inventory(node:Node) -> Inventory:
+	return node.find_child('Inventory')
+
 @export var max_size = 9999
 @export var parent:Node2D
 
@@ -38,10 +41,6 @@ func is_active() -> bool:
 ## Returns true if inventory belongs to node
 func belongs_to(node:Node2D):
 	return node.find_child('Inventory') == self
-
-func has_item(id:int) -> bool:
-	var items := get_all_items()
-	return items.any(func(i:Item): return i.id == id)
 	
 func has_item_type(type:Item.TYPE) -> bool:
 	var items := get_all_items()
@@ -51,11 +50,10 @@ func is_full() -> bool:
 	return get_all_items().size() >= max_size
 
 func add_item(item:Item) -> Inventory:
-	if not is_active():
-		return self
 	if not is_full():
 		add_child(item)
 		item_stored.emit(item)
+		_adjust_item_positions()
 	return self
 
 func get_all_items() -> Array[Item]:
@@ -64,52 +62,38 @@ func get_all_items() -> Array[Item]:
 	return items
 
 func size() -> int:
-	return get_children().size()
+	return get_all_items().size()
 
-func get_items(id:int) -> Array[Item]:
-	var items := get_all_items()
-	return items.filter(func(i:Item): return i.id == id)
-
-func get_item(id:int) -> Item:
-	var items = get_items(id)
-	if items.size():
-		return items.front()
-	return
-
-func remove_item(item_id:int) -> Item:
-	var items := get_all_items()
-	var found_child:Item
-	for item in items:
-		if item.id == item_id:
-			found_child = item
-	if found_child:
-		remove_child(found_child)
-		item_removed.emit(found_child)
-	return found_child
+func remove_item(item:Item) -> bool:
+	if item.get_parent() == self:
+		remove_child(item)
+		item_removed.emit(item)
+		_adjust_item_positions()
+		return true
+	return false
 
 ## Move an item from one inventory to another
 ## Returns true on success
 ## TODO show item bouncing from this inventory to other one
-func transfer_item(item_id:int, to:Inventory) -> bool:
+func transfer_item(item:Item, to:Inventory) -> bool:
 	if not to or to.is_full() or not is_active():
 		return false
 	# find item
-	var removed_item = remove_item(item_id)
-	if not removed_item:
+	if not remove_item(item):
 		return false
-	l.debug('transfer item %s from %s to %s', [item_id, parent, to.parent])
+	l.debug('transfer item %s from %s to %s', [item, parent, to.parent])
 	# move to other inventory
-	to.add_item(removed_item)
+	to.add_item(item)
 	return true
 
 func remove():
 	# drop items on ground
 	for item in get_all_items():
-		drop_item(item.id)
+		drop_item(item)
 	remove_from_group(GROUP)
 
 ## Returns true if item was succesfully dropped
-func drop_item(item_id:int):
+func drop_item(item:Item):
 	var parent = get_parent()
 	if not parent:
 		l.error('Missing parent (%s)', [get_instance_id()])
@@ -118,7 +102,7 @@ func drop_item(item_id:int):
 	if not map:
 		l.error('Not on map (%s)', [get_instance_id()])
 		return false
-	l.debug('%s drop item %d', [parent, item_id])
+	l.debug('%s drop item %d', [parent, item])
 	var node_cell = map.get_closest_cell(parent.global_position)
 	# Get MapTile at node (if it exists)
 	var map_tiles = get_tree().get_nodes_in_group(MapTile.GROUP).filter(func(m:MapTile):return m.cell == node_cell)
@@ -131,5 +115,10 @@ func drop_item(item_id:int):
 		map_tile.cell = node_cell
 		map_tile.global_position = map.to_global(map.map_to_local(node_cell))
 		map.add_child(map_tile)
-	return transfer_item(item_id, map_tile.inventory)
+	return transfer_item(item, map_tile.inventory)
 
+func _adjust_item_positions():
+	var i = 0
+	for item in get_all_items():
+		item.position = Vector2(0,-i*2)
+		i += 1

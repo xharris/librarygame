@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://dlgnduq5q4ws3"]
+
+[ext_resource type="Script" path="res://scene/ai/condition/inventory_size_gt.gd" id="1_eie8f"]
+
+[node name="InventorySizeGT" type="Node"]
+script = ExtResource("1_eie8f")

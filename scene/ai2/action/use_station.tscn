@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://cjs1lvoglo24g"]
-
-[ext_resource type="Script" path="res://scene/ai2/action/use_station.gd" id="1_4s3cr"]
-
-[node name="UseStation" type="Node"]
-script = ExtResource("1_4s3cr")

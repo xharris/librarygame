@@ -10,7 +10,8 @@ var cell:Vector2i
 func _ready():
 	add_child(inventory)
 	add_to_group(GROUP)
-
+	var map := TileMapHelper.get_current_map() as Map
+	global_position = map.map_to_global(cell)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):

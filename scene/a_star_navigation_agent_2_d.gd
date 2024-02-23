@@ -19,9 +19,15 @@ var weight_colors = [Color.GREEN, Color.YELLOW, Color.RED]
 signal target_reached
 signal blocked
 
+var _point_ids:Dictionary
+
 func _get_point_id(cell:Vector2i):
-	var rect = _map.get_used_rect()
-	return (cell.x - rect.position.x) + rect.size.x * (cell.y - rect.position.y) # int((cell.y - rect.position.y) + (cell.x - rect.position.x) * rect.size.y)
+	if _point_ids.has(cell):
+		return _point_ids.get(cell) as int
+	_point_ids[cell] = grid.get_available_point_id()
+	return _point_ids[cell]
+	#var rect = _map.get_used_rect()
+	#return (cell.x - rect.position.x) + rect.size.x * (cell.y - rect.position.y) # int((cell.y - rect.position.y) + (cell.x - rect.position.x) * rect.size.y)
 	
 func _update_navigation():
 	var stations = StationHelper.get_all()
@@ -104,6 +110,7 @@ func _update_path():
 		target_reached.emit()
 		return
 	path.assign(grid.get_id_path(from_id, to_id))
+	l.info('%s %s',[self, path])
 	if path.size() == 0 and previous_path_size > 0:
 		l.info('%s blocked', [agent])
 		blocked.emit()
@@ -149,7 +156,7 @@ func _get_map():
 	_map.child_exiting_tree.connect(_map_tree_changed)
 
 func _map_tree_changed(node:Node):
-	update()
+	pass#update()
 
 func _process(delta):
 	if _needs_update:

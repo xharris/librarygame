@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://cllegt8fd6l1q"]
-
-[ext_resource type="Script" path="res://scene/ai(deprecate)/action/find_inventory.gd" id="1_g03k4"]
-
-[node name="FindInventory" type="Node"]
-script = ExtResource("1_g03k4")

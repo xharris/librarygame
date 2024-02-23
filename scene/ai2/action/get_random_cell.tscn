@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://c05skhuap770e"]
-
-[ext_resource type="Script" path="res://scene/ai2/action/get_random_cell.gd" id="1_xnqkg"]
-
-[node name="GetRandomCell" type="Node"]
-script = ExtResource("1_xnqkg")

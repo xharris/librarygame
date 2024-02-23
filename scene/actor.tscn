@@ -1,4 +1,4 @@
-[gd_scene load_steps=38 format=3 uid="uid://b605xg1hw7sdr"]
+[gd_scene load_steps=45 format=3 uid="uid://b605xg1hw7sdr"]
 
 [ext_resource type="Script" path="res://scene/actor.gd" id="1_td06u"]
 [ext_resource type="PackedScene" uid="uid://b84re4ema3cr6" path="res://scene/persistent/persistent_data.tscn" id="2_43jed"]
@@ -15,21 +15,28 @@
 [ext_resource type="Script" path="res://addons/beehave/nodes/composites/selector.gd" id="15_oyntp"]
 [ext_resource type="Script" path="res://addons/beehave/nodes/composites/selector_random.gd" id="16_2llwd"]
 [ext_resource type="PackedScene" uid="uid://bnwrpj700kxul" path="res://scene/inventory.tscn" id="16_e6b7f"]
-[ext_resource type="PackedScene" uid="uid://c05skhuap770e" path="res://scene/ai2/action/get_random_cell.tscn" id="17_hsi7v"]
 [ext_resource type="PackedScene" uid="uid://084d0pu0j073" path="res://scene/task_manager.tscn" id="17_o022d"]
-[ext_resource type="PackedScene" uid="uid://e7b1u6w1i6k3" path="res://scene/ai2/condition/actor_has_role.tscn" id="17_w2h6y"]
-[ext_resource type="PackedScene" uid="uid://dlgnduq5q4ws3" path="res://scene/ai2/condition/inventory_size_gt.tscn" id="18_dpiwa"]
+[ext_resource type="Script" path="res://addons/beehave/nodes/decorators/until_fail.gd" id="18_e8jud"]
 [ext_resource type="Script" path="res://scene/inspect.gd" id="18_ge5y0"]
-[ext_resource type="PackedScene" uid="uid://x4djpvux2qnq" path="res://scene/ai2/action/walk_to.tscn" id="18_iyp14"]
+[ext_resource type="PackedScene" uid="uid://e7b1u6w1i6k3" path="res://scene/ai/condition/actor_has_role.tscn" id="19_4pddb"]
 [ext_resource type="Script" path="res://scene/ui/icon_marker.gd" id="19_xhymj"]
 [ext_resource type="Script" path="res://addons/beehave/nodes/decorators/delayer.gd" id="20_0stl3"]
-[ext_resource type="PackedScene" uid="uid://biyib4li8fqpa" path="res://scene/ai2/wander.tscn" id="20_0xmml"]
 [ext_resource type="Script" path="res://addons/beehave/nodes/composites/sequence.gd" id="22_mrw4u"]
-[ext_resource type="PackedScene" uid="uid://dl2tvkolt3imi" path="res://scene/ai2/condition/is_near_station.tscn" id="25_860y8"]
-[ext_resource type="PackedScene" uid="uid://d2wemhtsnt6tm" path="res://scene/ai2/action/find_nearest_station.tscn" id="25_v1a7d"]
-[ext_resource type="PackedScene" uid="uid://cao3r0g375yqv" path="res://scene/ai2/condition/can_use_station.tscn" id="26_u3mdy"]
-[ext_resource type="PackedScene" uid="uid://cjs1lvoglo24g" path="res://scene/ai2/action/use_station.tscn" id="27_4oevp"]
-[ext_resource type="PackedScene" uid="uid://byqirl0bnxqfe" path="res://scene/ai2/action/done_using_station.tscn" id="28_lw78f"]
+[ext_resource type="PackedScene" uid="uid://n2dblwj700uf" path="res://scene/ai/action/get_inventory_size.tscn" id="22_pyd6o"]
+[ext_resource type="PackedScene" uid="uid://b6m4wykfi626h" path="res://scene/ai/action/stand.tscn" id="23_n0ni6"]
+[ext_resource type="Script" path="res://addons/beehave/nodes/leaves/blackboard_compare.gd" id="23_rsj77"]
+[ext_resource type="PackedScene" uid="uid://d1t4l4333d3lk" path="res://scene/ai/action/find_nearest_inventory.tscn" id="24_74xfn"]
+[ext_resource type="PackedScene" uid="uid://x4djpvux2qnq" path="res://scene/ai/action/walk_to.tscn" id="25_fbkwt"]
+[ext_resource type="PackedScene" uid="uid://c4w5v4sejqjxa" path="res://scene/ai/action/get_first_item.tscn" id="26_ju7eq"]
+[ext_resource type="PackedScene" uid="uid://b1i28rcj23xaa" path="res://scene/ai/action/transfer_item.tscn" id="27_w2ksv"]
+[ext_resource type="PackedScene" uid="uid://c05skhuap770e" path="res://scene/ai/action/get_random_cell.tscn" id="28_6tlqf"]
+[ext_resource type="PackedScene" uid="uid://cg7cwo6gvmwoh" path="res://scene/ai/action/despawn.tscn" id="29_3osmx"]
+[ext_resource type="PackedScene" uid="uid://biyib4li8fqpa" path="res://scene/ai/wander.tscn" id="31_acg5i"]
+[ext_resource type="PackedScene" uid="uid://d2wemhtsnt6tm" path="res://scene/ai/action/find_nearest_station.tscn" id="32_rbwsc"]
+[ext_resource type="PackedScene" uid="uid://cao3r0g375yqv" path="res://scene/ai/condition/can_use_station.tscn" id="33_mmvvh"]
+[ext_resource type="PackedScene" uid="uid://dl2tvkolt3imi" path="res://scene/ai/condition/is_near_station.tscn" id="34_kbq72"]
+[ext_resource type="PackedScene" uid="uid://cjs1lvoglo24g" path="res://scene/ai/action/use_station.tscn" id="35_d8esu"]
+[ext_resource type="PackedScene" uid="uid://byqirl0bnxqfe" path="res://scene/ai/action/done_using_station.tscn" id="37_fednu"]
 
 [sub_resource type="Animation" id="Animation_0ssif"]
 length = 0.001
@@ -226,7 +233,8 @@ y_sort_enabled = true
 [node name="Sprite" type="Node2D" parent="SpriteTransform"]
 
 [node name="Inventory" parent="SpriteTransform/Sprite" node_paths=PackedStringArray("parent") instance=ExtResource("16_e6b7f")]
-position = Vector2(-7, -7)
+position = Vector2(-7, -10)
+max_size = 3
 parent = NodePath("../../..")
 
 [node name="BirdFill" type="Sprite2D" parent="SpriteTransform/Sprite"]
@@ -244,7 +252,7 @@ texture = ExtResource("11_5gryt")
 [node name="BirdFeet" type="AnimatedSprite2D" parent="SpriteTransform/Sprite"]
 position = Vector2(0, -11)
 sprite_frames = SubResource("SpriteFrames_apiia")
-animation = &"sit"
+animation = &"stand"
 
 [node name="BirdArm" type="Sprite2D" parent="SpriteTransform/Sprite"]
 position = Vector2(0, -11)
@@ -259,6 +267,7 @@ shape = SubResource("CircleShape2D_1yteg")
 actor = NodePath("..")
 
 [node name="Label" type="Label" parent="."]
+visible = false
 offset_left = 4.0
 offset_top = -37.0
 offset_right = 44.0
@@ -279,32 +288,73 @@ script = ExtResource("19_xhymj")
 
 [node name="AI" type="Node" parent="." node_paths=PackedStringArray("blackboard", "actor")]
 script = ExtResource("14_omcwp")
-blackboard = NodePath("@Node@145049")
+blackboard = NodePath("@Node@255204")
 actor = NodePath("..")
 
 [node name="PickATask" type="Node" parent="AI"]
 script = ExtResource("15_oyntp")
 
-[node name="DeliverItems" type="Node" parent="AI/PickATask"]
+[node name="DeliverAllItems" type="Node" parent="AI/PickATask"]
 script = ExtResource("22_mrw4u")
 
-[node name="ActorHasRole" parent="AI/PickATask/DeliverItems" instance=ExtResource("17_w2h6y")]
+[node name="ActorHasRole" parent="AI/PickATask/DeliverAllItems" instance=ExtResource("19_4pddb")]
 role = 2
 
-[node name="InventorySizeGT" parent="AI/PickATask/DeliverItems" instance=ExtResource("18_dpiwa")]
+[node name="UntilFailDecorator" type="Node" parent="AI/PickATask/DeliverAllItems"]
+script = ExtResource("18_e8jud")
 
-[node name="Leave" type="Node" parent="AI/PickATask/DeliverItems/InventorySizeGT"]
+[node name="DeliverItem" type="Node" parent="AI/PickATask/DeliverAllItems/UntilFailDecorator"]
 script = ExtResource("22_mrw4u")
 
-[node name="GetRandomExit" parent="AI/PickATask/DeliverItems/InventorySizeGT/Leave" instance=ExtResource("17_hsi7v")]
+[node name="InventoryNotEmpty" type="Node" parent="AI/PickATask/DeliverAllItems/UntilFailDecorator/DeliverItem"]
+script = ExtResource("22_mrw4u")
+
+[node name="GetInventorySize" parent="AI/PickATask/DeliverAllItems/UntilFailDecorator/DeliverItem/InventoryNotEmpty" instance=ExtResource("22_pyd6o")]
+size_key = "inventory_size"
+
+[node name="BlackboardCompareCondition" type="Node" parent="AI/PickATask/DeliverAllItems/UntilFailDecorator/DeliverItem/InventoryNotEmpty"]
+script = ExtResource("23_rsj77")
+left_operand = "get_value(\"inventory_size\")"
+operator = 2
+right_operand = "0"
+
+[node name="Stand" parent="AI/PickATask/DeliverAllItems/UntilFailDecorator/DeliverItem" instance=ExtResource("23_n0ni6")]
+
+[node name="FindNearestInventory" parent="AI/PickATask/DeliverAllItems/UntilFailDecorator/DeliverItem" instance=ExtResource("24_74xfn")]
+inventory_key = "inventory"
+
+[node name="WalkTo" parent="AI/PickATask/DeliverAllItems/UntilFailDecorator/DeliverItem" instance=ExtResource("25_fbkwt")]
+target_key = "inventory"
+
+[node name="GetFirstItem" parent="AI/PickATask/DeliverAllItems/UntilFailDecorator/DeliverItem" instance=ExtResource("26_ju7eq")]
+item_key = "item"
+
+[node name="DelayDecorator" type="Node" parent="AI/PickATask/DeliverAllItems/UntilFailDecorator/DeliverItem"]
+script = ExtResource("20_0stl3")
+wait_time = 1.0
+
+[node name="TransferItem" parent="AI/PickATask/DeliverAllItems/UntilFailDecorator/DeliverItem/DelayDecorator" instance=ExtResource("27_w2ksv")]
+item_key = "item"
+inventory_key = "inventory"
+direction = 1
+
+[node name="Leave" type="Node" parent="AI/PickATask/DeliverAllItems"]
+script = ExtResource("22_mrw4u")
+
+[node name="GetRandomCell" parent="AI/PickATask/DeliverAllItems/Leave" instance=ExtResource("28_6tlqf")]
 random_cell_key = "exit"
 avoid_stations = false
 is_tile_name = 3
 
+[node name="WalkTo" parent="AI/PickATask/DeliverAllItems/Leave" instance=ExtResource("25_fbkwt")]
+target_key = "exit"
+
+[node name="Despawn" parent="AI/PickATask/DeliverAllItems/Leave" instance=ExtResource("29_3osmx")]
+
 [node name="Bored" type="Node" parent="AI/PickATask"]
 script = ExtResource("16_2llwd")
 
-[node name="Wander" parent="AI/PickATask/Bored" instance=ExtResource("20_0xmml")]
+[node name="Wander" parent="AI/PickATask/Bored" instance=ExtResource("31_acg5i")]
 
 [node name="SitAround" type="Node" parent="AI/PickATask/Bored"]
 script = ExtResource("22_mrw4u")
@@ -312,28 +362,28 @@ script = ExtResource("22_mrw4u")
 [node name="Sit" type="Node" parent="AI/PickATask/Bored/SitAround"]
 script = ExtResource("22_mrw4u")
 
-[node name="FindNearestStation" parent="AI/PickATask/Bored/SitAround/Sit" instance=ExtResource("25_v1a7d")]
+[node name="FindNearestStation" parent="AI/PickATask/Bored/SitAround/Sit" instance=ExtResource("32_rbwsc")]
 station_key = "station"
 
-[node name="WalkTo" parent="AI/PickATask/Bored/SitAround/Sit" instance=ExtResource("18_iyp14")]
+[node name="WalkTo" parent="AI/PickATask/Bored/SitAround/Sit" instance=ExtResource("25_fbkwt")]
 target_key = "station"
 
-[node name="CanUseStation" parent="AI/PickATask/Bored/SitAround/Sit" instance=ExtResource("26_u3mdy")]
+[node name="CanUseStation" parent="AI/PickATask/Bored/SitAround/Sit" instance=ExtResource("33_mmvvh")]
 station_key = "station"
 
-[node name="IsNearStation" parent="AI/PickATask/Bored/SitAround/Sit" instance=ExtResource("25_860y8")]
+[node name="IsNearStation" parent="AI/PickATask/Bored/SitAround/Sit" instance=ExtResource("34_kbq72")]
 station_key = "station"
 
-[node name="UseStation" parent="AI/PickATask/Bored/SitAround/Sit" instance=ExtResource("27_4oevp")]
+[node name="UseStation" parent="AI/PickATask/Bored/SitAround/Sit" instance=ExtResource("35_d8esu")]
 station_key = "station"
 
 [node name="Wait" type="Node" parent="AI/PickATask/Bored/SitAround"]
 script = ExtResource("20_0stl3")
 wait_time = 3.0
 
-[node name="DoneUsingStation" parent="AI/PickATask/Bored/SitAround/Wait" instance=ExtResource("28_lw78f")]
+[node name="DoneUsingStation" parent="AI/PickATask/Bored/SitAround/Wait" instance=ExtResource("37_fednu")]
 station_key = "station"
 
-[node name="Wander" parent="AI/PickATask/Bored/SitAround" instance=ExtResource("20_0xmml")]
+[node name="Wander" parent="AI/PickATask/Bored/SitAround" instance=ExtResource("31_acg5i")]
 
 [connection signal="input_event" from="." to="." method="_on_input_event"]

@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://b1i28rcj23xaa"]
+
+[ext_resource type="Script" path="res://scene/ai/action/transfer_item.gd" id="1_bsj36"]
+
+[node name="TransferItem" type="Node"]
+script = ExtResource("1_bsj36")

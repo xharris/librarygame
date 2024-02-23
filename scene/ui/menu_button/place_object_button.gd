@@ -1,6 +1,6 @@
 extends AddCardsButton
 
-@export var resource_path:String
+@export_dir var resource_path
 @export var place_at_entrance:bool
 
 func get_card_objects():

@@ -116,8 +116,9 @@ func _on_patron_spawner_timeout():
 		l.debug('Spawn patron with %d%% chance (rolled %d)', [spawn_chance, random])
 		spawn_actor(Actor.build(Actor.ROLE.PATRON))
 
-func get_closest_cell(coords:Vector2) -> Vector2i:
-	var used_cells = get_used_cells(0)
+func get_closest_cell(coords:Vector2, name_filter:TILE_NAME = TILE_NAME.NONE) -> Vector2i:
+	var used_cells = get_used_cells(0).filter(func(cell:Vector2):
+		return name_filter == TILE_NAME.NONE or get_tile_name(cell) == name_filter)
 	used_cells.sort_custom(func(a:Vector2i, b:Vector2i):
 		return to_global(map_to_local(a)).distance_to(coords) < to_global(map_to_local(b)).distance_to(coords))
 	return used_cells.front()

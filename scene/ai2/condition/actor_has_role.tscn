@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://e7b1u6w1i6k3"]
-
-[ext_resource type="Script" path="res://scene/ai2/condition/actor_has_role.gd" id="1_akg3g"]
-
-[node name="ActorHasRole" type="Node"]
-script = ExtResource("1_akg3g")

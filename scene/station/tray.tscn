@@ -6,17 +6,15 @@
 [node name="Tray" type="Node2D"]
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(0, -7)
+position = Vector2(0, -10)
 texture = ExtResource("2_uidl6")
 
 [node name="Station" parent="." instance=ExtResource("1_vi5na")]
 position = Vector2(0, -7)
-title = "Tray"
-description = "Holds 1 item"
 type = 1
 
-[node name="Inventory" parent="Station" index="2"]
-position = Vector2(0, 7)
+[node name="Inventory" parent="Station" index="3"]
+position = Vector2(0, 3)
 max_size = 1
 
 [editable path="Station"]

@@ -70,6 +70,7 @@ func stand():
 	animation.play('stand')
 
 func despawn():
+	Persistent.save_node(self)
 	var parent = get_parent()
 	if parent:
 		parent.remove_child(self)
@@ -90,7 +91,7 @@ func face_move_direction():
 func _ready():
 	actor_name = NameGenerator.actor_name.call()
 	add_to_group(GROUP)
-	label.text = String.num(get_instance_id()).right(4)
+	label.text = String.num(get_instance_id()).right(4)+'.'+ROLE.find_key(role)
 	InspectCard.add_properties(self, inspection)
 
 func _process(delta):

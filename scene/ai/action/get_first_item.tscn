@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://c4w5v4sejqjxa"]
+
+[ext_resource type="Script" path="res://scene/ai/action/get_first_item.gd" id="1_uwsfn"]
+
+[node name="GetFirstItem" type="Node"]
+script = ExtResource("1_uwsfn")

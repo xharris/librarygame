@@ -1,6 +1,6 @@
 # TODOS
 
-> Add behavior: Deliver a book to a station
+> AStar: path acts weird if tree changes a lot
 > Add behavior: Move away if on the same cell as a station
 
 # build a library

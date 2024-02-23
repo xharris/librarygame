@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://b6m4wykfi626h"]
-
-[ext_resource type="Script" path="res://scene/ai2/action/stand.gd" id="1_0v4y0"]
-
-[node name="Stand" type="Node"]
-script = ExtResource("1_0v4y0")

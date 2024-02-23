@@ -1,6 +1,0 @@
-[gd_scene load_steps=2 format=3 uid="uid://bm0yvr4n870ax"]
-
-[ext_resource type="Script" path="res://scene/ai(deprecate)/action/clear_keys.gd" id="1_w10p7"]
-
-[node name="ClearKeys" type="Node"]
-script = ExtResource("1_w10p7")

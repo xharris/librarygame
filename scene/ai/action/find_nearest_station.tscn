@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://d2wemhtsnt6tm"]
+
+[ext_resource type="Script" path="res://scene/ai/action/find_nearest_station.gd" id="1_lop6s"]
+
+[node name="FindNearestStation" type="Node"]
+script = ExtResource("1_lop6s")

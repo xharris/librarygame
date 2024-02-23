@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://d1t4l4333d3lk"]
+
+[ext_resource type="Script" path="res://scene/ai/action/find_nearest_inventory.gd" id="1_i2y5q"]
+
+[node name="FindNearestInventory" type="Node"]
+script = ExtResource("1_i2y5q")

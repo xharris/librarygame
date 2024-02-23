@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://cao3r0g375yqv"]
+
+[ext_resource type="Script" path="res://scene/ai/condition/can_use_station.gd" id="1_8n2to"]
+
+[node name="CanUseStation" type="Node"]
+script = ExtResource("1_8n2to")

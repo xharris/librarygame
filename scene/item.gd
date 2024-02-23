@@ -19,5 +19,6 @@ func add_texture(path:String, color:Color = Color.WHITE) -> Sprite2D:
 	var sprite = Sprite2D.new()
 	sprite.texture = texture
 	sprite.modulate = color
+	sprite.centered = true
 	add_child(sprite)
 	return sprite
