@@ -14,6 +14,7 @@ static func get_ui() -> GameUI:
 @onready var inspect_list := $MarginContainer/VBoxContainer/HBoxContainer/InspectContainer/MarginContainer/InspectList
 
 signal add_station(type:Station.STATION_TYPE)
+signal cards_cleared
 
 var _card_list:Array[SmallCard]
 
@@ -34,14 +35,14 @@ func clear_cards() -> bool:
 	for map in TileMapHelper.get_all_instances():
 		map.selection_enabled = false
 	return !nothing_cleared
-	
+
+func show_cards(cards:Array[SmallCard]):
+	pass
+
 func _ready():	
 	var menu_buttons = menu_buttons_container.get_children()
 	for b in menu_buttons.size():
 		var button = menu_buttons[b] as BaseButton
-		# connect signals
-		if button is EntityMenuButton:
-			button.clear_cards.connect(clear_cards)
 		# Setup neighbors
 		if b > 0:
 			button.focus_neighbor_left = (menu_buttons[b-1] as Control).get_path()

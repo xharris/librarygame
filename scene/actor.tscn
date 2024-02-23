@@ -279,7 +279,7 @@ script = ExtResource("19_xhymj")
 
 [node name="AI" type="Node" parent="." node_paths=PackedStringArray("blackboard", "actor")]
 script = ExtResource("14_omcwp")
-blackboard = NodePath("@Node@30044")
+blackboard = NodePath("@Node@17484")
 actor = NodePath("..")
 
 [node name="PickATask" type="Node" parent="AI"]

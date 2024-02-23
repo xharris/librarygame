@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://dwy4j6424166b"]
+[gd_scene load_steps=4 format=3 uid="uid://dwy4j6424166b"]
 
 [ext_resource type="Script" path="res://scene/ui/game_ui.gd" id="1_ovqxb"]
-[ext_resource type="PackedScene" uid="uid://cx3c7v8mgjrnr" path="res://scene/ui/entity_menu_button.tscn" id="2_pa2x6"]
+[ext_resource type="PackedScene" uid="uid://cx3c7v8mgjrnr" path="res://scene/ui/menu_button/add_cards_button.tscn" id="2_pa2x6"]
+[ext_resource type="Script" path="res://scene/ui/menu_button/place_object_button.gd" id="3_bgnms"]
 
 [node name="GameUI" type="Control" groups=["game_ui"]]
 layout_mode = 3
@@ -79,7 +80,9 @@ theme_override_constants/separation = 32
 [node name="AddStation" parent="MarginContainer/VBoxContainer/MenuButtons" node_paths=PackedStringArray("card_container") instance=ExtResource("2_pa2x6")]
 layout_mode = 2
 text = "STATION"
+script = ExtResource("3_bgnms")
 resource_path = "res://scene/station"
+place_at_entrance = false
 card_container = NodePath("../../HBoxContainer/CardContainer/MarginContainer/CardList")
 
 [node name="BuyBook" type="Button" parent="MarginContainer/VBoxContainer/MenuButtons"]
