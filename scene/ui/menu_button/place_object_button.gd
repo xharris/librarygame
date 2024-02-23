@@ -3,8 +3,7 @@ extends AddCardsButton
 @export var resource_path:String
 @export var place_at_entrance:bool
 
-func get_cards():
-	var cards:Array[SmallCard] = []
+func get_card_objects():
 	# Gather available scenes
 	var scene_dir = DirAccess.open(resource_path)
 	var scenes:Array[PackedScene] = []
@@ -12,11 +11,7 @@ func get_cards():
 		if path.ends_with('.tscn'):
 			var scene = load(resource_path+'/'+path)
 			scenes.append(scene)
-			# Turn scene into card
-			var new_card := scn_small_card.instantiate()
-			new_card.scene = scene
-			cards.append(new_card)
-	return cards
+	return scenes
 
 func _on_place_object(event:InputEvent, global_position:Vector2, map_position:Vector2i, map:Map, object:PackedScene):
 	if map.is_tile_empty(map_position):
@@ -25,18 +20,18 @@ func _on_place_object(event:InputEvent, global_position:Vector2, map_position:Ve
 		map.add_child(new_object)
 
 var _last_place_object:Callable
-func _on_card_pressed(event:InputEvent, card:SmallCard):
+func on_card_pressed(event:InputEvent, card:SmallCard):
 	var map = TileMapHelper.get_current_map() as Map
 	if not map:
 		return
-	if card.scene_type == SmallCard.SCENE_TYPE.ACTOR:
+	if place_at_entrance:
 		# place entity at entrance (actor)
 		map.selection_enabled = false
 		var entrances = map.get_tile_coords(Map.TILE_NAME.ENTRANCE)
 		if not entrances.size():
 			l.warn('No entrances found to spawn actor')
 			return
-		var new_object := card.scene.instantiate()
+		var new_object := (card.object as PackedScene).instantiate()
 		new_object.global_position = entrances.front()
 		map.add_child(new_object)
 	else:
@@ -45,5 +40,5 @@ func _on_card_pressed(event:InputEvent, card:SmallCard):
 		map.tile_outline_color = Palette.Blue500
 		if _last_place_object:
 			map.tile_select.disconnect(_last_place_object)
-		_last_place_object = _on_place_object.bind(map, card.scene)
+		_last_place_object = _on_place_object.bind(map, card.object as PackedScene)
 		map.tile_select.connect(_last_place_object)

@@ -1,8 +1,10 @@
-[gd_scene load_steps=4 format=3 uid="uid://dwy4j6424166b"]
+[gd_scene load_steps=6 format=3 uid="uid://dwy4j6424166b"]
 
 [ext_resource type="Script" path="res://scene/ui/game_ui.gd" id="1_ovqxb"]
 [ext_resource type="PackedScene" uid="uid://cx3c7v8mgjrnr" path="res://scene/ui/menu_button/add_cards_button.tscn" id="2_pa2x6"]
 [ext_resource type="Script" path="res://scene/ui/menu_button/place_object_button.gd" id="3_bgnms"]
+[ext_resource type="Script" path="res://scene/ui/menu_button/delete_object_button.gd" id="4_bnna7"]
+[ext_resource type="Script" path="res://scene/ui/menu_button/buy_book_button.gd" id="4_rgckd"]
 
 [node name="GameUI" type="Control" groups=["game_ui"]]
 layout_mode = 3
@@ -85,13 +87,16 @@ resource_path = "res://scene/station"
 place_at_entrance = false
 card_container = NodePath("../../HBoxContainer/CardContainer/MarginContainer/CardList")
 
-[node name="BuyBook" type="Button" parent="MarginContainer/VBoxContainer/MenuButtons"]
+[node name="BuyBook" parent="MarginContainer/VBoxContainer/MenuButtons" node_paths=PackedStringArray("card_container") instance=ExtResource("2_pa2x6")]
 layout_mode = 2
 text = "BOOK"
+script = ExtResource("4_rgckd")
+card_container = NodePath("../../HBoxContainer/CardContainer/MarginContainer/CardList")
 
 [node name="Delete" type="Button" parent="MarginContainer/VBoxContainer/MenuButtons"]
 layout_mode = 2
 text = "DELETE"
+script = ExtResource("4_bnna7")
 
 [connection signal="gui_input" from="." to="." method="_on_control_gui_input"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/MenuButtons/Delete" to="." method="_on_delete_pressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/MenuButtons/Delete" to="MarginContainer/VBoxContainer/MenuButtons/Delete" method="_on_pressed"]

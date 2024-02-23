@@ -26,7 +26,7 @@ var selection_enabled = false
 @export var tile_outline:Sprite2D
 var tile_outline_color:Color
 
-signal patron_spawned(actor:Actor)
+signal actor_spawned(actor:Actor)
 signal tile_select(event:InputEvent, global_position:Vector2, map_position:Vector2i)
 
 func get_random_cell(filter: Callable = Callable()) -> RandomTile:
@@ -75,7 +75,7 @@ func get_tile_coords(_tile_name:TILE_NAME) -> Array[Vector2]:
 	
 func get_patron_count() -> int:
 	var actors = get_tree().get_nodes_in_group(Actor.GROUP)
-	return actors.filter(func(a:Actor): return a.role == Actor.ACTOR_ROLE.PATRON and a.is_active()).size()
+	return actors.filter(func(a:Actor): return a.role == Actor.ROLE.PATRON and a.is_active()).size()
 
 func is_max_patrons() -> bool:
 	var max_capacity := (get_used_cells(TileMapHelper.get_layer_by_name(self, map_layer_name)).size() * 2/3)
@@ -102,20 +102,19 @@ func map_to_global(coords:Vector2i) -> Vector2:
 func _ready():
 	tile_outline_color = Palette.Blue500
 
-func spawn_patron():
+func spawn_actor(actor:Actor):
 	var entrance_tiles = get_tile_coords(TILE_NAME.ENTRANCE)
 	if entrance_tiles.size():
-		var actor = Actor.build(Actor.ACTOR_ROLE.PATRON)
 		actor.global_position = entrance_tiles.pick_random()
 		add_child(actor)
-		patron_spawned.emit(actor)
+		actor_spawned.emit(actor)
 
 func _on_patron_spawner_timeout():
 	var random = randi_range(1, 100)
 	var spawn_chance = get_spawn_chance()
 	if not is_max_patrons() and random <= spawn_chance:
 		l.debug('Spawn patron with %d%% chance (rolled %d)', [spawn_chance, random])
-		spawn_patron()
+		spawn_actor(Actor.build(Actor.ROLE.PATRON))
 
 func get_closest_cell(coords:Vector2) -> Vector2i:
 	var used_cells = get_used_cells(0)

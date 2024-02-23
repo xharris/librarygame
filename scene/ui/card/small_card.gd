@@ -12,9 +12,8 @@ var l = Log.new()
 @export var label_super_container:Container
 @export var title_description_separator:Control
 @export var icon:Icon
-var node:Node
-var scene:PackedScene
-var scene_type:SCENE_TYPE ## TODO is this needed? remove?
+var object:Variant
+var text_key:String
 
 signal pressed(event:InputEvent)
 
@@ -36,26 +35,25 @@ func set_flavor_text(flavor_text:String = ''):
 	_update_label_visibility(flavor_text, flavor_text_label)
 
 func _ready():
-	if not scene:
-		l.warn('`scene` not set')
-		return
-	# instantiate from scene?
-	if scene and not node:
-		node = scene.instantiate()
+	# get text key
+	var node:Node
+	if object is PackedScene:
+		node = object.instantiate()
 		node.process_mode = Node.PROCESS_MODE_DISABLED
-		if node.find_child('Station') as Station:
-			scene_type = SCENE_TYPE.STATION
-		if node.find_child('Actor') as Actor:
-			scene_type = SCENE_TYPE.ACTOR
+	if object is Node:
+		node = node
+	if object is String:
+		text_key = object.to_upper()
+	if node:
+		text_key = node.name.to_upper()
+	if not text_key:
+		return l.error("Couldn't extract text_key from %s",[object])
 	# configure text/icon
-	set_title(tr("%s_TITLE" % node.name.to_upper()).strip_edges())
-	set_description(tr("%s_DESCRIPTION" % node.name.to_upper()).strip_edges())
-	set_flavor_text(tr("%s_FLAVOR_TEXT" % node.name.to_upper()).strip_edges())
-	if node is Station:
-		icon.enabled = false
-	if node is Actor:
-		pass
-	icon.set_icon(node)
+	set_title(tr("%s_TITLE" % text_key).strip_edges())
+	set_description(tr("%s_DESCRIPTION" % text_key).strip_edges())
+	set_flavor_text(tr("%s_FLAVOR_TEXT" % text_key).strip_edges())
+	if node is Node:
+		icon.set_icon(node)
 	mouse_filter = Control.MOUSE_FILTER_STOP
 
 func _on_mouse_entered():

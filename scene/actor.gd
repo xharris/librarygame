@@ -8,10 +8,10 @@ static var scn_task_mgr = preload('res://scene/task_manager.tscn')
 
 static var l = Log.new()
 
-enum ACTOR_ROLE {PATRON,STAFF,SERVICE}
+enum ROLE {PATRON,STAFF,SERVICE}
 enum ACTOR_MOOD {NONE,HAPPY,SAD,ANGRY}
 
-static func build(role:ACTOR_ROLE) -> Actor:
+static func build(role:ROLE) -> Actor:
 	var actor = scn_actor.instantiate() as Actor
 	actor.role = role
 	return actor
@@ -32,19 +32,20 @@ static func get_at_map_cell(cell:Vector2i) -> Array[Actor]:
 
 @export var sprite_transform:Node2D
 @export var animation:AnimationPlayer
-@export var fsm:StateMachine
 @onready var inventory:Inventory = $SpriteTransform/Sprite/Inventory
 @onready var label := $Label
 @export var navigation:AStarNavigationAgent2D
 @export var task_manager:TaskManager
 
 var actor_name:String
-var role:ACTOR_ROLE = ACTOR_ROLE.PATRON
+var role:ROLE = ROLE.PATRON
+var role_name:String
 var mood:ACTOR_MOOD = ACTOR_MOOD.NONE
 var happiness = 100
 var move_speed = 50
 var inspection:Array[Dictionary] = [
 	InspectText.build('actor_name'),
+	InspectText.build('role_name'),
 	InspectProgress.build('happiness', 'happiness'),
 ]
 
@@ -91,6 +92,9 @@ func _ready():
 	add_to_group(GROUP)
 	label.text = String.num(get_instance_id()).right(4)
 	InspectCard.add_properties(self, inspection)
+
+func _process(delta):
+	role_name = ROLE.find_key(role)
 
 func _physics_process(_delta):
 	nav_move()
