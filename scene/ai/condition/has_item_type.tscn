@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://cgs0ktspyrwxa"]
+
+[ext_resource type="Script" path="res://scene/ai/condition/has_item_type.gd" id="1_gix7o"]
+
+[node name="HasItemType" type="Node"]
+script = ExtResource("1_gix7o")

@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://cfacs6nfw2h00"]
 
 [ext_resource type="PackedScene" uid="uid://d4aumh5ieaj1b" path="res://scene/map.tscn" id="1_4k65g"]
-[ext_resource type="Script" path="res://map/FirstMap.gd" id="1_jmgbv"]
+[ext_resource type="Script" path="res://scene/map/FirstMap.gd" id="1_jmgbv"]
 
 [node name="FirstMap" type="Node2D"]
 script = ExtResource("1_jmgbv")

@@ -1,6 +1,10 @@
-[gd_resource type="Theme" load_steps=2 format=3 uid="uid://b8o36u0dt0fx"]
+[gd_resource type="Theme" load_steps=3 format=3 uid="uid://b8o36u0dt0fx"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jqdac"]
+bg_color = Color(0, 0, 0, 0.443137)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_d3ix1"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
 corner_radius_top_left = 15
 corner_radius_top_right = 15
 corner_radius_bottom_right = 15
@@ -10,9 +14,11 @@ corner_radius_bottom_left = 15
 Elevation2/base_type = &"Panel"
 Elevation2/colors/bg_color = Color(0.129412, 0.129412, 0.129412, 1)
 HBoxContainer/constants/separation = 4
+HBoxContainer/styles/background = SubResource("StyleBoxFlat_jqdac")
 MarginContainer/constants/margin_bottom = 6
 MarginContainer/constants/margin_left = 6
 MarginContainer/constants/margin_right = 6
 MarginContainer/constants/margin_top = 6
 Panel/colors/bg_color = Color(0.258824, 0.258824, 0.258824, 1)
 Panel/styles/normal = SubResource("StyleBoxFlat_d3ix1")
+VBoxContainer/constants/separation = 4

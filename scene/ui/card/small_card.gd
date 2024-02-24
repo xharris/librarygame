@@ -56,17 +56,17 @@ func _ready():
 		icon.set_icon(node)
 	mouse_filter = Control.MOUSE_FILTER_STOP
 
-func _on_mouse_entered():
-	label_super_container.visible = true
-
-func _on_mouse_exited():
-	label_super_container.visible = false
-	
-func _on_focus_entered():
-	label_super_container.visible = true
-
-func _on_focus_exited():
-	label_super_container.visible = false
+#func _on_mouse_entered():
+	#label_super_container.visible = true
+#
+#func _on_mouse_exited():
+	#label_super_container.visible = false
+	#
+#func _on_focus_entered():
+	#label_super_container.visible = true
+#
+#func _on_focus_exited():
+	#label_super_container.visible = false
 
 func _on_gui_input(event:InputEvent):
 	if event.is_action_pressed('select'):

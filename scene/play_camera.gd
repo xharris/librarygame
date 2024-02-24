@@ -40,7 +40,7 @@ func is_zoom_out(event:InputEvent):
 			return true
 	return false
 
-func _input(event):
+func _unhandled_input(event):
 	# Panning
 	if is_drag_start(event):
 		dragging = true

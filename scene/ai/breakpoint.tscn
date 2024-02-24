@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://djjc2ut0awtc4"]
+
+[ext_resource type="Script" path="res://scene/ai/breakpoint.gd" id="1_iirou"]
+
+[node name="Breakpoint" type="Node"]
+script = ExtResource("1_iirou")

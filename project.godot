@@ -31,6 +31,12 @@ BeehaveGlobalDebugger="*res://addons/beehave/debug/global_debugger.gd"
 Persistent="*res://persistent.gd"
 NameGenerator="*res://name_generator.gd"
 
+[display]
+
+window/size/viewport_width=800
+window/size/viewport_height=600
+window/stretch/aspect="ignore"
+
 [editor]
 
 version_control/plugin_name="GitPlugin"

@@ -35,7 +35,7 @@ func sort_distance(from:Node2D, to:Array[Variant]):
 var maps = [
 	{
 		map_name='Bird Library',
-		scene=preload("res://map/FirstMap.tscn")
+		scene=preload("res://scene/map/FirstMap.tscn")
 	}
 ]
 

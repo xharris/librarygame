@@ -44,7 +44,6 @@ theme = ExtResource("2_bo5vk")
 layout_mode = 2
 
 [node name="LabelSuperContainer" type="MarginContainer" parent="HBoxContainer"]
-visible = false
 layout_mode = 2
 theme_override_constants/margin_left = 6
 theme_override_constants/margin_top = 6

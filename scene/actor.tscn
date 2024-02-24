@@ -1,4 +1,4 @@
-[gd_scene load_steps=45 format=3 uid="uid://b605xg1hw7sdr"]
+[gd_scene load_steps=49 format=3 uid="uid://b605xg1hw7sdr"]
 
 [ext_resource type="Script" path="res://scene/actor.gd" id="1_td06u"]
 [ext_resource type="PackedScene" uid="uid://b84re4ema3cr6" path="res://scene/persistent/persistent_data.tscn" id="2_43jed"]
@@ -21,8 +21,10 @@
 [ext_resource type="PackedScene" uid="uid://e7b1u6w1i6k3" path="res://scene/ai/condition/actor_has_role.tscn" id="19_4pddb"]
 [ext_resource type="Script" path="res://scene/ui/icon_marker.gd" id="19_xhymj"]
 [ext_resource type="Script" path="res://addons/beehave/nodes/decorators/delayer.gd" id="20_0stl3"]
+[ext_resource type="PackedScene" uid="uid://che1ft0qvhpd" path="res://scene/ai/action/get_all_inventories.tscn" id="20_muco6"]
 [ext_resource type="Script" path="res://addons/beehave/nodes/composites/sequence.gd" id="22_mrw4u"]
 [ext_resource type="PackedScene" uid="uid://n2dblwj700uf" path="res://scene/ai/action/get_inventory_size.tscn" id="22_pyd6o"]
+[ext_resource type="Script" path="res://addons/beehave/nodes/leaves/blackboard_set.gd" id="23_knnqg"]
 [ext_resource type="PackedScene" uid="uid://b6m4wykfi626h" path="res://scene/ai/action/stand.tscn" id="23_n0ni6"]
 [ext_resource type="Script" path="res://addons/beehave/nodes/leaves/blackboard_compare.gd" id="23_rsj77"]
 [ext_resource type="PackedScene" uid="uid://d1t4l4333d3lk" path="res://scene/ai/action/find_nearest_inventory.tscn" id="24_74xfn"]
@@ -32,7 +34,9 @@
 [ext_resource type="PackedScene" uid="uid://c05skhuap770e" path="res://scene/ai/action/get_random_cell.tscn" id="28_6tlqf"]
 [ext_resource type="PackedScene" uid="uid://cg7cwo6gvmwoh" path="res://scene/ai/action/despawn.tscn" id="29_3osmx"]
 [ext_resource type="PackedScene" uid="uid://biyib4li8fqpa" path="res://scene/ai/wander.tscn" id="31_acg5i"]
+[ext_resource type="Script" path="res://addons/beehave/nodes/decorators/inverter.gd" id="31_qbcry"]
 [ext_resource type="PackedScene" uid="uid://d2wemhtsnt6tm" path="res://scene/ai/action/find_nearest_station.tscn" id="32_rbwsc"]
+[ext_resource type="PackedScene" uid="uid://cgs0ktspyrwxa" path="res://scene/ai/condition/has_item_type.tscn" id="32_rsnhf"]
 [ext_resource type="PackedScene" uid="uid://cao3r0g375yqv" path="res://scene/ai/condition/can_use_station.tscn" id="33_mmvvh"]
 [ext_resource type="PackedScene" uid="uid://dl2tvkolt3imi" path="res://scene/ai/condition/is_near_station.tscn" id="34_kbq72"]
 [ext_resource type="PackedScene" uid="uid://cjs1lvoglo24g" path="res://scene/ai/action/use_station.tscn" id="35_d8esu"]
@@ -288,7 +292,7 @@ script = ExtResource("19_xhymj")
 
 [node name="AI" type="Node" parent="." node_paths=PackedStringArray("blackboard", "actor")]
 script = ExtResource("14_omcwp")
-blackboard = NodePath("@Node@255204")
+blackboard = NodePath("@Node@17484")
 actor = NodePath("..")
 
 [node name="PickATask" type="Node" parent="AI"]
@@ -300,11 +304,26 @@ script = ExtResource("22_mrw4u")
 [node name="ActorHasRole" parent="AI/PickATask/DeliverAllItems" instance=ExtResource("19_4pddb")]
 role = 2
 
+[node name="GetAllInventories" parent="AI/PickATask/DeliverAllItems" instance=ExtResource("20_muco6")]
+inventories_key = "inventories"
+sort = 1
+
 [node name="UntilFailDecorator" type="Node" parent="AI/PickATask/DeliverAllItems"]
 script = ExtResource("18_e8jud")
 
 [node name="DeliverItem" type="Node" parent="AI/PickATask/DeliverAllItems/UntilFailDecorator"]
 script = ExtResource("22_mrw4u")
+
+[node name="InventoryListNotEmpty" type="Node" parent="AI/PickATask/DeliverAllItems/UntilFailDecorator/DeliverItem"]
+script = ExtResource("23_rsj77")
+left_operand = "get_value(\"inventories\").size()"
+operator = 2
+right_operand = "0"
+
+[node name="SetInventory" type="Node" parent="AI/PickATask/DeliverAllItems/UntilFailDecorator/DeliverItem"]
+script = ExtResource("23_knnqg")
+key = "inventory"
+value = "get_value(\"inventories\").front()"
 
 [node name="InventoryNotEmpty" type="Node" parent="AI/PickATask/DeliverAllItems/UntilFailDecorator/DeliverItem"]
 script = ExtResource("22_mrw4u")
@@ -312,16 +331,13 @@ script = ExtResource("22_mrw4u")
 [node name="GetInventorySize" parent="AI/PickATask/DeliverAllItems/UntilFailDecorator/DeliverItem/InventoryNotEmpty" instance=ExtResource("22_pyd6o")]
 size_key = "inventory_size"
 
-[node name="BlackboardCompareCondition" type="Node" parent="AI/PickATask/DeliverAllItems/UntilFailDecorator/DeliverItem/InventoryNotEmpty"]
+[node name="InventorySizeGtZero" type="Node" parent="AI/PickATask/DeliverAllItems/UntilFailDecorator/DeliverItem/InventoryNotEmpty"]
 script = ExtResource("23_rsj77")
 left_operand = "get_value(\"inventory_size\")"
 operator = 2
 right_operand = "0"
 
 [node name="Stand" parent="AI/PickATask/DeliverAllItems/UntilFailDecorator/DeliverItem" instance=ExtResource("23_n0ni6")]
-
-[node name="FindNearestInventory" parent="AI/PickATask/DeliverAllItems/UntilFailDecorator/DeliverItem" instance=ExtResource("24_74xfn")]
-inventory_key = "inventory"
 
 [node name="WalkTo" parent="AI/PickATask/DeliverAllItems/UntilFailDecorator/DeliverItem" instance=ExtResource("25_fbkwt")]
 target_key = "inventory"
@@ -338,6 +354,11 @@ item_key = "item"
 inventory_key = "inventory"
 direction = 1
 
+[node name="RemoveInventoryFromList" type="Node" parent="AI/PickATask/DeliverAllItems/UntilFailDecorator/DeliverItem"]
+script = ExtResource("23_knnqg")
+key = "inventories"
+value = "get_value(\"inventories\").slice(0, -1)"
+
 [node name="Leave" type="Node" parent="AI/PickATask/DeliverAllItems"]
 script = ExtResource("22_mrw4u")
 
@@ -350,6 +371,30 @@ is_tile_name = 3
 target_key = "exit"
 
 [node name="Despawn" parent="AI/PickATask/DeliverAllItems/Leave" instance=ExtResource("29_3osmx")]
+
+[node name="Read" type="Node" parent="AI/PickATask"]
+script = ExtResource("22_mrw4u")
+
+[node name="GetABook" type="Node" parent="AI/PickATask/Read"]
+script = ExtResource("22_mrw4u")
+
+[node name="Not" type="Node" parent="AI/PickATask/Read/GetABook"]
+script = ExtResource("31_qbcry")
+
+[node name="HasItemType" parent="AI/PickATask/Read/GetABook/Not" instance=ExtResource("32_rsnhf")]
+
+[node name="GetItemType" type="Node" parent="AI/PickATask/Read/GetABook"]
+script = ExtResource("22_mrw4u")
+
+[node name="FindInventoryWithItemType" type="Node" parent="AI/PickATask/Read/GetABook/GetItemType"]
+script = ExtResource("22_mrw4u")
+
+[node name="FindNearestInventory" parent="AI/PickATask/Read/GetABook/GetItemType/FindInventoryWithItemType" instance=ExtResource("24_74xfn")]
+
+[node name="ReadABook" type="Node" parent="AI/PickATask/Read"]
+script = ExtResource("22_mrw4u")
+
+[node name="HasItemType" parent="AI/PickATask/Read/ReadABook" instance=ExtResource("32_rsnhf")]
 
 [node name="Bored" type="Node" parent="AI/PickATask"]
 script = ExtResource("16_2llwd")

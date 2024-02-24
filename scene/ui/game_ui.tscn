@@ -1,102 +1,60 @@
-[gd_scene load_steps=6 format=3 uid="uid://dwy4j6424166b"]
+[gd_scene load_steps=7 format=3 uid="uid://dwy4j6424166b"]
 
 [ext_resource type="Script" path="res://scene/ui/game_ui.gd" id="1_ovqxb"]
-[ext_resource type="PackedScene" uid="uid://cx3c7v8mgjrnr" path="res://scene/ui/menu_button/add_cards_button.tscn" id="2_pa2x6"]
-[ext_resource type="Script" path="res://scene/ui/menu_button/place_object_button.gd" id="3_bgnms"]
-[ext_resource type="Script" path="res://scene/ui/menu_button/delete_object_button.gd" id="4_bnna7"]
-[ext_resource type="Script" path="res://scene/ui/menu_button/buy_book_button.gd" id="4_rgckd"]
+[ext_resource type="Theme" uid="uid://b8o36u0dt0fx" path="res://scene/ui/theme/game.tres" id="2_64qkp"]
+[ext_resource type="Script" path="res://scene/ui/menu_button/place_object_menu_button.gd" id="7_c2e16"]
+[ext_resource type="PackedScene" uid="uid://b40exbrb1dsa3" path="res://scene/ui/menu_button/game_menu_button.tscn" id="7_wqt2f"]
+[ext_resource type="Script" path="res://scene/ui/menu_button/buy_book_menu_button.gd" id="9_jcgod"]
 
-[node name="GameUI" type="Control" groups=["game_ui"]]
-layout_mode = 3
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_khgux"]
+
+[node name="GameUI" type="PanelContainer" node_paths=PackedStringArray("inspect_list") groups=["game_ui"]]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
+theme = ExtResource("2_64qkp")
+theme_override_styles/panel = SubResource("StyleBoxEmpty_khgux")
 script = ExtResource("1_ovqxb")
+inspect_list = NodePath("MarginContainer/InspectList")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
+layout_mode = 2
 theme_override_constants/margin_left = 32
 theme_override_constants/margin_top = 32
 theme_override_constants/margin_right = 32
 theme_override_constants/margin_bottom = 32
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 32
-
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="CardContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-follow_focus = true
-
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/CardContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_constants/margin_left = 2
-theme_override_constants/margin_top = 2
-theme_override_constants/margin_right = 2
-theme_override_constants/margin_bottom = 2
-
-[node name="CardList" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/CardContainer/MarginContainer"]
-layout_mode = 2
-theme_override_constants/separation = 6
-alignment = 2
-
-[node name="InspectContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/InspectContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_constants/margin_left = 2
-theme_override_constants/margin_top = 2
-theme_override_constants/margin_right = 2
-theme_override_constants/margin_bottom = 2
-
-[node name="InspectList" type="VBoxContainer" parent="MarginContainer/VBoxContainer/HBoxContainer/InspectContainer/MarginContainer"]
+[node name="InspectList" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
 size_flags_horizontal = 8
 
-[node name="MenuButtons" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+[node name="MenuBar" type="MenuBar" parent="."]
 layout_mode = 2
-size_flags_horizontal = 0
 size_flags_vertical = 8
-mouse_filter = 0
-theme_override_constants/separation = 32
+theme = ExtResource("2_64qkp")
 
-[node name="AddStation" parent="MarginContainer/VBoxContainer/MenuButtons" node_paths=PackedStringArray("card_container") instance=ExtResource("2_pa2x6")]
+[node name="HBoxContainer" type="HBoxContainer" parent="MenuBar"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -40.0
+offset_right = 214.0
+grow_vertical = 0
+
+[node name="AddStation" parent="MenuBar/HBoxContainer" instance=ExtResource("7_wqt2f")]
 layout_mode = 2
-text = "STATION"
-script = ExtResource("3_bgnms")
+text = "ADD_STATION"
+flat = false
+script = ExtResource("7_c2e16")
 resource_path = "res://scene/station"
 place_at_entrance = false
-card_container = NodePath("../../HBoxContainer/CardContainer/MarginContainer/CardList")
 
-[node name="BuyBook" parent="MarginContainer/VBoxContainer/MenuButtons" node_paths=PackedStringArray("card_container") instance=ExtResource("2_pa2x6")]
+[node name="BuyBook" parent="MenuBar/HBoxContainer" instance=ExtResource("7_wqt2f")]
 layout_mode = 2
-text = "BOOK"
-script = ExtResource("4_rgckd")
-card_container = NodePath("../../HBoxContainer/CardContainer/MarginContainer/CardList")
-
-[node name="Delete" type="Button" parent="MarginContainer/VBoxContainer/MenuButtons"]
-layout_mode = 2
-text = "DELETE"
-script = ExtResource("4_bnna7")
-
-[connection signal="gui_input" from="." to="." method="_on_control_gui_input"]
-[connection signal="pressed" from="MarginContainer/VBoxContainer/MenuButtons/Delete" to="MarginContainer/VBoxContainer/MenuButtons/Delete" method="_on_pressed"]
+text = "BUY_BOOK"
+flat = false
+script = ExtResource("9_jcgod")

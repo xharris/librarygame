@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://cx3c7v8mgjrnr"]
 
-[ext_resource type="Script" path="res://scene/ui/menu_button/add_cards_button.gd" id="1_nuya4"]
+[ext_resource type="Script" path="res://scene/ui/card_button/add_cards_button.gd" id="1_nuya4"]
 
 [node name="AddCardsButton" type="Button"]
 anchors_preset = 15
