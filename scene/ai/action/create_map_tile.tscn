@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://bun43ycvpmifm"]
+
+[ext_resource type="Script" path="res://scene/ai/action/create_map_tile.gd" id="1_5rosx"]
+
+[node name="CreateMapTile" type="Node"]
+script = ExtResource("1_5rosx")

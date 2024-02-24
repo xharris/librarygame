@@ -54,8 +54,8 @@ func move_to(target:Vector2, speed:int = 50, _target_distance:int = 1):
 	navigation.target_position = target
 	move_speed = speed
 	animation.play('walk')
-	if global_position.distance_to(target) <= _target_distance:
-		stop_moving()
+	#if global_position.distance_to(target) <= _target_distance:
+		#stop_moving()
 
 func stop_moving():
 	navigation.stop()

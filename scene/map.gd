@@ -114,7 +114,7 @@ func _on_patron_spawner_timeout():
 	var spawn_chance = get_spawn_chance()
 	if not is_max_patrons() and random <= spawn_chance:
 		l.debug('Spawn patron with %d%% chance (rolled %d)', [spawn_chance, random])
-		spawn_actor(Actor.build(Actor.ROLE.PATRON))
+		#spawn_actor(Actor.build(Actor.ROLE.PATRON))
 
 func get_closest_cell(coords:Vector2, name_filter:TILE_NAME = TILE_NAME.NONE) -> Vector2i:
 	var used_cells = get_used_cells(0).filter(func(cell:Vector2):

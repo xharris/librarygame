@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://hll1sdajlpys"]
+
+[ext_resource type="Script" path="res://scene/ai/action/get_closest_cell.gd" id="1_0e18y"]
+
+[node name="GetClosestCell" type="Node"]
+script = ExtResource("1_0e18y")

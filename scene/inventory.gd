@@ -120,5 +120,5 @@ func drop_item(item:Item):
 func _adjust_item_positions():
 	var i = 0
 	for item in get_all_items():
-		item.position = Vector2(0,-i*2)
+		item.position = Vector2(0,-i*3)
 		i += 1

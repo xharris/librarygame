@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://dwy4j6424166b"]
+[gd_scene load_steps=8 format=3 uid="uid://dwy4j6424166b"]
 
 [ext_resource type="Script" path="res://scene/ui/game_ui.gd" id="1_ovqxb"]
 [ext_resource type="Theme" uid="uid://b8o36u0dt0fx" path="res://scene/ui/theme/game.tres" id="2_64qkp"]
+[ext_resource type="Script" path="res://scene/ui/card_button/delete_object_button.gd" id="4_bnna7"]
 [ext_resource type="Script" path="res://scene/ui/menu_button/place_object_menu_button.gd" id="7_c2e16"]
 [ext_resource type="PackedScene" uid="uid://b40exbrb1dsa3" path="res://scene/ui/menu_button/game_menu_button.tscn" id="7_wqt2f"]
 [ext_resource type="Script" path="res://scene/ui/menu_button/buy_book_menu_button.gd" id="9_jcgod"]
@@ -58,3 +59,10 @@ layout_mode = 2
 text = "BUY_BOOK"
 flat = false
 script = ExtResource("9_jcgod")
+
+[node name="Delete" type="Button" parent="MenuBar/HBoxContainer"]
+layout_mode = 2
+text = "DELETE"
+script = ExtResource("4_bnna7")
+
+[connection signal="pressed" from="MenuBar/HBoxContainer/Delete" to="MenuBar/HBoxContainer/Delete" method="_on_pressed"]

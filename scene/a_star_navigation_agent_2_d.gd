@@ -1,8 +1,9 @@
 class_name AStarNavigationAgent2D
 extends Node2D
 
-static var l = Log.new()
+static var l = Log.new()#Log.LEVEL.DEBUG)
 static var GROUP = 'AStarNavigationAgent2D'
+enum STOP_TYPE {REACHED,BLOCKED,INTERRUPT}
 
 @export var debug_enabled:bool
 @export var agent:Node2D
@@ -15,19 +16,19 @@ var _target_position:Vector2 = Vector2.INF
 var _needs_update = false
 var _done = true
 var weight_colors = [Color.GREEN, Color.YELLOW, Color.RED]
+var _point_ids:Dictionary
 
 signal target_reached
 signal blocked
 
-var _point_ids:Dictionary
-
 func _get_point_id(cell:Vector2i):
-	if _point_ids.has(cell):
-		return _point_ids.get(cell) as int
-	_point_ids[cell] = grid.get_available_point_id()
-	return _point_ids[cell]
-	#var rect = _map.get_used_rect()
-	#return (cell.x - rect.position.x) + rect.size.x * (cell.y - rect.position.y) # int((cell.y - rect.position.y) + (cell.x - rect.position.x) * rect.size.y)
+	#if _point_ids.has(cell):
+		#return _point_ids.get(cell) as int
+	#_point_ids[cell] = grid.get_available_point_id()
+	#return _point_ids[cell]
+	
+	var rect = _map.get_used_rect()
+	return (cell.x - rect.position.x) + rect.size.x * (cell.y - rect.position.y) # int((cell.y - rect.position.y) + (cell.x - rect.position.x) * rect.size.y)
 	
 func _update_navigation():
 	var stations = StationHelper.get_all()
@@ -35,6 +36,7 @@ func _update_navigation():
 	var rect = _map.get_used_rect()
 	grid.reserve_space(rect.size.x * rect.size.y)
 	grid.clear()
+	_point_ids = {}
 	# iterate all tiles
 	for x in rect.size.x:
 		for y in rect.size.y:
@@ -99,22 +101,37 @@ func _update_navigation():
 	l.debug('navigation updated')
 	queue_redraw()
 
+func _get_closest_empty_point(target:Vector2) -> int:
+	var id = grid.get_closest_point(target)
+	var cell = grid.get_point_position(id)
+	var points = Array(grid.get_point_ids())
+	# avoid stations
+	var stations = StationHelper.get_all()
+	points = points.filter(func(p:int):
+		return not stations.any(func(s:Station): return grid.get_closest_point(s.global_position) == p))
+	# sort distance
+	points.sort_custom(func(a:int,b:int):
+		var a_pos = grid.get_point_position(a)
+		var b_pos = grid.get_point_position(b)
+		return cell.distance_to(a_pos) < cell.distance_to(b_pos))
+	if points.size():
+		return points.front()
+	return -1
+
 func _update_path():
-	_done = false
 	var previous_path_size = path.size()
 	var from_id = grid.get_closest_point(agent.global_position)
 	var to_id = grid.get_closest_point(_target_position)
-	if from_id == to_id and not _done:
-		l.debug('%s target reached (no movement)', [agent])
-		stop()
-		target_reached.emit()
-		return
 	path.assign(grid.get_id_path(from_id, to_id))
-	l.info('%s %s',[self, path])
-	if path.size() == 0 and previous_path_size > 0:
-		l.info('%s blocked', [agent])
-		blocked.emit()
-	l.debug('target_position %s -> %s path=%s', [from_id, to_id, path])
+	if (from_id == to_id or path.size() < 1) and not _done:
+		stop(STOP_TYPE.REACHED)
+		return
+	if path.size() < 1 and previous_path_size > 1:
+		stop(STOP_TYPE.BLOCKED)
+		return
+	_done = false
+	l.debug('target_position %s %s -> %s %s path=%s', 
+		[from_id, grid.get_point_position(from_id), to_id, grid.get_point_position(to_id), path])
 	queue_redraw()
 
 var target_position:Vector2:
@@ -129,14 +146,23 @@ func is_pathing() -> bool:
 	return path.size() > 0
 
 func get_next_position() -> Vector2:
-	if not is_pathing():
+	if not path.size():
 		return agent.global_position
 	return grid.get_point_position(path.front())
 	
-func stop():
+func stop(type:STOP_TYPE = STOP_TYPE.INTERRUPT):
 	velocity = Vector2.ZERO
 	path = []
 	_target_position = agent.global_position
+	if not _done:
+		l.debug('%s stop %s',[agent, STOP_TYPE.find_key(type)])
+		match type:
+			STOP_TYPE.REACHED:
+				target_reached.emit()
+			STOP_TYPE.BLOCKED:
+				blocked.emit()
+			STOP_TYPE.INTERRUPT:
+				target_reached.emit()
 	_done = true
 
 func update():
@@ -156,13 +182,13 @@ func _get_map():
 	_map.child_exiting_tree.connect(_map_tree_changed)
 
 func _map_tree_changed(node:Node):
-	pass#update()
+	if node.find_child('Station'):
+		update()
 
 func _process(delta):
 	if _needs_update:
 		_needs_update = false
 		_update_navigation()
-		_update_path()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta):
@@ -170,14 +196,13 @@ func _physics_process(delta):
 		return
 	var target_position = get_next_position()
 	if target_position.distance_to(agent.global_position) <= target_desired_distance:
-		# reached next point
-		if path.size() <= 1 and not _done:
-			# navigation finished
-			l.debug('%s target reached', [agent])
-			stop()
-			target_reached.emit()
+		# navigation finished
+		if path.size() <= 0 and not _done:
+			stop(STOP_TYPE.REACHED)
 			return
-		else:
+		# reached next point
+		if path.size() > 0:
+			_update_path()
 			path.pop_front()
 			target_position = get_next_position()
 	velocity = agent.global_position.direction_to(target_position)

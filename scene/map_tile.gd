@@ -8,7 +8,6 @@ var cell:Vector2i
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	add_child(inventory)
 	add_to_group(GROUP)
 	var map := TileMapHelper.get_current_map() as Map
 	global_position = map.map_to_global(cell)
