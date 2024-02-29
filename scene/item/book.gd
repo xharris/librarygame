@@ -30,17 +30,20 @@ static func from_item(item:Item) -> Book:
 		var p when p > 500:
 			book.length = LENGTH.LONG
 	return book
-
-static func random_genres() -> Array[GENRE]:
-	var possible_genres = GENRE.values()
+	
+static func random_genres(possible_genres:Array = GENRE.values()) -> Array[GENRE]:
 	var genre_count = randi_range(1, 3)
 	var genres:Array[GENRE] = []
 	for i in genre_count:
 		var genre = possible_genres.pick_random()
 		if possible_genres.size():
-			genres.append(genre)
-		possible_genres = possible_genres.filter(func(g:int):return g != genre)
+			genres.append(genre as GENRE)
+		possible_genres = possible_genres.filter(func(g:GENRE):return g != genre)
 	return genres
+
+static func has_genres(item:Item, genres:Array[GENRE]) -> bool:
+	var book_genres := item.args.get('genres', []) as Array[GENRE]
+	return book_genres.any(func(g:GENRE):return genres.has(g))
 
 var pages:int
 var genres:Array[GENRE]

@@ -6,6 +6,7 @@
 [node name="PanelContainer" type="PanelContainer"]
 offset_right = 31.0
 offset_bottom = 23.0
+theme = ExtResource("1_etooc")
 script = ExtResource("1_7baga")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]

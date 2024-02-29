@@ -14,6 +14,8 @@ enum ACTOR_MOOD {NONE,HAPPY,SAD,ANGRY}
 static func build(role:ROLE) -> Actor:
 	var actor = scn_actor.instantiate() as Actor
 	actor.role = role
+	if role == ROLE.PATRON:
+		actor.likes_genres = Book.random_genres()
 	return actor
 
 static func get_actor_node(node:Node2D) -> Actor:
@@ -41,13 +43,15 @@ var actor_name:String
 var role:ROLE = ROLE.PATRON
 var role_name:String
 var mood:ACTOR_MOOD = ACTOR_MOOD.NONE
-var happiness = 100
 var move_speed = 50
 var inspection:Array[Dictionary] = [
 	InspectText.build('actor_name'),
 	InspectText.build('role_name'),
 	InspectProgress.build('happiness', 'happiness'),
 ]
+var likes_genres:Array[Book.GENRE] = []
+# TODO var dislikes_genres:Array[Book.GENRE] = [] # also update ai/action/find_book
+var happiness:int = 100
 
 func move_to(target:Vector2, speed:int = 50, _target_distance:int = 1):
 	l.debug('%s move_to from %s to %s',[self, global_position, target])

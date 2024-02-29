@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://bjdl75m1r3sq2"]
+
+[ext_resource type="Script" path="res://scene/ai/action/lose_happiness.gd" id="1_i5rqe"]
+
+[node name="LoseHappiness" type="Node"]
+script = ExtResource("1_i5rqe")

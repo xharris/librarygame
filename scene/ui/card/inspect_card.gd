@@ -4,10 +4,6 @@ extends PanelContainer
 static var l = Log.new()
 static var GROUP = 'inspect_card'
 enum INSPECT_TYPE {TEXT, PROGRESS}
-static var scenes = {
-	INSPECT_TYPE.TEXT: preload('res://scene/ui/card/inspect_types/text.tscn'),
-	INSPECT_TYPE.PROGRESS: preload('res://scene/ui/card/inspect_types/progress.tscn')
-}
 static var scn_inspect_section = preload('res://scene/ui/card/inspect_section.tscn')
 static var scn_inspect_card = preload('res://scene/ui/card/inspect_card.tscn')
 static var _inspect_cards = {}
@@ -49,7 +45,7 @@ static func remove_properties(node:Node, properties:Array[Dictionary]):
 ## The main node that this card focuses on
 var _node:Node
 
-func _get_section(section_name:String) -> InspectSection:
+func _get_section(section_name:String = 'info') -> InspectSection:
 	var children = section_list.get_children()
 	var sections = children.filter(func(c):
 		return c is InspectSection and c.section_name == section_name)
@@ -63,39 +59,26 @@ func _get_section(section_name:String) -> InspectSection:
 		section_list.add_child(section)
 	return section
 
-func has_property(node:Node, attr:Dictionary):
-	var type := attr.get('type') as InspectCard.INSPECT_TYPE
-	var property := attr.get('property') as String
-	for section in section_list.get_children():
-		if section_list.get_children().any(func(c):
-			return c is InspectAttribute and c.args.get('property') == property and c.args.get('type') == type
-		):
-			return true
-	return false
+func _get_all_sections() -> Array[InspectSection]:
+	var sections:Array[InspectSection] = []
+	sections.assign(section_list.get_children())
+	return sections
+
+func has_property(node:Node, attr:Dictionary) -> bool:
+	return _get_all_sections().any(func(s:InspectSection):return s.has_attribute(node, attr))
 
 func _add_property(node:Node, attr:Dictionary, property_node:Node = node, section_name:String = ''):
-	var type := attr.get('type') as InspectCard.INSPECT_TYPE
-	if not scenes.has(type):
-		return l.warn('Inspection type "%s" not found', [InspectCard.INSPECT_TYPE.find_key(type)])
-	if has_property(node, attr):
-		return # Attribute already added
 	var section = _get_section(section_name)
-	# add to AttributeList
-	var scene:PackedScene = scenes[type]
-	var attribute_node:InspectAttribute = scene.instantiate() as InspectAttribute
-	attribute_node.args = attr
-	attribute_node.node = property_node
-	section.add_child(attribute_node)
+	section.add_attribute(node, attr, property_node)
 
-func _remove_property(node:Node, property:Variant):
-	for section in section_list.get_children():
-		var children = section.get_children()\
-			.filter(func(i:InspectAttribute):
-				return i.node == node and \
-					(property is String and i.args.get('property') == property) or\
-					(property is Dictionary and i.args.get('property') == property.get('property')))
-		for child in children:
-			section.remove_child(child)
+func _remove_property(node:Node, attr:Variant):
+	for section in _get_all_sections():
+		# remove from section
+		if section.has_attribute(node, attr):
+			section.remove_attribute(node, attr)
+		# remove empty section?
+		if not section.get_all_attributes().size():
+			section_list.remove_child(section)
 
 func _on_close_button_pressed():
 	get_parent().remove_child(self)

@@ -3,6 +3,11 @@ extends Node2D
 
 static var GROUP = 'maptile'
 
+static func get_all() -> Array[MapTile]:
+	var map_tiles:Array[MapTile] = []
+	map_tiles.assign(Global.get_tree().get_nodes_in_group(GROUP))
+	return map_tiles
+
 var cell:Vector2i
 @onready var inventory:Inventory = $Inventory
 

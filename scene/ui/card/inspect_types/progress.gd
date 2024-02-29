@@ -7,10 +7,23 @@ static func build(property:String, label:String = property) -> Dictionary:
 
 @export var label_node:Label
 @export var progress_bar:ProgressBar
+@export var fill_color:Color = Palette.Red500
 
-func update_value():
-	var property = args.get('property') as String
-	var label = args.get('label', property) as String
+var value:int = 100
+var modulate_color:Color
+
+func update_value(v):
+	var label = args.get('label', _property) as String
 	
 	label_node.text = label
-	progress_bar.value = node[property] as int
+	if v > 0:
+		modulate_color = Palette.Green500
+		value = v as int
+	else:
+		modulate_color = Palette.Red500
+		value = 100
+
+func _process(delta):
+	super(delta)
+	progress_bar.value = lerpf(progress_bar.value, value, delta)
+	progress_bar.modulate = progress_bar.modulate.lerp(modulate_color, delta)

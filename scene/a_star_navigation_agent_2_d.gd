@@ -98,6 +98,11 @@ func _update_navigation():
 				grid.set_point_disabled(id, true)
 		grid.set_point_weight_scale(id, weight)
 		#l.debug('cell %s station=%s disabled=%s weight=%s', [id, station, not walkable, weight])
+	# iterate map tiles with items on it
+	for map_tile in MapTile.get_all():
+		var id = grid.get_closest_point(map_tile.global_position)
+		if map_tile.inventory.size():
+			grid.set_point_disabled(id, true)
 	l.debug('navigation updated')
 	queue_redraw()
 
@@ -182,7 +187,7 @@ func _get_map():
 	_map.child_exiting_tree.connect(_map_tree_changed)
 
 func _map_tree_changed(node:Node):
-	if node.find_child('Station'):
+	if node.find_child('Station') or node is MapTile:
 		update()
 
 func _process(delta):

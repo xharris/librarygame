@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://bt7g0lpcp0qyo"]
+
+[ext_resource type="Script" path="res://scene/ai/action/find_inventories/inventories_has_type.gd" id="1_sb4rx"]
+
+[node name="InventoriesHasType" type="Node"]
+script = ExtResource("1_sb4rx")

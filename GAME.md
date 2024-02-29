@@ -1,7 +1,20 @@
 # TODOS
 
-> AStar: path acts weird if tree changes a lot
-> Add behavior: Move away if on the same cell as a station
+- Add behavior: Move away if on the same cell as a station
+- Add behavior: Read book
+	- ROLE == patron
+	- give actor a read_count_goal (# of books they want to read)
+		- Extra: can have mod NO_BOOK_REPEATS if they don't read the same book twice (based on title)
+- Game UI: Make it cute
+
+# IDEAS
+
+- MenuBar Books
+	- List of checkboxes
+		- Enabled: chance to gain a new book (delivery) every X seconds for $Y 
+			- Y increases with # number of genres book has
+	- Each checkbox is a book genre
+	- Multiple checked adds chance a book with multiple genres will be delivered
 
 # build a library
 

@@ -15,19 +15,23 @@ progress_bar = NodePath("MarginContainer/HBoxContainer/ProgressBar")
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+[node name="HBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
 theme = ExtResource("1_jp6kx")
+theme_override_constants/separation = 0
 
 [node name="Label" type="Label" parent="MarginContainer/HBoxContainer"]
 layout_mode = 2
+theme = ExtResource("1_jp6kx")
 text = "label"
 
 [node name="ProgressBar" type="ProgressBar" parent="MarginContainer/HBoxContainer"]
+custom_minimum_size = Vector2(0, 2)
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
 theme = ExtResource("1_jp6kx")
 step = 1.0
+value = 100.0
 rounded = true
 show_percentage = false

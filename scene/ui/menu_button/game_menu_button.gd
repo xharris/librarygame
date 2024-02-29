@@ -11,6 +11,9 @@ func get_card_objects() -> Array[Variant]:
 func on_item_pressed(index:int):
 	pass
 
+func build_item(text_key:String, is_checkbox:bool = false) -> Dictionary:
+	return {'text_key':text_key,'is_checkbox':is_checkbox}
+
 func _ready():
 	var cards:Array[SmallCard] = []
 	objects = get_card_objects()
@@ -19,6 +22,11 @@ func _ready():
 	for object in objects:
 		var node:Node
 		var text_key:String
+		var is_checkbox:bool = false
+		if object is Dictionary:
+			text_key = object.get('text_key')
+			is_checkbox = object.get('is_checkbox', false) as bool
+			object = object.get('object')
 		if object is PackedScene:
 			node = object.instantiate()
 			node.process_mode = Node.PROCESS_MODE_DISABLED
@@ -31,6 +39,9 @@ func _ready():
 		if not text_key:
 			return l.error("Couldn't extract text_key from %s",[object])
 		pp.add_item("%s_TITLE" % text_key)
-		pp.set_item_tooltip(pp.item_count-1, tr("%s_DESCRIPTION" % text_key).strip_edges())
+		var i = pp.item_count - 1
+		if is_checkbox:
+			pp.set_item_as_checkable(i, true)
+		pp.set_item_tooltip(i, tr("%s_DESCRIPTION" % text_key).strip_edges())
 	# on item select
 	pp.index_pressed.connect(on_item_pressed)

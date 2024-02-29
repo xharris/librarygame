@@ -1,16 +1,18 @@
-[gd_scene load_steps=2 format=3 uid="uid://bjpy8817bcodl"]
+[gd_scene load_steps=3 format=3 uid="uid://bjpy8817bcodl"]
 
+[ext_resource type="Theme" uid="uid://b8o36u0dt0fx" path="res://scene/ui/theme/game.tres" id="1_4sfof"]
 [ext_resource type="Script" path="res://scene/ui/card/inspect_section.gd" id="1_jm3vl"]
 
-[node name="InspectSection" type="VBoxContainer" node_paths=PackedStringArray("label")]
+[node name="InspectSection" type="VBoxContainer"]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("1_4sfof")
 script = ExtResource("1_jm3vl")
-label = NodePath("Label")
 
 [node name="Label" type="Label" parent="."]
 layout_mode = 2
+theme = ExtResource("1_4sfof")
 text = "SECTION"

@@ -32,13 +32,6 @@ func sort_distance(from:Node2D, to:Array[Variant]):
 	to.sort_custom(func(a:Node2D,b:Node2D):
 		return from.global_position.distance_to(a.global_position) < from.global_position.distance_to(b.global_position))
 
-var maps = [
-	{
-		map_name='Bird Library',
-		scene=preload("res://scene/map/FirstMap.tscn")
-	}
-]
-
 var INSPECT_SECTION = {
 	BUFF = 'good',
 	DEBUFF = 'bad',

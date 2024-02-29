@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://dytdjjak7so45"]
+
+[ext_resource type="Script" path="res://scene/ai/action/find_inventories/get_all_inventories.gd" id="1_832ti"]
+
+[node name="GetAllInventories" type="Node"]
+script = ExtResource("1_832ti")

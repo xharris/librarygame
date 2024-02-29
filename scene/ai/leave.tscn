@@ -1,0 +1,23 @@
+[gd_scene load_steps=6 format=3 uid="uid://cvdro34amr75s"]
+
+[ext_resource type="Script" path="res://addons/beehave/nodes/composites/sequence.gd" id="1_u1prx"]
+[ext_resource type="PackedScene" uid="uid://hll1sdajlpys" path="res://scene/ai/action/get_closest_cell.tscn" id="2_1juo1"]
+[ext_resource type="PackedScene" uid="uid://x4djpvux2qnq" path="res://scene/ai/action/walk_to.tscn" id="3_fuh23"]
+[ext_resource type="Script" path="res://addons/beehave/nodes/decorators/delayer.gd" id="4_j2cyi"]
+[ext_resource type="PackedScene" uid="uid://cg7cwo6gvmwoh" path="res://scene/ai/action/despawn.tscn" id="5_rp0ry"]
+
+[node name="Leave" type="Node"]
+script = ExtResource("1_u1prx")
+
+[node name="GetClosestCell" parent="." instance=ExtResource("2_1juo1")]
+position_key = "exit"
+tile_name = 3
+
+[node name="WalkTo" parent="." instance=ExtResource("3_fuh23")]
+target_key = "exit"
+
+[node name="DelayDecorator" type="Node" parent="."]
+script = ExtResource("4_j2cyi")
+wait_time = 1.0
+
+[node name="Despawn" parent="DelayDecorator" instance=ExtResource("5_rp0ry")]

@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://dgk3oy5x0vdmu"]
+
+[ext_resource type="Script" path="res://scene/ai/action/get_happiness.gd" id="1_mxlc4"]
+
+[node name="GetHappiness" type="Node"]
+script = ExtResource("1_mxlc4")

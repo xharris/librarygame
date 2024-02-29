@@ -9,7 +9,7 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_khgux"]
 
-[node name="GameUI" type="PanelContainer" node_paths=PackedStringArray("inspect_list") groups=["game_ui"]]
+[node name="GameUI" type="PanelContainer" node_paths=PackedStringArray("inspect_list", "game_time_label") groups=["game_ui"]]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -19,7 +19,8 @@ mouse_filter = 1
 theme = ExtResource("2_64qkp")
 theme_override_styles/panel = SubResource("StyleBoxEmpty_khgux")
 script = ExtResource("1_ovqxb")
-inspect_list = NodePath("MarginContainer/InspectList")
+inspect_list = NodePath("MarginContainer/ScrollContainer/MarginContainer/InspectList")
+game_time_label = NodePath("MarginContainer/HBoxContainer/GameTime")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
@@ -28,9 +29,32 @@ theme_override_constants/margin_top = 32
 theme_override_constants/margin_right = 32
 theme_override_constants/margin_bottom = 32
 
-[node name="InspectList" type="VBoxContainer" parent="MarginContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer"]
+clip_contents = false
 layout_mode = 2
-size_flags_horizontal = 8
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_right = 6
+
+[node name="InspectList" type="VBoxContainer" parent="MarginContainer/ScrollContainer/MarginContainer"]
+layout_direction = 3
+layout_mode = 2
+size_flags_horizontal = 10
+size_flags_vertical = 3
+theme_override_constants/separation = 8
+alignment = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="GameTime" type="Label" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
 
 [node name="MenuBar" type="MenuBar" parent="."]
 layout_mode = 2

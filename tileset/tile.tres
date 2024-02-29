@@ -1,0 +1,43 @@
+[gd_resource type="TileSet" load_steps=7 format=3 uid="uid://cdnnwkki8p3gv"]
+
+[ext_resource type="Texture2D" uid="uid://dik5q2kevlltw" path="res://image/tile/base_tile.png" id="1_2073c"]
+[ext_resource type="Texture2D" uid="uid://bbu23jikax2rh" path="res://image/tile/empty.png" id="2_br6lj"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_plyyw"]
+resource_name = "normal"
+texture = ExtResource("1_2073c")
+margins = Vector2i(0, 8)
+texture_region_size = Vector2i(34, 19)
+0:0/next_alternative_id = 3
+0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_gdnlh"]
+resource_name = "empty"
+texture = ExtResource("2_br6lj")
+margins = Vector2i(0, 8)
+texture_region_size = Vector2i(34, 19)
+0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_8ibxe"]
+resource_name = "no_idle"
+texture = ExtResource("1_2073c")
+margins = Vector2i(0, 8)
+texture_region_size = Vector2i(34, 19)
+0:0/0 = 0
+0:0/0/modulate = Color(0.878431, 0.878431, 0.878431, 1)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_q1vcv"]
+resource_name = "entrance"
+texture = ExtResource("1_2073c")
+margins = Vector2i(0, 8)
+texture_region_size = Vector2i(34, 19)
+0:0/0 = 0
+0:0/0/modulate = Color(0.619608, 0.619608, 0.619608, 1)
+
+[resource]
+tile_shape = 1
+tile_size = Vector2i(32, 16)
+sources/0 = SubResource("TileSetAtlasSource_plyyw")
+sources/1 = SubResource("TileSetAtlasSource_gdnlh")
+sources/2 = SubResource("TileSetAtlasSource_8ibxe")
+sources/4 = SubResource("TileSetAtlasSource_q1vcv")

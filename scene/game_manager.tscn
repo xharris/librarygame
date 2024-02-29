@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://bmv3t84xrfi02"]
+
+[ext_resource type="Script" path="res://scene/game_manager.gd" id="1_m3lte"]
+
+[node name="GameManager" type="Node2D" groups=["game_manager"]]
+script = ExtResource("1_m3lte")
+
+[node name="TickGameTime" type="Timer" parent="."]
+autostart = true
+
+[connection signal="timeout" from="TickGameTime" to="." method="_on_tick_game_time_timeout"]

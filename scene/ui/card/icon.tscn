@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://scene/ui/card/icon.gd" id="1_illmu"]
 
-[node name="AspectRatioContainer" type="AspectRatioContainer" node_paths=PackedStringArray("texture_container")]
+[node name="AspectRatioContainer" type="AspectRatioContainer"]
 custom_minimum_size = Vector2(48, 48)
 anchors_preset = 15
 anchor_right = 1.0
@@ -12,12 +12,10 @@ grow_vertical = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource("1_illmu")
-texture_container = NodePath("Container/TextureContainer")
 
-[node name="Container" type="Control" parent="."]
+[node name="Container" type="PanelContainer" parent="."]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
 [node name="TextureContainer" type="Node2D" parent="Container"]
-position = Vector2(-252, 0)

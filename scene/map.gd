@@ -22,7 +22,6 @@ var inventories = {}
 var nav_layer_name = 'nav'
 var map_layer_name = 'map'
 var selection_enabled = false
-@export var initial_spawn_count = 3
 @export var tile_outline:Sprite2D
 var tile_outline_color:Color
 
@@ -56,8 +55,6 @@ func get_tile_name(cell:Vector2i) -> TILE_NAME:
 		return TILE_NAME.NONE
 	return TILE_NAME.get(src.resource_name.to_upper())
 	
-	
-
 func get_tile_coords(_tile_name:TILE_NAME) -> Array[Vector2]:
 	var tile_name = (TILE_NAME.find_key(_tile_name) as String).to_lower()
 	var layers = get_layers_count()
@@ -72,26 +69,6 @@ func get_tile_coords(_tile_name:TILE_NAME) -> Array[Vector2]:
 			if src.resource_name == tile_name:
 				tiles.append(to_global(map_to_local(cell)))
 	return tiles
-	
-func get_patron_count() -> int:
-	var actors = get_tree().get_nodes_in_group(Actor.GROUP)
-	return actors.filter(func(a:Actor): return a.role == Actor.ROLE.PATRON and a.is_active()).size()
-
-func is_max_patrons() -> bool:
-	var max_capacity := (get_used_cells(TileMapHelper.get_layer_by_name(self, map_layer_name)).size() * 2/3)
-	return get_patron_count() >= max_capacity
-
-## Return [0,100] chance of spawning patron
-func get_spawn_chance() -> int:
-	var seat_count = get_tree().get_nodes_in_group(Station.GROUP).filter(func(s:Station):return s.type == Station.STATION_TYPE.SEAT and s.is_active()).size()
-	var patron_count = get_patron_count()
-	var book_count = Item.get_all().filter(func(i:Item):return i.type == Item.TYPE.BOOK).size()
-	var weights = [
-		(seat_count / patron_count) if patron_count > 0 else 0,
-		(book_count / patron_count) if patron_count > 0 else 0
-	]
-	var spawn_chance = weights.reduce(func(prev,curr):return prev + curr, 0) / weights.size()
-	return (spawn_chance if get_patron_count() >= initial_spawn_count else 1) * 25
 
 func global_to_map(coords:Vector2) -> Vector2i:
 	return local_to_map(to_local(coords))
@@ -108,13 +85,6 @@ func spawn_actor(actor:Actor):
 		actor.global_position = entrance_tiles.pick_random()
 		add_child(actor)
 		actor_spawned.emit(actor)
-
-func _on_patron_spawner_timeout():
-	var random = randi_range(1, 100)
-	var spawn_chance = get_spawn_chance()
-	if not is_max_patrons() and random <= spawn_chance:
-		l.debug('Spawn patron with %d%% chance (rolled %d)', [spawn_chance, random])
-		#spawn_actor(Actor.build(Actor.ROLE.PATRON))
 
 func get_closest_cell(coords:Vector2, name_filter:TILE_NAME = TILE_NAME.NONE) -> Vector2i:
 	var used_cells = get_used_cells(0).filter(func(cell:Vector2):

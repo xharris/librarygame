@@ -3,12 +3,6 @@ extends Control
 
 static var l = Log.new()
 
-@export var texture_rect:TextureRect
-@export var viewport:SubViewport
-@export var camera:Camera2D
-@export var viewport_container:SubViewportContainer
-@export var texture_container:Node2D
-
 func _get_sprites(node:Node2D, sprites:Array[Node2D] = [], parent:Node2D = node) -> Array[Node2D]:
 	for child in node.get_children():
 		var copy:Node2D
@@ -26,11 +20,13 @@ func _get_sprites(node:Node2D, sprites:Array[Node2D] = [], parent:Node2D = node)
 	return sprites
 
 func clear_icon():
+	var texture_container := $Container/TextureContainer as Node2D
 	for child in texture_container.get_children():
 		texture_container.remove_child(child)
 
 func set_icon(node:Node2D):
 	clear_icon()
+	var texture_container := $Container/TextureContainer as Node2D
 	var marker = IconMarker.find(node)
 	if marker:
 		texture_container.position = marker.position * -1
