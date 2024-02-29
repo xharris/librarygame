@@ -34,7 +34,7 @@
 [ext_resource type="Script" path="res://addons/beehave/nodes/decorators/inverter.gd" id="31_qbcry"]
 [ext_resource type="PackedScene" uid="uid://by27xpd1gtqi2" path="res://scene/ai/action/find_book.tscn" id="32_lg4eo"]
 [ext_resource type="PackedScene" uid="uid://d2wemhtsnt6tm" path="res://scene/ai/action/find_nearest_station.tscn" id="32_rbwsc"]
-[ext_resource type="PackedScene" path="res://scene/ai/condition/has_item_type.tscn" id="32_rsnhf"]
+[ext_resource type="PackedScene" uid="uid://cgs0ktspyrwxa" path="res://scene/ai/condition/has_item_type.tscn" id="32_rsnhf"]
 [ext_resource type="PackedScene" uid="uid://cao3r0g375yqv" path="res://scene/ai/condition/can_use_station.tscn" id="33_mmvvh"]
 [ext_resource type="PackedScene" uid="uid://bjdl75m1r3sq2" path="res://scene/ai/action/lose_happiness.tscn" id="33_t2fst"]
 [ext_resource type="PackedScene" uid="uid://dl2tvkolt3imi" path="res://scene/ai/condition/is_near_station.tscn" id="34_kbq72"]
@@ -292,7 +292,7 @@ script = ExtResource("19_xhymj")
 
 [node name="AI" type="Node" parent="." node_paths=PackedStringArray("blackboard", "actor")]
 script = ExtResource("14_omcwp")
-blackboard = NodePath("@Node@75483")
+blackboard = NodePath("@Node@73676")
 actor = NodePath("..")
 
 [node name="Start" type="Node" parent="AI"]

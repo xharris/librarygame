@@ -1,0 +1,36 @@
+[gd_scene load_steps=5 format=3 uid="uid://cd25wkn0s74fa"]
+
+[ext_resource type="Script" path="res://scene/day_night.gd" id="1_v7l08"]
+[ext_resource type="Texture2D" uid="uid://ce8wj7qmo8uw3" path="res://image/sun.png" id="1_wl1g0"]
+[ext_resource type="Texture2D" uid="uid://bu6g8brdr48vr" path="res://image/moon.png" id="2_6dfeb"]
+
+[sub_resource type="Curve2D" id="Curve2D_uubgj"]
+_data = {
+"points": PackedVector2Array(0, 598.171, 0, -598.171, 0, 600, -0.185405, -598.945, 0.185405, 598.945, 800, 600)
+}
+point_count = 2
+
+[node name="DayNight" type="Node2D"]
+script = ExtResource("1_v7l08")
+
+[node name="Path2D" type="Path2D" parent="."]
+position = Vector2(-400, -440)
+scale = Vector2(1, 1.40783)
+curve = SubResource("Curve2D_uubgj")
+
+[node name="PathFollow2D" type="PathFollow2D" parent="Path2D"]
+position = Vector2(0, 600)
+rotation = -1.5708
+rotates = false
+
+[node name="Sun" type="Sprite2D" parent="Path2D/PathFollow2D"]
+unique_name_in_owner = true
+rotation = 1.5708
+scale = Vector2(1, 0.710314)
+texture = ExtResource("1_wl1g0")
+
+[node name="Moon" type="Sprite2D" parent="Path2D/PathFollow2D"]
+unique_name_in_owner = true
+rotation = 1.5708
+scale = Vector2(1, 0.710314)
+texture = ExtResource("2_6dfeb")

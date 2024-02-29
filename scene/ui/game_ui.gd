@@ -17,4 +17,6 @@ func _gui_input(event):
 
 func _process(delta):
 	var manager = GameManager.get_current()
-	game_time_label.text = str(manager.game_time)
+	#game_time_label.text = 'Day %d (%d:%s)'%[manager.cycle, game_hours, game_minutes if game_minutes > 10 else '0'+str(game_minutes)]
+	var dt = manager.dt
+	game_time_label.text = 'Day %d\n%d %s'%[dt.days, dt.hours12, dt.meridiem]

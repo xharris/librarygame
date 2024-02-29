@@ -3,16 +3,20 @@ extends Node2D
 
 static var l = Log.new()
 static var GROUP = 'game_manager'
+static var CYCLE_LENGTH = 10 # 120
 
 static func get_current() -> GameManager:
 	return Global.get_tree().get_nodes_in_group(GROUP).front() as GameManager
 
 @export var initial_spawn_count = 1
 @export var disable_random_spawning:bool
-var game_time = 0
+var game_time:float = 0
 var cycle = 0
+var cycle_progress:float = 0
 var money = 100
 var genre_research:Array[Book.GENRE] = []
+var game_speed = 2.0 # TODO
+var dt = DayNight.DateTime.new()
 
 func get_patron_count() -> int:
 	var actors = Actor.get_all()
@@ -43,19 +47,21 @@ func disable_genre_research(genre:Book.GENRE):
 	genre_research = genre_research.filter(func(g:Book.GENRE):return g == genre)
 
 func _on_tick_game_time_timeout():
-	game_time += 1
+	pass # game_time += 1
 
 var _last_event_time = {}
 func game_event(event:String, every:int):
 	var last_time = _last_event_time.get(event, 0) as int
-	if last_time != game_time and game_time % every == 0:
+	if last_time != game_time and int(game_time) % every == 0:
 		_last_event_time[event] = game_time
 		return true
 	return false
 
 func _process(delta):
-	game_time = max(1, game_time)
-	cycle = ceil(game_time / 60)
+	game_time = max(0, game_time) + delta
+	cycle = ceil(game_time / CYCLE_LENGTH)
+	cycle_progress = (game_time - ((cycle - 1.0) * CYCLE_LENGTH)) / CYCLE_LENGTH
+	dt.from_game_manager(self)
 	# chance to spawn patron
 	if game_event('spawn_patron', 1):
 		var map := TileMapHelper.get_current_map() as Map

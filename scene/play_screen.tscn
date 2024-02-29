@@ -1,11 +1,17 @@
-[gd_scene load_steps=5 format=3 uid="uid://cf64q077hcan4"]
+[gd_scene load_steps=6 format=3 uid="uid://cf64q077hcan4"]
 
 [ext_resource type="PackedScene" uid="uid://dwy4j6424166b" path="res://scene/ui/game_ui.tscn" id="1_i01ed"]
 [ext_resource type="PackedScene" uid="uid://d4aumh5ieaj1b" path="res://scene/map.tscn" id="1_ojdxs"]
+[ext_resource type="PackedScene" uid="uid://cd25wkn0s74fa" path="res://scene/day_night.tscn" id="2_sr5ar"]
 [ext_resource type="Script" path="res://scene/play_camera.gd" id="3_ntmc1"]
 [ext_resource type="PackedScene" uid="uid://bmv3t84xrfi02" path="res://scene/game_manager.tscn" id="3_wg2m5"]
 
 [node name="PlayScreen" type="Node2D"]
+
+[node name="BGLayer" type="CanvasLayer" parent="."]
+layer = -1
+
+[node name="DayNight" parent="BGLayer" instance=ExtResource("2_sr5ar")]
 
 [node name="Map" parent="." instance=ExtResource("1_ojdxs")]
 layer_0/tile_data = PackedInt32Array(-1, 0, 0, -65537, 0, 0, -131073, 0, 0, -131072, 0, 0, -65536, 0, 0, 0, 0, 0, 131071, 0, 0, 65535, 0, 0, -2, 0, 0, 131070, 2, 0, 196606, 2, 0, 262141, 4, 0)
@@ -16,6 +22,6 @@ script = ExtResource("3_ntmc1")
 
 [node name="GameManager" parent="." instance=ExtResource("3_wg2m5")]
 
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
+[node name="FGLayer" type="CanvasLayer" parent="."]
 
-[node name="GameUi" parent="CanvasLayer" instance=ExtResource("1_i01ed")]
+[node name="GameUi" parent="FGLayer" instance=ExtResource("1_i01ed")]
