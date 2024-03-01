@@ -34,6 +34,8 @@ static func from_item(item:Item) -> Book:
 static func random_genres(possible_genres:Array = GENRE.values()) -> Array[GENRE]:
 	var genre_count = randi_range(1, 3)
 	var genres:Array[GENRE] = []
+	if not possible_genres.size():
+		return genres
 	for i in genre_count:
 		var genre = possible_genres.pick_random()
 		if possible_genres.size():

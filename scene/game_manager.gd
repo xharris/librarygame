@@ -3,7 +3,7 @@ extends Node2D
 
 static var l = Log.new()
 static var GROUP = 'game_manager'
-static var CYCLE_LENGTH = 10 # 120
+static var CYCLE_LENGTH = 600
 
 static func get_current() -> GameManager:
 	return Global.get_tree().get_nodes_in_group(GROUP).front() as GameManager

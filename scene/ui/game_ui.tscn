@@ -1,7 +1,8 @@
-[gd_scene load_steps=8 format=3 uid="uid://dwy4j6424166b"]
+[gd_scene load_steps=11 format=3 uid="uid://dwy4j6424166b"]
 
 [ext_resource type="Script" path="res://scene/ui/game_ui.gd" id="1_ovqxb"]
 [ext_resource type="Theme" uid="uid://b8o36u0dt0fx" path="res://scene/ui/theme/game.tres" id="2_64qkp"]
+[ext_resource type="FontFile" uid="uid://bkjbj5axsk5j5" path="res://scene/ui/theme/Lexend-VariableFont_wght.ttf" id="3_sqwgc"]
 [ext_resource type="Script" path="res://scene/ui/card_button/delete_object_button.gd" id="4_bnna7"]
 [ext_resource type="Script" path="res://scene/ui/menu_button/place_object_menu_button.gd" id="7_c2e16"]
 [ext_resource type="PackedScene" uid="uid://b40exbrb1dsa3" path="res://scene/ui/menu_button/game_menu_button.tscn" id="7_wqt2f"]
@@ -9,7 +10,18 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_khgux"]
 
-[node name="GameUI" type="PanelContainer" node_paths=PackedStringArray("inspect_list", "game_time_label") groups=["game_ui"]]
+[sub_resource type="FontVariation" id="FontVariation_ypi4l"]
+base_font = ExtResource("3_sqwgc")
+variation_embolden = 0.6
+spacing_top = -8
+spacing_bottom = -8
+
+[sub_resource type="FontVariation" id="FontVariation_barnq"]
+base_font = ExtResource("3_sqwgc")
+spacing_top = -2
+spacing_bottom = -2
+
+[node name="GameUI" type="PanelContainer" node_paths=PackedStringArray("inspect_list", "game_day_label", "game_time_label") groups=["game_ui"]]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -20,6 +32,7 @@ theme = ExtResource("2_64qkp")
 theme_override_styles/panel = SubResource("StyleBoxEmpty_khgux")
 script = ExtResource("1_ovqxb")
 inspect_list = NodePath("MarginContainer/ScrollContainer/MarginContainer/InspectList")
+game_day_label = NodePath("MarginContainer/HBoxContainer/GameDay")
 game_time_label = NodePath("MarginContainer/HBoxContainer/GameTime")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
@@ -50,11 +63,27 @@ alignment = 2
 [node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_override_constants/separation = 8
+
+[node name="GameDay" type="Label" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+theme_override_colors/font_color = Color(0, 0, 0, 0.356863)
+theme_override_fonts/font = SubResource("FontVariation_ypi4l")
+theme_override_font_sizes/font_size = 37
+text = "00"
+vertical_alignment = 1
 
 [node name="GameTime" type="Label" parent="MarginContainer/HBoxContainer"]
 layout_mode = 2
-size_flags_horizontal = 0
-size_flags_vertical = 0
+size_flags_vertical = 1
+theme_override_colors/font_color = Color(0, 0, 0, 0.619608)
+theme_override_fonts/font = SubResource("FontVariation_barnq")
+theme_override_font_sizes/font_size = 14
+text = "0 PM
+NEVER"
+vertical_alignment = 1
 
 [node name="MenuBar" type="MenuBar" parent="."]
 layout_mode = 2

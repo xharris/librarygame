@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://cd25wkn0s74fa"]
+[gd_scene load_steps=6 format=3 uid="uid://cd25wkn0s74fa"]
 
 [ext_resource type="Script" path="res://scene/day_night.gd" id="1_v7l08"]
 [ext_resource type="Texture2D" uid="uid://ce8wj7qmo8uw3" path="res://image/sun.png" id="1_wl1g0"]
@@ -10,27 +10,60 @@ _data = {
 }
 point_count = 2
 
+[sub_resource type="Environment" id="Environment_kqebp"]
+background_mode = 3
+glow_enabled = true
+glow_levels/1 = 4.33
+glow_levels/2 = 3.65
+glow_levels/3 = 4.24
+glow_levels/5 = 2.68
+glow_levels/6 = 1.12
+glow_intensity = 0.0
+glow_strength = 0.85
+glow_hdr_threshold = 0.0
+fog_enabled = true
+
 [node name="DayNight" type="Node2D"]
 script = ExtResource("1_v7l08")
 
-[node name="Path2D" type="Path2D" parent="."]
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+layer = -1
+
+[node name="Background" type="TextureRect" parent="CanvasLayer"]
+unique_name_in_owner = true
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PathContainer" type="Node2D" parent="CanvasLayer"]
+unique_name_in_owner = true
+
+[node name="Path2D" type="Path2D" parent="CanvasLayer/PathContainer"]
 position = Vector2(-400, -440)
 scale = Vector2(1, 1.40783)
 curve = SubResource("Curve2D_uubgj")
 
-[node name="PathFollow2D" type="PathFollow2D" parent="Path2D"]
+[node name="PathFollow2D" type="PathFollow2D" parent="CanvasLayer/PathContainer/Path2D"]
+unique_name_in_owner = true
 position = Vector2(0, 600)
 rotation = -1.5708
 rotates = false
 
-[node name="Sun" type="Sprite2D" parent="Path2D/PathFollow2D"]
+[node name="WorldEnvironment" type="WorldEnvironment" parent="CanvasLayer/PathContainer/Path2D/PathFollow2D"]
 unique_name_in_owner = true
-rotation = 1.5708
-scale = Vector2(1, 0.710314)
-texture = ExtResource("1_wl1g0")
+environment = SubResource("Environment_kqebp")
 
-[node name="Moon" type="Sprite2D" parent="Path2D/PathFollow2D"]
+[node name="Moon" type="Sprite2D" parent="CanvasLayer/PathContainer/Path2D/PathFollow2D"]
 unique_name_in_owner = true
 rotation = 1.5708
 scale = Vector2(1, 0.710314)
 texture = ExtResource("2_6dfeb")
+
+[node name="Sun" type="Sprite2D" parent="CanvasLayer/PathContainer/Path2D/PathFollow2D"]
+unique_name_in_owner = true
+visible = false
+rotation = 1.5708
+scale = Vector2(1, 0.710314)
+texture = ExtResource("1_wl1g0")
