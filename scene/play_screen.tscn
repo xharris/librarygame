@@ -22,3 +22,6 @@ script = ExtResource("3_ntmc1")
 [node name="FGLayer" type="CanvasLayer" parent="."]
 
 [node name="GameUi" parent="FGLayer" instance=ExtResource("1_i01ed")]
+size_flags_horizontal = 4
+size_flags_vertical = 4
+metadata/_edit_use_anchors_ = true

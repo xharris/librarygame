@@ -63,7 +63,6 @@ texture = ExtResource("2_6dfeb")
 
 [node name="Sun" type="Sprite2D" parent="CanvasLayer/PathContainer/Path2D/PathFollow2D"]
 unique_name_in_owner = true
-visible = false
 rotation = 1.5708
 scale = Vector2(1, 0.710314)
 texture = ExtResource("1_wl1g0")

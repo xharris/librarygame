@@ -4,9 +4,9 @@
 [ext_resource type="Theme" uid="uid://b8o36u0dt0fx" path="res://scene/ui/theme/game.tres" id="2_64qkp"]
 [ext_resource type="FontFile" uid="uid://bkjbj5axsk5j5" path="res://scene/ui/theme/Lexend-VariableFont_wght.ttf" id="3_sqwgc"]
 [ext_resource type="Script" path="res://scene/ui/card_button/delete_object_button.gd" id="4_bnna7"]
+[ext_resource type="PackedScene" uid="uid://b5u0uurhddyru" path="res://scene/ui/menu_button/buy_book_menu_button.tscn" id="6_2ytn1"]
 [ext_resource type="Script" path="res://scene/ui/menu_button/place_object_menu_button.gd" id="7_c2e16"]
 [ext_resource type="PackedScene" uid="uid://b40exbrb1dsa3" path="res://scene/ui/menu_button/game_menu_button.tscn" id="7_wqt2f"]
-[ext_resource type="Script" path="res://scene/ui/menu_button/buy_book_menu_button.gd" id="9_jcgod"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_khgux"]
 
@@ -21,7 +21,7 @@ base_font = ExtResource("3_sqwgc")
 spacing_top = -2
 spacing_bottom = -2
 
-[node name="GameUI" type="PanelContainer" node_paths=PackedStringArray("inspect_list", "game_day_label", "game_time_label") groups=["game_ui"]]
+[node name="GameUI" type="PanelContainer" node_paths=PackedStringArray("inspect_list", "game_day_label", "game_time_label", "money_label") groups=["game_ui"]]
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -32,8 +32,9 @@ theme = ExtResource("2_64qkp")
 theme_override_styles/panel = SubResource("StyleBoxEmpty_khgux")
 script = ExtResource("1_ovqxb")
 inspect_list = NodePath("MarginContainer/ScrollContainer/MarginContainer/InspectList")
-game_day_label = NodePath("MarginContainer/HBoxContainer/GameDay")
-game_time_label = NodePath("MarginContainer/HBoxContainer/GameTime")
+game_day_label = NodePath("MarginContainer/VBoxContainer/HBoxContainer/GameDay")
+game_time_label = NodePath("MarginContainer/VBoxContainer/HBoxContainer/GameTime")
+money_label = NodePath("MarginContainer/VBoxContainer/Money")
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 2
@@ -60,37 +61,48 @@ size_flags_vertical = 3
 theme_override_constants/separation = 8
 alignment = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+modulate = Color(1, 1, 1, 0.784314)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_override_constants/separation = 4
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
 theme_override_constants/separation = 8
 
-[node name="GameDay" type="Label" parent="MarginContainer/HBoxContainer"]
+[node name="GameDay" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 1
-theme_override_colors/font_color = Color(0, 0, 0, 0.356863)
 theme_override_fonts/font = SubResource("FontVariation_ypi4l")
 theme_override_font_sizes/font_size = 37
 text = "00"
 vertical_alignment = 1
 
-[node name="GameTime" type="Label" parent="MarginContainer/HBoxContainer"]
+[node name="GameTime" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 1
-theme_override_colors/font_color = Color(0, 0, 0, 0.619608)
 theme_override_fonts/font = SubResource("FontVariation_barnq")
 theme_override_font_sizes/font_size = 14
 text = "0 PM
 NEVER"
 vertical_alignment = 1
 
-[node name="MenuBar" type="MenuBar" parent="."]
+[node name="Money" type="Label" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("2_64qkp")
+theme_type_variation = &"MoneyLabel"
+text = "$00"
+
+[node name="MenuBar" type="MenuBar" parent="MarginContainer"]
 layout_mode = 2
 size_flags_vertical = 8
 theme = ExtResource("2_64qkp")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MenuBar"]
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/MenuBar"]
 layout_mode = 1
 anchors_preset = 2
 anchor_top = 1.0
@@ -98,24 +110,23 @@ anchor_bottom = 1.0
 offset_top = -40.0
 offset_right = 214.0
 grow_vertical = 0
+theme_override_constants/separation = 8
 
-[node name="AddStation" parent="MenuBar/HBoxContainer" instance=ExtResource("7_wqt2f")]
+[node name="AddStation" parent="MarginContainer/MenuBar/HBoxContainer" instance=ExtResource("7_wqt2f")]
 layout_mode = 2
+theme = ExtResource("2_64qkp")
 text = "ADD_STATION"
-flat = false
 script = ExtResource("7_c2e16")
 resource_path = "res://scene/station"
 place_at_entrance = false
 
-[node name="BuyBook" parent="MenuBar/HBoxContainer" instance=ExtResource("7_wqt2f")]
+[node name="BuyBookMenuButton" parent="MarginContainer/MenuBar/HBoxContainer" instance=ExtResource("6_2ytn1")]
 layout_mode = 2
-text = "BUY_BOOK"
-flat = false
-script = ExtResource("9_jcgod")
 
-[node name="Delete" type="Button" parent="MenuBar/HBoxContainer"]
+[node name="Delete" type="Button" parent="MarginContainer/MenuBar/HBoxContainer"]
 layout_mode = 2
+theme = ExtResource("2_64qkp")
 text = "DELETE"
 script = ExtResource("4_bnna7")
 
-[connection signal="pressed" from="MenuBar/HBoxContainer/Delete" to="MenuBar/HBoxContainer/Delete" method="_on_pressed"]
+[connection signal="pressed" from="MarginContainer/MenuBar/HBoxContainer/Delete" to="MarginContainer/MenuBar/HBoxContainer/Delete" method="_on_pressed"]

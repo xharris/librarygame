@@ -19,6 +19,18 @@ func pick_random() -> Color:
 			colors.append(self[prop.get('name')])
 	return colors.pick_random()
 
-func lerp_colors(colors:Array[Color], weight:float) -> Color:
-	var idx = wrapi(floor(weight * colors.size()), 0, colors.size() - 1) + 1
-	return lerp(colors[idx-1], colors[idx], weight)
+func lerp_colors(colors:Array[Color], offset:float) -> Color:
+# If there's only one color, just return it
+	if colors.size() == 1:
+		return colors[0]
+	
+	# Calculate which two colors we need to interpolate between
+	var pos := wrapf(offset, 0, 1) * (colors.size() - 1)
+	var index := wrapi(int(pos), 0, colors.size()-1) # This will give the first color's index
+	var next_index := wrapi(index + 1, 0, colors.size()-1)
+	var weight := pos - index # This will give the weight for the lerp
+	
+	# Interpolate between the two colors using the lerp function
+	var color1 := colors[index]
+	var color2 := colors[next_index] # Ensure we don't go out of bounds
+	return color1.lerp(color2, weight)

@@ -52,8 +52,8 @@ func _on_tick_game_time_timeout():
 var _last_event_time = {}
 func game_event(event:String, every:int):
 	var last_time = _last_event_time.get(event, 0) as int
-	if last_time != game_time and int(game_time) % every == 0:
-		_last_event_time[event] = game_time
+	if int(game_time) > 0 and last_time != int(game_time) and int(game_time) % every == 0:
+		_last_event_time[event] = int(game_time)
 		return true
 	return false
 

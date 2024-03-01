@@ -10,6 +10,7 @@ static func get_ui() -> GameUI:
 @export var inspect_list:BoxContainer# := $MarginContainer/VBoxContainer/HBoxContainer/InspectContainer/MarginContainer/InspectList
 @export var game_day_label:Label
 @export var game_time_label:Label
+@export var money_label:Label
 
 func _gui_input(event):
 	var map := TileMapHelper.get_current_map() as Map
@@ -22,4 +23,5 @@ func _process(delta):
 	var dt = manager.dt
 	game_day_label.text = str(dt.days)
 	game_time_label.text = '%d %s\n%s'%[dt.hours12, dt.meridiem, 
-		tr(DayNight.CYCLE.find_key(DayNight.get_cycle(manager.cycle_progress)))]
+		tr(DayNight.PART.find_key(DayNight.get_cycle(manager.cycle_progress)))]
+	money_label.text = '$%d'%[manager.money]

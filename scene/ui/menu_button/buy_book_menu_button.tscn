@@ -1,3 +1,9 @@
-[gd_scene format=3 uid="uid://b5u0uurhddyru"]
+[gd_scene load_steps=3 format=3 uid="uid://b5u0uurhddyru"]
+
+[ext_resource type="Theme" uid="uid://b8o36u0dt0fx" path="res://scene/ui/theme/game.tres" id="1_impny"]
+[ext_resource type="Script" path="res://scene/ui/menu_button/buy_book_menu_button.gd" id="1_u4njn"]
 
 [node name="BuyBookMenuButton" type="MenuButton"]
+theme = ExtResource("1_impny")
+text = "BUY_BOOK"
+script = ExtResource("1_u4njn")
