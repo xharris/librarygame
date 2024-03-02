@@ -11,18 +11,20 @@ func tick(actor, blackboard: Blackboard):
 	if not inventory:
 		return FAILURE
 	var item := blackboard.get_value(item_key) as Item
-	if not inventory.get_all_items().has(item):
-		return FAILURE
 	var other_inventory := blackboard.get_value(inventory_key) as Inventory
-	if other_inventory.is_full():
-		return FAILURE
 	var result:bool
+	var from_inventory:Inventory
+	var to_inventory:Inventory
 	match direction:
 		DIRECTION.FROM:
-			result = other_inventory.transfer_item(item, inventory)
+			from_inventory = other_inventory
+			to_inventory = inventory
 		DIRECTION.TO:
-			result = inventory.transfer_item(item, other_inventory)
-	if not result:
+			from_inventory = inventory
+			to_inventory = other_inventory
+	if to_inventory.is_full() or not from_inventory.get_all_items().has(item):
+		return FAILURE
+	if not from_inventory.transfer_item(item, to_inventory):
 		return FAILURE
 	return SUCCESS
 

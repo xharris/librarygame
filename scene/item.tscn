@@ -1,6 +1,16 @@
-[gd_scene load_steps=2 format=3 uid="uid://d1evebkyrhwqh"]
+[gd_scene load_steps=3 format=3 uid="uid://d1evebkyrhwqh"]
 
 [ext_resource type="Script" path="res://scene/item.gd" id="1_pjfbc"]
 
-[node name="Item" type="Node2D" groups=["item"]]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_y2ohk"]
+
+[node name="Item" type="CharacterBody2D" groups=["item"]]
+collision_layer = 8
+collision_mask = 2
+motion_mode = 1
 script = ExtResource("1_pjfbc")
+
+[node name="InputShape" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_y2ohk")
+
+[connection signal="input_event" from="." to="." method="_on_input_event"]

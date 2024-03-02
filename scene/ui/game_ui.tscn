@@ -10,11 +10,9 @@
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_khgux"]
 
-[sub_resource type="FontVariation" id="FontVariation_ypi4l"]
+[sub_resource type="FontVariation" id="FontVariation_17shf"]
 base_font = ExtResource("3_sqwgc")
 variation_embolden = 0.6
-spacing_top = -8
-spacing_bottom = -8
 
 [sub_resource type="FontVariation" id="FontVariation_barnq"]
 base_font = ExtResource("3_sqwgc")
@@ -76,11 +74,10 @@ theme_override_constants/separation = 8
 
 [node name="GameDay" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
-size_flags_vertical = 1
-theme_override_fonts/font = SubResource("FontVariation_ypi4l")
+theme = ExtResource("2_64qkp")
+theme_override_fonts/font = SubResource("FontVariation_17shf")
 theme_override_font_sizes/font_size = 37
 text = "00"
-vertical_alignment = 1
 
 [node name="GameTime" type="Label" parent="MarginContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
@@ -127,6 +124,7 @@ layout_mode = 2
 layout_mode = 2
 theme = ExtResource("2_64qkp")
 text = "DELETE"
+flat = true
 script = ExtResource("4_bnna7")
 
 [connection signal="pressed" from="MarginContainer/MenuBar/HBoxContainer/Delete" to="MarginContainer/MenuBar/HBoxContainer/Delete" method="_on_pressed"]

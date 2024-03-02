@@ -1,0 +1,12 @@
+[gd_scene load_steps=2 format=3 uid="uid://cwa3lckf7cpm0"]
+
+[ext_resource type="Texture2D" uid="uid://e4nmc5ujnrbe" path="res://image/ui/x.svg" id="1_pfw6c"]
+
+[node name="CloseButton" type="Button"]
+custom_minimum_size = Vector2(18, 18)
+size_flags_horizontal = 0
+mouse_filter = 1
+icon = ExtResource("1_pfw6c")
+flat = true
+icon_alignment = 1
+expand_icon = true

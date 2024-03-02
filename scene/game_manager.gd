@@ -4,6 +4,8 @@ extends Node2D
 static var l = Log.new()
 static var GROUP = 'game_manager'
 static var CYCLE_LENGTH = 600
+static var COST_FORCE_DELIVERY = -5
+static var COST_BOOK_DELIVERY = -5
 
 static func get_current() -> GameManager:
 	return Global.get_tree().get_nodes_in_group(GROUP).front() as GameManager
@@ -13,10 +15,18 @@ static func get_current() -> GameManager:
 var game_time:float = 0
 var cycle = 0
 var cycle_progress:float = 0
-var money = 100
+var money = abs(COST_BOOK_DELIVERY)
 var genre_research:Array[Book.GENRE] = []
 var game_speed = 2.0 # TODO
 var dt = DayNight.DateTime.new()
+
+func apply_money(amount:int, reason:String) -> bool:
+	if money < amount:
+		NotificationCard.show_notification(tr('INSUFFICIENT_FUNDS: %s'%[reason]))
+		return false
+	l.info('Money %d (%s)', [amount, reason])
+	money += amount
+	return true
 
 func get_patron_count() -> int:
 	var actors = Actor.get_all()
@@ -44,10 +54,23 @@ func enable_genre_research(genre:Book.GENRE):
 		genre_research.append(genre)
 
 func disable_genre_research(genre:Book.GENRE):
-	genre_research = genre_research.filter(func(g:Book.GENRE):return g == genre)
+	genre_research = genre_research.filter(func(g:Book.GENRE):return g != genre)
 
-func _on_tick_game_time_timeout():
-	pass # game_time += 1
+func research_book(forced:bool = false):
+	if forced:
+		if not apply_money(COST_FORCE_DELIVERY, 'FORCED_RESEARCH'):
+			return
+	var genres = Book.random_genres(genre_research)
+	if not apply_money(COST_BOOK_DELIVERY * genres.size(), 'RESEARCH'):
+		return
+	var actor = Actor.build(Actor.ROLE.SERVICE)
+	if genres.size():
+		var item = Book.build(genres)
+		var inventory := actor.find_child('Inventory') as Inventory
+		inventory.add_item(item)
+		var map := TileMapHelper.get_current_map() as Map
+		map.spawn_actor(actor)
+		var book = Book.from_item(item)
 
 var _last_event_time = {}
 func game_event(event:String, every:int):
@@ -56,6 +79,15 @@ func game_event(event:String, every:int):
 		_last_event_time[event] = int(game_time)
 		return true
 	return false
+
+func _ready():
+	# TODO delete
+	pass
+	#for genre in Book.GENRE.values():
+		#enable_genre_research(genre)
+	#research_book()
+	#for genre in Book.GENRE.values():
+		#disable_genre_research(genre)
 
 func _process(delta):
 	game_time = max(0, game_time) + delta
@@ -73,11 +105,4 @@ func _process(delta):
 			map.spawn_actor(Actor.build(Actor.ROLE.PATRON))
 	# buy a new book
 	if game_event('book_research', 10):
-		var genres = Book.random_genres(genre_research)
-		var actor = Actor.build(Actor.ROLE.SERVICE)
-		if genres.size():
-			var book = Book.build(genres)
-			var inventory := actor.find_child('Inventory') as Inventory
-			inventory.add_item(book)
-			var map := TileMapHelper.get_current_map() as Map
-			map.spawn_actor(actor)
+		research_book()

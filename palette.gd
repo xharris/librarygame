@@ -9,6 +9,8 @@ var LightBlue200 = Color.html('#B3E5FC')
 
 var Green500 = Color.html('#4CAF50')
 
+var Grey50 = Color.html('#FAFAFA')
+
 var BlueGrey900 = Color.html('#263238')
 
 func pick_random() -> Color:

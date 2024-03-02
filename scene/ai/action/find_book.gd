@@ -4,9 +4,7 @@ extends ActionLeaf
 @export var inventory_key:String = 'inventory'
 
 func item_sort(a:Item, b:Item, actor:Actor):
-	if Book.has_genres(b, actor.likes_genres):
-		return false
-	return true
+	return genre_likes(a, actor) < genre_likes(b, actor)
 
 func item_filter(item:Item, actor:Actor):
 	if not item.type == Item.TYPE.BOOK:
@@ -21,6 +19,10 @@ func inventory_filter(inventory:Inventory, actor:Actor):
 	if not items.any(item_filter.bind(actor)):
 		return false
 	return true
+
+func genre_likes(item:Item, actor:Actor) -> int:
+	var book = Book.from_item(item)
+	return book.genres.filter(func(g:Book.GENRE):return g in actor.likes_genres).size()
 
 func tick(actor, blackboard: Blackboard):
 	actor = actor as Actor

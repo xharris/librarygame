@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://dqt71fayg13x6"]
+[gd_scene load_steps=5 format=3 uid="uid://dqt71fayg13x6"]
 
 [ext_resource type="Theme" uid="uid://b8o36u0dt0fx" path="res://scene/ui/theme/game.tres" id="1_wjwgh"]
 [ext_resource type="Script" path="res://scene/ui/card/inspect_card.gd" id="2_kq0nx"]
 [ext_resource type="PackedScene" uid="uid://dlulbffqiut2y" path="res://scene/ui/card/icon.tscn" id="3_6jc03"]
+[ext_resource type="PackedScene" uid="uid://cwa3lckf7cpm0" path="res://scene/ui/close_button.tscn" id="3_jmts3"]
 
 [node name="InspectCard" type="PanelContainer" node_paths=PackedStringArray("icon", "section_list") groups=["inspect_card"]]
 anchors_preset = 15
@@ -26,19 +27,19 @@ theme = ExtResource("1_wjwgh")
 layout_mode = 2
 theme = ExtResource("1_wjwgh")
 
+[node name="CloseButton" parent="MarginContainer/VBoxContainer" instance=ExtResource("3_jmts3")]
+layout_mode = 2
+size_flags_vertical = 0
+
 [node name="Icon" parent="MarginContainer/VBoxContainer" instance=ExtResource("3_6jc03")]
+visible = false
 layout_mode = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
 
 [node name="SectionList" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
-size_flags_vertical = 0
+size_flags_vertical = 3
 theme = ExtResource("1_wjwgh")
-
-[node name="CloseButton" type="Button" parent="MarginContainer/VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 10
-text = "X"
 
 [connection signal="pressed" from="MarginContainer/VBoxContainer/CloseButton" to="." method="_on_close_button_pressed"]

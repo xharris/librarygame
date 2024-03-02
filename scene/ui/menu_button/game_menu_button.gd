@@ -7,26 +7,38 @@ var objects:Array[Variant] = []
 
 func get_card_objects() -> Array[Variant]:
 	return []
-		
+
 func on_item_pressed(index:int):
 	pass
 
-func build_item(text_key:String, is_checkbox:bool = false) -> Dictionary:
-	return {'text_key':text_key,'is_checkbox':is_checkbox}
+func _on_item_pressed(index:int):
+	on_item_pressed(index)
+
+func build_item(text_key:String, is_checkbox:bool = false, action:Variant = null) -> Dictionary:
+	return {'text_key':text_key,'is_checkbox':is_checkbox,'action':action}
+
+func build_separator(text_key:String = ''):
+	return {'text_key':text_key,'is_separator':true}
 
 func _ready():
 	var cards:Array[SmallCard] = []
 	objects = get_card_objects()
 	var pp = get_popup()
+	pp.hide_on_checkable_item_selection = false
 	# add menu button item
 	for object in objects:
 		var node:Node
 		var text_key:String
 		var is_checkbox:bool = false
+		var is_separator:bool = false
 		if object is Dictionary:
 			text_key = object.get('text_key')
 			is_checkbox = object.get('is_checkbox', false) as bool
+			is_separator = object.get('is_separator', false) as bool
 			object = object.get('object')
+		if is_separator:
+			pp.add_separator(text_key)
+			continue
 		if object is PackedScene:
 			node = object.instantiate()
 			node.process_mode = Node.PROCESS_MODE_DISABLED
@@ -44,4 +56,4 @@ func _ready():
 			pp.set_item_as_checkable(i, true)
 		pp.set_item_tooltip(i, tr("%s_DESCRIPTION" % text_key).strip_edges())
 	# on item select
-	pp.index_pressed.connect(on_item_pressed)
+	pp.index_pressed.connect(_on_item_pressed)
