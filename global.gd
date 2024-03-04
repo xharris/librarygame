@@ -32,6 +32,11 @@ func sort_distance(from:Node2D, to:Array[Variant]):
 	to.sort_custom(func(a:Node2D,b:Node2D):
 		return from.global_position.distance_to(a.global_position) < from.global_position.distance_to(b.global_position))
 
+func sort_distance_vector2i(from:Vector2i, to:Array[Vector2i]):
+	var from_vector2 = Vector2(from)
+	to.sort_custom(func(a:Vector2i,b:Vector2i):
+		return from_vector2.distance_to(Vector2(a)) < from_vector2.distance_to(Vector2(b)))
+
 var INSPECT_SECTION = {
 	BUFF = 'good',
 	DEBUFF = 'bad',

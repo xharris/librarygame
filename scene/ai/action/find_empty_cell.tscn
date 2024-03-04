@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://bd7qy2y6o7nm1"]
+
+[ext_resource type="Script" path="res://scene/ai/action/find_empty_cell.gd" id="1_4alm5"]
+
+[node name="FindEmptyCell" type="Node"]
+script = ExtResource("1_4alm5")

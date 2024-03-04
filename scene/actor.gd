@@ -35,9 +35,9 @@ static func get_at_map_cell(cell:Vector2i) -> Array[Actor]:
 @export var sprite_transform:Node2D
 @export var animation:AnimationPlayer
 @onready var inventory:Inventory = $SpriteTransform/Sprite/Inventory
-@onready var label := $Label
 @export var navigation:AStarNavigationAgent2D
 @export var task_manager:TaskManager
+@onready var ai:BeehaveTree = $AI
 
 var actor_name:String
 var role:ROLE = ROLE.PATRON
@@ -46,8 +46,8 @@ var mood:ACTOR_MOOD = ACTOR_MOOD.NONE
 var move_speed = 50
 var inspection:Array[Dictionary] = [
 	InspectText.build('actor_name'),
-	InspectText.build('role_name'),
-	InspectProgress.build('happiness', 'happiness'),
+	InspectText.build('role_name', 'ROLE_{0}'),
+	InspectProgress.build('happiness', 'HAPPINESS', true, 100),
 ]
 var likes_genres:Array[Book.GENRE] = []
 # TODO var dislikes_genres:Array[Book.GENRE] = [] # also update ai/action/find_book
@@ -68,7 +68,10 @@ func stop_moving():
 func sit():
 	stop_moving()
 	animation.play('sit')
-	
+
+func is_sitting() -> bool:
+	return animation.current_animation == 'sit'
+
 func stand():
 	stop_moving()
 	animation.play('stand')
@@ -95,7 +98,6 @@ func face_move_direction():
 func _ready():
 	actor_name = NameGenerator.actor_name.call()
 	add_to_group(GROUP)
-	label.text = String.num(get_instance_id()).right(4)+'.'+ROLE.find_key(role)
 	InspectCard.add_properties(self, inspection)
 
 func _process(delta):

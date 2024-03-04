@@ -1,7 +1,10 @@
-[gd_scene load_steps=3 format=3 uid="uid://dffgsydaa2o23"]
+[gd_scene load_steps=4 format=3 uid="uid://dffgsydaa2o23"]
 
 [ext_resource type="Script" path="res://scene/ui/card/inspect_types/progress.gd" id="1_4xq6q"]
 [ext_resource type="Theme" uid="uid://b8o36u0dt0fx" path="res://scene/ui/theme/game.tres" id="1_jp6kx"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jh20b"]
+bg_color = Color(1, 1, 1, 1)
 
 [node name="PanelContainer" type="PanelContainer" node_paths=PackedStringArray("label_node", "progress_bar")]
 anchors_preset = 10
@@ -18,6 +21,7 @@ layout_mode = 2
 
 [node name="HBoxContainer" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
+size_flags_vertical = 0
 theme = ExtResource("1_jp6kx")
 theme_override_constants/separation = 0
 
@@ -33,7 +37,14 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
 theme = ExtResource("1_jp6kx")
+theme_override_styles/fill = SubResource("StyleBoxFlat_jh20b")
 step = 1.0
 value = 100.0
 rounded = true
 show_percentage = false
+
+[node name="UpdateTimer" type="Timer" parent="."]
+wait_time = 0.5
+autostart = true
+
+[connection signal="timeout" from="UpdateTimer" to="." method="_on_update_timer_timeout"]

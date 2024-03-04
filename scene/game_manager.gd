@@ -21,9 +21,11 @@ var game_speed = 2.0 # TODO
 var dt = DayNight.DateTime.new()
 
 func apply_money(amount:int, reason:String) -> bool:
-	if money < amount:
+	if amount < 0 and money < amount:
 		NotificationCard.show_notification(tr('INSUFFICIENT_FUNDS: %s'%[reason]))
 		return false
+	if amount > 0:
+		NotificationCard.show_notification(tr('FUNDS_ADDED: %s'%[reason]))
 	l.info('Money %d (%s)', [amount, reason])
 	money += amount
 	return true
@@ -57,6 +59,8 @@ func disable_genre_research(genre:Book.GENRE):
 	genre_research = genre_research.filter(func(g:Book.GENRE):return g != genre)
 
 func research_book(forced:bool = false):
+	if not genre_research.size():
+		return
 	if forced:
 		if not apply_money(COST_FORCE_DELIVERY, 'FORCED_RESEARCH'):
 			return

@@ -9,12 +9,12 @@ static var scenes = {
 
 var section_name:String:
 	set(value):
-		var label := $Label as Label
+		var label := %Label as Label
 		label.text = value
 		# show/hide label
 		label.visible = value.length() > 0
 	get:
-		var label := $Label as Label
+		var label := %Label as Label
 		return label.text
 
 func get_all_attributes() -> Array[InspectAttribute]:

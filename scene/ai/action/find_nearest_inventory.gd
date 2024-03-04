@@ -37,7 +37,11 @@ func tick(actor, blackboard: Blackboard):
 			return FAILURE
 		var map_tile = scn_map_tile.instantiate() as MapTile
 		var map := TileMapHelper.get_current_map() as Map
-		map_tile.cell = map.get_closest_cell(actor.global_position, Map.TILE_NAME.NORMAL)
+		var cells = map.get_used_cells(0).filter(map.filter_is_cell_empty)
+		Global.sort_distance_vector2i(map.global_to_map(actor.global_position), cells)
+		if not cells.size():
+			return FAILURE
+		map_tile.cell = cells.front() as Vector2i
 		map.add_child(map_tile)
 		blackboard.set_value(inventory_key, map_tile.inventory)
 		return SUCCESS

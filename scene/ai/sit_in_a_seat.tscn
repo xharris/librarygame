@@ -1,0 +1,26 @@
+[gd_scene load_steps=7 format=3 uid="uid://bjjymyrkc3qdh"]
+
+[ext_resource type="Script" path="res://addons/beehave/nodes/composites/sequence.gd" id="1_erhnc"]
+[ext_resource type="PackedScene" uid="uid://d2wemhtsnt6tm" path="res://scene/ai/action/find_nearest_station.tscn" id="2_jdspn"]
+[ext_resource type="PackedScene" uid="uid://x4djpvux2qnq" path="res://scene/ai/action/walk_to.tscn" id="3_dqo03"]
+[ext_resource type="PackedScene" uid="uid://cao3r0g375yqv" path="res://scene/ai/condition/can_use_station.tscn" id="4_20jq1"]
+[ext_resource type="PackedScene" uid="uid://dl2tvkolt3imi" path="res://scene/ai/condition/is_near_station.tscn" id="5_1ev63"]
+[ext_resource type="PackedScene" uid="uid://cjs1lvoglo24g" path="res://scene/ai/action/use_station.tscn" id="6_f7f5k"]
+
+[node name="SitInASeat" type="Node"]
+script = ExtResource("1_erhnc")
+
+[node name="FindNearestStation" parent="." instance=ExtResource("2_jdspn")]
+station_key = "station"
+
+[node name="WalkTo" parent="." instance=ExtResource("3_dqo03")]
+target_key = "station"
+
+[node name="CanUseStation" parent="." instance=ExtResource("4_20jq1")]
+station_key = "station"
+
+[node name="IsNearStation" parent="." instance=ExtResource("5_1ev63")]
+station_key = "station"
+
+[node name="UseStation" parent="." instance=ExtResource("6_f7f5k")]
+station_key = "station"

@@ -9,6 +9,8 @@ enum GENRE {
 	GUIDE, BIOGRAPHY,
 }
 
+static var bookmarks = {}
+
 static func build(genres:Array[GENRE] = [GENRE.ACTION], color:Color=Palette.Green500, pages:int = 1) -> Item:
 	var item := Item.scene.instantiate() as Item
 	item.item_name = NameGenerator.book_name.call()
@@ -62,3 +64,15 @@ func get_read_time(pages_read:int = 0) -> int:
 		Book.LENGTH.LONG:
 			time = randi_range(30, 40)
 	return time
+
+## Save number of pages read
+func set_bookmark(actor:Actor, pages_read:int):
+	if not bookmarks.has(actor):
+		bookmarks[actor] = {}
+	bookmarks[actor][self] = pages_read
+
+## Get number of pages read
+func get_bookmark(actor:Actor) -> int:
+	if bookmarks.has(actor):
+		return (bookmarks[actor] as Dictionary).get(self, 0)
+	return 0

@@ -1,4 +1,4 @@
-[gd_scene load_steps=49 format=3 uid="uid://b605xg1hw7sdr"]
+[gd_scene load_steps=48 format=3 uid="uid://b605xg1hw7sdr"]
 
 [ext_resource type="Script" path="res://scene/actor.gd" id="1_td06u"]
 [ext_resource type="PackedScene" uid="uid://b84re4ema3cr6" path="res://scene/persistent/persistent_data.tscn" id="2_43jed"]
@@ -33,12 +33,11 @@
 [ext_resource type="PackedScene" uid="uid://biyib4li8fqpa" path="res://scene/ai/wander.tscn" id="31_acg5i"]
 [ext_resource type="Script" path="res://addons/beehave/nodes/decorators/inverter.gd" id="31_qbcry"]
 [ext_resource type="PackedScene" uid="uid://by27xpd1gtqi2" path="res://scene/ai/action/find_book.tscn" id="32_lg4eo"]
-[ext_resource type="PackedScene" uid="uid://d2wemhtsnt6tm" path="res://scene/ai/action/find_nearest_station.tscn" id="32_rbwsc"]
 [ext_resource type="PackedScene" uid="uid://cgs0ktspyrwxa" path="res://scene/ai/condition/has_item_type.tscn" id="32_rsnhf"]
-[ext_resource type="PackedScene" uid="uid://cao3r0g375yqv" path="res://scene/ai/condition/can_use_station.tscn" id="33_mmvvh"]
 [ext_resource type="PackedScene" uid="uid://bjdl75m1r3sq2" path="res://scene/ai/action/lose_happiness.tscn" id="33_t2fst"]
-[ext_resource type="PackedScene" uid="uid://dl2tvkolt3imi" path="res://scene/ai/condition/is_near_station.tscn" id="34_kbq72"]
-[ext_resource type="PackedScene" uid="uid://cjs1lvoglo24g" path="res://scene/ai/action/use_station.tscn" id="35_d8esu"]
+[ext_resource type="PackedScene" uid="uid://bjjymyrkc3qdh" path="res://scene/ai/sit_in_a_seat.tscn" id="33_t6q7u"]
+[ext_resource type="PackedScene" uid="uid://csevhf68q8gj4" path="res://scene/ai/action/sit.tscn" id="34_1a64i"]
+[ext_resource type="PackedScene" uid="uid://bv1m1e1por0u8" path="res://scene/ai/action/read.tscn" id="35_4irfn"]
 [ext_resource type="PackedScene" uid="uid://byqirl0bnxqfe" path="res://scene/ai/action/done_using_station.tscn" id="37_fednu"]
 [ext_resource type="PackedScene" uid="uid://dgk3oy5x0vdmu" path="res://scene/ai/action/get_happiness.tscn" id="40_ujpd1"]
 
@@ -270,17 +269,6 @@ shape = SubResource("CircleShape2D_1yteg")
 [node name="TaskManager" parent="." node_paths=PackedStringArray("actor") instance=ExtResource("17_o022d")]
 actor = NodePath("..")
 
-[node name="Label" type="Label" parent="."]
-visible = false
-offset_left = 4.0
-offset_top = -37.0
-offset_right = 44.0
-offset_bottom = -14.0
-size_flags_vertical = 8
-theme_override_colors/font_color = Color(0, 0.654902, 0, 1)
-theme_override_font_sizes/font_size = 8
-vertical_alignment = 2
-
 [node name="Inspect" type="Node2D" parent="."]
 script = ExtResource("18_ge5y0")
 properties = Array[String](["actor_name"])
@@ -292,7 +280,7 @@ script = ExtResource("19_xhymj")
 
 [node name="AI" type="Node" parent="." node_paths=PackedStringArray("blackboard", "actor")]
 script = ExtResource("14_omcwp")
-blackboard = NodePath("@Node@76531")
+blackboard = NodePath("@Node@140142")
 actor = NodePath("..")
 
 [node name="Start" type="Node" parent="AI"]
@@ -346,7 +334,7 @@ direction = 1
 [node name="Leave" parent="AI/Start/DeliverAllItems" instance=ExtResource("29_1r43v")]
 
 [node name="Read" type="Node" parent="AI/Start"]
-script = ExtResource("22_mrw4u")
+script = ExtResource("15_oyntp")
 
 [node name="GetABook" type="Node" parent="AI/Start/Read"]
 script = ExtResource("22_mrw4u")
@@ -374,6 +362,17 @@ script = ExtResource("22_mrw4u")
 
 [node name="HasItemType" parent="AI/Start/Read/ReadABook" instance=ExtResource("32_rsnhf")]
 
+[node name="Sit" type="Node" parent="AI/Start/Read/ReadABook"]
+script = ExtResource("15_oyntp")
+
+[node name="SitInASeat" parent="AI/Start/Read/ReadABook/Sit" instance=ExtResource("33_t6q7u")]
+
+[node name="Sit" parent="AI/Start/Read/ReadABook/Sit" instance=ExtResource("34_1a64i")]
+
+[node name="Read" parent="AI/Start/Read/ReadABook" instance=ExtResource("35_4irfn")]
+
+[node name="Wander" parent="AI/Start/Read/ReadABook" instance=ExtResource("31_acg5i")]
+
 [node name="Bored" type="Node" parent="AI/Start"]
 script = ExtResource("22_mrw4u")
 
@@ -385,23 +384,7 @@ script = ExtResource("16_2llwd")
 [node name="SitAround" type="Node" parent="AI/Start/Bored/ChooseActivity"]
 script = ExtResource("22_mrw4u")
 
-[node name="Sit" type="Node" parent="AI/Start/Bored/ChooseActivity/SitAround"]
-script = ExtResource("22_mrw4u")
-
-[node name="FindNearestStation" parent="AI/Start/Bored/ChooseActivity/SitAround/Sit" instance=ExtResource("32_rbwsc")]
-station_key = "station"
-
-[node name="WalkTo" parent="AI/Start/Bored/ChooseActivity/SitAround/Sit" instance=ExtResource("25_fbkwt")]
-target_key = "station"
-
-[node name="CanUseStation" parent="AI/Start/Bored/ChooseActivity/SitAround/Sit" instance=ExtResource("33_mmvvh")]
-station_key = "station"
-
-[node name="IsNearStation" parent="AI/Start/Bored/ChooseActivity/SitAround/Sit" instance=ExtResource("34_kbq72")]
-station_key = "station"
-
-[node name="UseStation" parent="AI/Start/Bored/ChooseActivity/SitAround/Sit" instance=ExtResource("35_d8esu")]
-station_key = "station"
+[node name="SitInASeat" parent="AI/Start/Bored/ChooseActivity/SitAround" instance=ExtResource("33_t6q7u")]
 
 [node name="Wait" type="Node" parent="AI/Start/Bored/ChooseActivity/SitAround"]
 script = ExtResource("20_0stl3")

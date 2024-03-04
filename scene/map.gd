@@ -42,6 +42,20 @@ func is_tile_empty(coords:Vector2i) -> bool:
 	var nav_layer = TileMapHelper.get_layer_by_name(self, nav_layer_name)
 	return get_used_cells(nav_layer).any(func(c:Vector2i):return c == coords)
 
+func filter_is_cell_empty(c:Vector2i) -> bool:
+	if get_tile_name(c) != Map.TILE_NAME.NORMAL:
+		return false
+	for station in Station.get_all():
+		if station.map_cell == c:
+			return false
+	for actor in Actor.get_all():
+		if actor.is_sitting() and global_to_map(actor.global_position) == c:
+			return false
+	for map_tile in MapTile.get_all():
+		if map_tile.cell == c and map_tile.inventory.size() > 0:
+			return false
+	return true
+
 func get_layer_by_name(layer_name:String) -> int:
 	var layer_count = get_layers_count()
 	for l in range(layer_count):
