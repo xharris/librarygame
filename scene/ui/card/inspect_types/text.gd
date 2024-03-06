@@ -9,7 +9,6 @@ var format:String = '{0}'
 
 func update_value(value:Variant):
 	var format = args.get('format', format) as String
-	
 	var label_node := $MarginContainer/Label as Label
 	if not value is Array:
 		value = [value]

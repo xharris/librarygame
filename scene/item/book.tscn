@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://cec2rj6y2dsej"]
+
+[ext_resource type="Script" path="res://scene/item/book.gd" id="1_pbvop"]
+
+[node name="Book" type="Node2D"]
+script = ExtResource("1_pbvop")

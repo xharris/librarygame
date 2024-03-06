@@ -66,8 +66,9 @@ func stop_moving():
 	animation.play('stand')
 
 func sit():
-	stop_moving()
-	animation.play('sit')
+	if not is_sitting():
+		stop_moving()
+		animation.play('sit')
 
 func is_sitting() -> bool:
 	return animation.current_animation == 'sit'
@@ -100,8 +101,15 @@ func _ready():
 	add_to_group(GROUP)
 	InspectCard.add_properties(self, inspection)
 
+var _likes_genres_inspection = InspectText.build('_likes_genres_str')
+var _likes_genres_str = ''
 func _process(delta):
 	role_name = ROLE.find_key(role)
+	if likes_genres.size():
+		_likes_genres_str = ', '.join(likes_genres.map(func(g:Book.GENRE):return Book.GENRE.find_key(g)))
+		InspectCard.add_properties(self, [_likes_genres_inspection], self, 'LIKES')
+	else:
+		InspectCard.remove_properties(self, [_likes_genres_inspection])
 
 func _physics_process(_delta):
 	nav_move()

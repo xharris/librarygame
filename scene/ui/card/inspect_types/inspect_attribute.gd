@@ -20,4 +20,8 @@ func _ready():
 	update_value(property_node[_property])
 
 func _process(delta):
-	update_value(property_node[_property])
+	if _property in property_node:
+		visible = true
+		update_value(property_node[_property])
+	else:
+		visible = false

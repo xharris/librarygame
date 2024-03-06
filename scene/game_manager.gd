@@ -108,5 +108,5 @@ func _process(delta):
 			l.debug('Spawned patron')
 			map.spawn_actor(Actor.build(Actor.ROLE.PATRON))
 	# buy a new book
-	if game_event('book_research', 10):
+	if game_event('book_research', CYCLE_LENGTH / 2):
 		research_book()

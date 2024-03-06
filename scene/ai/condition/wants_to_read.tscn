@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://bpoelx7u8dybs"]
+
+[ext_resource type="Script" path="res://scene/ai/condition/wants_to_read.gd" id="1_04igh"]
+
+[node name="WantsToRead" type="Node"]
+script = ExtResource("1_04igh")

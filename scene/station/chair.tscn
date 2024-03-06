@@ -16,12 +16,9 @@ script = ExtResource("2_3c3q8")
 
 [node name="Station" parent="." node_paths=PackedStringArray("center") instance=ExtResource("1_10ijf")]
 y_sort_enabled = false
-title = "Chair"
-description = "Seats 1 patron"
-flavor_text = "Not everyone likes to read while standing"
 center = NodePath("../IconMarker")
 
-[node name="Inventory" parent="Station" index="2"]
+[node name="Inventory" parent="Station" index="3"]
 position = Vector2(2, 3)
 max_size = 0
 

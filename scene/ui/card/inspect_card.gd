@@ -64,6 +64,9 @@ func _get_all_sections() -> Array[InspectSection]:
 	sections.assign(section_list.get_children())
 	return sections
 
+func _get_property_key(node:Node, attr:Dictionary, section_name:String = ''):
+	return '-'.join([str(node), str(attr), section_name])
+
 func has_property(node:Node, attr:Dictionary) -> bool:
 	return _get_all_sections().any(func(s:InspectSection):return s.has_attribute(node, attr))
 
