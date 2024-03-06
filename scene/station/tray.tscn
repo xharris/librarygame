@@ -1,20 +1,12 @@
-[gd_scene load_steps=3 format=3 uid="uid://chqp8ck8d254a"]
+[gd_scene load_steps=3 format=3 uid="uid://c3qyvnxt6maxk"]
 
-[ext_resource type="PackedScene" uid="uid://daqdlgnvoww0t" path="res://scene/station.tscn" id="1_vi5na"]
-[ext_resource type="Texture2D" uid="uid://qvecq2g18cyx" path="res://image/station/tray.png" id="2_uidl6"]
+[ext_resource type="Script" path="res://scene/station.gd" id="1_7nswt"]
+[ext_resource type="Texture2D" uid="uid://qvecq2g18cyx" path="res://image/station/tray.png" id="2_jppkf"]
 
 [node name="Tray" type="Node2D"]
-
-[node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(0, -10)
-texture = ExtResource("2_uidl6")
-
-[node name="Station" parent="." instance=ExtResource("1_vi5na")]
-position = Vector2(0, -7)
+script = ExtResource("1_7nswt")
 type = 1
 
-[node name="Inventory" parent="Station" index="3"]
-position = Vector2(0, 3)
-max_size = 1
-
-[editable path="Station"]
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_jppkf")
+offset = Vector2(0, -10)

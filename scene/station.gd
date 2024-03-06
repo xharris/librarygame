@@ -14,15 +14,22 @@ static func is_using_type(actor:Actor, type:STATION_TYPE) -> bool:
 	return get_all().any(func(s:Station):return s.type == type and s.has_user(actor))
 
 @onready var animation:AnimationPlayer = $AnimationPlayer
-@onready var inventory:Inventory = $Inventory
 @export var max_occupancy = 1
-@export var type:Station.STATION_TYPE
+@export var type:Station.STATION_TYPE:
+	set(value):
+		type = value
+		notify_property_list_changed()
 @export var center:Node2D
 var enabled = true
 var _previous_parent:Dictionary = {}
 var map_cell:Vector2i
 
 signal removed
+
+# TODO doesn't work
+func _validate_property(property:Dictionary):
+	if property.name in ['max_occupancy'] and type != STATION_TYPE.SEAT:
+		property.usage = PROPERTY_USAGE_NO_EDITOR
 
 func is_solid() -> bool:
 	return type != STATION_TYPE.DOOR
@@ -71,6 +78,9 @@ func done_using(node:Actor):
 	node.reparent(map)
 	Events.actor_free_station.emit(node, self)
 
+func get_inventory() -> Inventory:
+	return find_child('Inventory') as Inventory
+
 ## Remove from map
 func remove():
 	removed.emit()
@@ -79,10 +89,11 @@ func remove():
 		done_using(user)
 		user.fsm.set_state('Walk')
 	# drop inventory
-	inventory.remove()
+	var inventory = get_inventory()
+	if inventory:
+		inventory.remove()
 	# remove from tree
-	var parent = get_parent()
-	parent.get_parent().remove_child(parent)
+	get_parent().remove_child(self)
 	remove_from_group(GROUP)
 	
 func _ready():

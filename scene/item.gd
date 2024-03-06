@@ -13,9 +13,7 @@ static func get_all() -> Array[Item]:
 var type:TYPE
 var item_name:String
 var args:Dictionary
-var inspection:Array[Dictionary] = [
-	InspectText.build('item_name')
-]
+var inspection:Array[Dictionary] = []
 
 func add_texture(path:String, color:Color = Color.WHITE) -> Sprite2D:
 	var texture = load(path) as Texture2D
@@ -32,6 +30,10 @@ func add_texture(path:String, color:Color = Color.WHITE) -> Sprite2D:
 	return sprite
 
 func _ready():
+	if type == TYPE.BOOK:
+		inspection.append(InspectText.build('item_name', '"{0}"'))
+	else:
+		inspection.append(InspectText.build('item_name'))
 	InspectCard.add_properties(self, inspection)
 
 func _on_input_event(viewport, event, shape_idx):

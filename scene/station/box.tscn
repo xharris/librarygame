@@ -1,24 +1,19 @@
-[gd_scene load_steps=4 format=3 uid="uid://c7gqdrqj1kull"]
+[gd_scene load_steps=4 format=3 uid="uid://7mygrhjs8tro"]
 
-[ext_resource type="PackedScene" uid="uid://daqdlgnvoww0t" path="res://scene/station.tscn" id="1_lmio4"]
+[ext_resource type="Script" path="res://scene/station.gd" id="1_bkiss"]
 [ext_resource type="Texture2D" uid="uid://dwrtxvcmdead2" path="res://image/station/box.png" id="2_geb20"]
-[ext_resource type="Script" path="res://scene/ui/icon_marker.gd" id="2_x086h"]
+[ext_resource type="PackedScene" uid="uid://bnwrpj700kxul" path="res://scene/inventory.tscn" id="2_gn5op"]
 
 [node name="Box" type="Node2D"]
+script = ExtResource("1_bkiss")
+type = 1
+
+[node name="Inventory" parent="." instance=ExtResource("2_gn5op")]
+max_size = 10
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-position = Vector2(0, -7)
 texture = ExtResource("2_geb20")
+offset = Vector2(0, -8)
 
 [node name="Marker2D" type="Marker2D" parent="."]
-position = Vector2(0, -6)
-script = ExtResource("2_x086h")
-
-[node name="Station" parent="." node_paths=PackedStringArray("center") instance=ExtResource("1_lmio4")]
-type = 1
-center = NodePath("../Marker2D")
-
-[node name="Inventory" parent="Station" index="3"]
-max_size = 5
-
-[editable path="Station"]
+position = Vector2(0, -7)

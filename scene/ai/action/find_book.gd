@@ -12,7 +12,7 @@ func item_filter(item:Item, actor:Actor):
 	return true
 
 func inventory_filter(inventory:Inventory, actor:Actor):
-	if inventory.parent is Actor:
+	if inventory.find_parent('Actor') is Actor:
 		return false
 	var items = inventory.get_all_items()
 	items.sort_custom(item_sort.bind(actor))

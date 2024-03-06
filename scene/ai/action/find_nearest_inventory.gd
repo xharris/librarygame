@@ -8,13 +8,13 @@ static var scn_map_tile = preload('res://scene/map_tile.tscn')
 @export var can_create_map_tile:bool = true
 
 func inventory_filter(i:Inventory, actor_inventory:Inventory, is_map_tile:bool):
-	if not is_map_tile and i.parent is MapTile:
+	if not is_map_tile and i.find_parent('MapTile') is MapTile:
 		return false
 	if actor_inventory == i:
 		return false
 	if is_not_full and i.is_full():
 		return false
-	if not is_actor_inventory and i.parent is Actor:
+	if not is_actor_inventory and i.find_parent('Actor') is Actor:
 		return false
 	return true
 

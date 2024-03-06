@@ -234,10 +234,9 @@ y_sort_enabled = true
 
 [node name="Sprite" type="Node2D" parent="SpriteTransform"]
 
-[node name="Inventory" parent="SpriteTransform/Sprite" node_paths=PackedStringArray("parent") instance=ExtResource("16_e6b7f")]
+[node name="Inventory" parent="SpriteTransform/Sprite" instance=ExtResource("16_e6b7f")]
 position = Vector2(-7, -10)
 max_size = 3
-parent = NodePath("../../..")
 
 [node name="BirdFill" type="Sprite2D" parent="SpriteTransform/Sprite"]
 position = Vector2(0, -11)
@@ -279,7 +278,7 @@ script = ExtResource("19_xhymj")
 
 [node name="AI" type="Node" parent="." node_paths=PackedStringArray("blackboard", "actor")]
 script = ExtResource("14_omcwp")
-blackboard = NodePath("@Node@19853")
+blackboard = NodePath("@Node@17483")
 actor = NodePath("..")
 
 [node name="Start" type="Node" parent="AI"]

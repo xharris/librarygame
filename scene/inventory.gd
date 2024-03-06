@@ -30,7 +30,6 @@ static func get_inventory(node:Node) -> Inventory:
 	return node.find_child('Inventory')
 
 @export var max_size = 9999
-@export var parent:Node2D
 
 func _ready():
 	add_to_group(GROUP)
@@ -81,7 +80,6 @@ func transfer_item(item:Item, to:Inventory) -> bool:
 	# find item
 	if not remove_item(item):
 		return false
-	l.debug('transfer item %s from %s to %s', [item, parent, to.parent])
 	# move to other inventory
 	to.add_item(item)
 	return true
@@ -102,8 +100,8 @@ func drop_item(item:Item):
 	if not map:
 		l.error('Not on map (%s)', [get_instance_id()])
 		return false
-	l.debug('%s drop item %d', [parent, item])
-	var node_cell = map.get_closest_cell(parent.global_position)
+	l.debug('drop item %d', [item])
+	var node_cell = map.get_closest_cell(global_position)
 	# Get MapTile at node (if it exists)
 	var map_tiles = get_tree().get_nodes_in_group(MapTile.GROUP).filter(func(m:MapTile):return m.cell == node_cell)
 	var map_tile:MapTile
