@@ -25,4 +25,4 @@ func _process(delta):
 	game_time_label.text = '%d %s\n%s'%[dt.hours12, dt.meridiem, 
 		tr(DayNight.PART.find_key(DayNight.get_cycle(manager.cycle_progress)))]
 	money_label.text = '$%d'%[manager.money]
-	money_label.add_theme_color_override('font_color', Palette.Green500 if manager.money > 0 else Palette.Red500)
+	money_label.add_theme_color_override('font_color', Palette.Green500 if manager.money > 0 else Palette.Red500 if manager.money < 0 else Palette.Grey50)

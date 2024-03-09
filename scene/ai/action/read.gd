@@ -39,6 +39,11 @@ func tick(actor, _blackboard: Blackboard):
 		var manager = GameManager.get_current()
 		if manager:
 			manager.apply_money(5, 'GOOD_READ')
+		# reset
+		progress = 0
+		started = false
+		item = null
+		book = null
 		return SUCCESS
 	return RUNNING
 

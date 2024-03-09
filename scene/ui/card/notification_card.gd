@@ -12,9 +12,9 @@ static func show_notification(text:String, close_after:float = 3):
 	card.close_after = close_after
 	game_ui.inspect_list.add_child(card)
 
-@onready var close_button:Button = %Close
+@onready var close_button:Button = %CloseButton
 @onready var label:Label = %Label
-@onready var close_timer:Timer = $CloseTimer
+@onready var close_timer:Timer = %CloseTimer
 @onready var progress_bar:ProgressBar = %ProgressBar
 var text:String
 var close_after:float = -1

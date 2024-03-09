@@ -1,6 +1,8 @@
 class_name Book
 extends Node2D
 
+static var l = Log.new()
+
 enum LENGTH {SHORT, MEDIUM, LONG}
 
 enum GENRE {
@@ -11,21 +13,23 @@ enum GENRE {
 static var scene = preload('res://scene/item/book.tscn')
 static var bookmarks = {}
 
-static func build(genres:Array[GENRE] = [GENRE.ACTION], color:Color=Palette.Green500, pages:int = 1) -> Item:
+static func build(genres:Array[GENRE], color:Color=Palette.Green500, pages:int = 1) -> Item:
+	if not genres.size():
+		return l.error('Cannot build book with 0 genres')
 	var item := Item.scene.instantiate() as Item
-	var genre_name_gens:Array[Callable] = []
+	var genre_name_gens:Array = []
 	for genre in genres:
 		if NameGenerator.book_genre_name.has(genre):
 			genre_name_gens.append(NameGenerator.book_genre_name[genre])
 	if genre_name_gens.size():
-		var name_gen:Callable = genre_name_gens.pick_random()
+		var name_gen = genre_name_gens.pick_random()
 		item.item_name = name_gen.call()
 	else:
-		item.item_name = NameGenerator.book_name.call()
+		item.item_name = NameGenerator.book_name.call() # TODO ERRORS
 	item.args['genres'] = genres
 	item.args['pages'] = pages
-	item.add_texture('res://image/item/book_fill.png', color)
-	item.add_texture('res://image/item/book_base.png')
+	#item.add_texture('res://image/item/book_fill.png', color)
+	#item.add_texture('res://image/item/book_base.png')
 	# add Book node
 	var book := scene.instantiate() as Book
 	item.add_child(book)
@@ -54,15 +58,14 @@ static func has_genres(item:Item, genres:Array[GENRE]) -> bool:
 var pages:int
 var genres:Array[GENRE]
 var length:LENGTH
+var color:Color:
+	set(value):
+		var fill := %BookFill as Sprite2D
+		fill.modulate = color
 var _genres_str = ''
-var inspection:Array[Dictionary] = [
-	InspectText.build('_genres_str')
-]
 
 func _ready():
 	var item := find_parent('Item') as Item
-	if item:
-		InspectCard.add_properties(item, inspection, self)
 	# pages
 	pages = item.args.get('pages') as int
 	# length

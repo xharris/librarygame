@@ -13,7 +13,6 @@ static func get_all() -> Array[Item]:
 var type:TYPE
 var item_name:String
 var args:Dictionary
-var inspection:Array[Dictionary] = []
 
 func add_texture(path:String, color:Color = Color.WHITE) -> Sprite2D:
 	var texture = load(path) as Texture2D
@@ -30,12 +29,9 @@ func add_texture(path:String, color:Color = Color.WHITE) -> Sprite2D:
 	return sprite
 
 func _ready():
+	var name_property := %Name as InspectPropertyHelper
 	if type == TYPE.BOOK:
-		inspection.append(InspectText.build('item_name', '"{0}"'))
+		name_property.label = '"{0}"'
 	else:
-		inspection.append(InspectText.build('item_name'))
-	InspectCard.add_properties(self, inspection)
+		name_property.label = '{0}'
 
-func _on_input_event(viewport, event, shape_idx):
-	if event.is_action_pressed('select'):
-		InspectCard.show_card(self)

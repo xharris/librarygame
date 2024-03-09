@@ -16,7 +16,6 @@
 [ext_resource type="Script" path="res://addons/beehave/nodes/composites/selector_random.gd" id="16_2llwd"]
 [ext_resource type="PackedScene" uid="uid://bnwrpj700kxul" path="res://scene/inventory.tscn" id="16_e6b7f"]
 [ext_resource type="PackedScene" uid="uid://084d0pu0j073" path="res://scene/task_manager.tscn" id="17_o022d"]
-[ext_resource type="Script" path="res://scene/inspect.gd" id="18_ge5y0"]
 [ext_resource type="PackedScene" uid="uid://e7b1u6w1i6k3" path="res://scene/ai/condition/actor_has_role.tscn" id="19_4pddb"]
 [ext_resource type="Script" path="res://scene/ui/icon_marker.gd" id="19_xhymj"]
 [ext_resource type="Script" path="res://addons/beehave/nodes/decorators/delayer.gd" id="20_0stl3"]
@@ -38,6 +37,8 @@
 [ext_resource type="PackedScene" uid="uid://csevhf68q8gj4" path="res://scene/ai/action/sit.tscn" id="34_1a64i"]
 [ext_resource type="PackedScene" uid="uid://bv1m1e1por0u8" path="res://scene/ai/action/read.tscn" id="35_4irfn"]
 [ext_resource type="PackedScene" uid="uid://byqirl0bnxqfe" path="res://scene/ai/action/done_using_station.tscn" id="37_fednu"]
+[ext_resource type="PackedScene" uid="uid://37081abkujhk" path="res://scene/inspect_helper/inspect_card_root.tscn" id="39_3yhdq"]
+[ext_resource type="PackedScene" uid="uid://ct448fyer0i5q" path="res://scene/inspect_helper/inspect_property_helper.tscn" id="40_fxd42"]
 [ext_resource type="PackedScene" uid="uid://dgk3oy5x0vdmu" path="res://scene/ai/action/get_happiness.tscn" id="40_ujpd1"]
 
 [sub_resource type="Animation" id="Animation_0ssif"]
@@ -203,15 +204,7 @@ animations = [{
 "speed": 5.0
 }]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_1yteg"]
-
-[node name="Actor" type="CharacterBody2D" node_paths=PackedStringArray("sprite_transform", "animation", "navigation", "task_manager") groups=["actors", "persistent"]]
-collision_layer = 2
-collision_mask = 0
-input_pickable = true
-motion_mode = 1
-platform_floor_layers = 4294967292
-platform_wall_layers = 1
+[node name="Actor" type="Node2D" node_paths=PackedStringArray("sprite_transform", "animation", "navigation", "task_manager") groups=["actors", "persistent"]]
 script = ExtResource("1_td06u")
 sprite_transform = NodePath("SpriteTransform")
 animation = NodePath("AnimationPlayer")
@@ -259,17 +252,8 @@ animation = &"stand"
 position = Vector2(0, -11)
 texture = ExtResource("14_gb18g")
 
-[node name="InputShape" type="CollisionShape2D" parent="."]
-position = Vector2(0, -9)
-rotation = 3.14159
-shape = SubResource("CircleShape2D_1yteg")
-
 [node name="TaskManager" parent="." node_paths=PackedStringArray("actor") instance=ExtResource("17_o022d")]
 actor = NodePath("..")
-
-[node name="Inspect" type="Node2D" parent="."]
-script = ExtResource("18_ge5y0")
-properties = Array[String](["actor_name"])
 
 [node name="IconMarker" type="Marker2D" parent="."]
 position = Vector2(0, -9)
@@ -278,7 +262,7 @@ script = ExtResource("19_xhymj")
 
 [node name="AI" type="Node" parent="." node_paths=PackedStringArray("blackboard", "actor")]
 script = ExtResource("14_omcwp")
-blackboard = NodePath("@Node@17483")
+blackboard = NodePath("@Node@32480")
 actor = NodePath("..")
 
 [node name="Start" type="Node" parent="AI"]
@@ -401,4 +385,8 @@ right_operand = "0"
 
 [node name="Leave" parent="AI/Start/Unhappy" instance=ExtResource("29_1r43v")]
 
-[connection signal="input_event" from="." to="." method="_on_input_event"]
+[node name="InspectCardRoot" parent="." node_paths=PackedStringArray("node") instance=ExtResource("39_3yhdq")]
+node = NodePath("..")
+
+[node name="InspectPropertyHelper" parent="InspectCardRoot" instance=ExtResource("40_fxd42")]
+property = "actor_name"

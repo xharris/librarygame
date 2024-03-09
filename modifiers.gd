@@ -1,8 +1,8 @@
 extends Node
 
-var SECTION_BUFF = 'modifier-good'
-var SECTION_DEBUFF = 'modifier-bad'
-var SECTION_NEUTRAL = 'modifier-neutral'
+var SECTION_BUFF = 'MOD_GOOD'
+var SECTION_DEBUFF = 'MOD_BAD'
+var SECTION_NEUTRAL = 'MOD_NEUTRAL'
 
 var COMFORTABLE = Modifier.register('comfortable', SECTION_BUFF)
 

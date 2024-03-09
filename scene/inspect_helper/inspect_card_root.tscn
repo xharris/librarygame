@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://37081abkujhk"]
+
+[ext_resource type="Script" path="res://scene/inspect_helper/inspect_card_root.gd" id="1_m0ued"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_5gt88"]
+
+[node name="InspectCardRoot" type="Node2D" groups=["inspect_card_root"]]
+script = ExtResource("1_m0ued")
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("CircleShape2D_5gt88")
+
+[connection signal="input_event" from="Area2D" to="." method="_on_input_event"]

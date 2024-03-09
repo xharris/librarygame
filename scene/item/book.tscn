@@ -1,6 +1,18 @@
-[gd_scene load_steps=2 format=3 uid="uid://cec2rj6y2dsej"]
+[gd_scene load_steps=7 format=3 uid="uid://cec2rj6y2dsej"]
 
 [ext_resource type="Script" path="res://scene/item/book.gd" id="1_pbvop"]
+[ext_resource type="Texture2D" uid="uid://choldrvbui1ge" path="res://image/item/book_base.png" id="2_yl6xm"]
+[ext_resource type="Texture2D" uid="uid://crsfuvcjn56ah" path="res://image/item/book_fill.png" id="3_27fg6"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_euoq8"]
+radius = 7.0
 
 [node name="Book" type="Node2D"]
 script = ExtResource("1_pbvop")
+
+[node name="BookBase" type="Sprite2D" parent="."]
+texture = ExtResource("2_yl6xm")
+
+[node name="BookFill" type="Sprite2D" parent="."]
+unique_name_in_owner = true
+texture = ExtResource("3_27fg6")

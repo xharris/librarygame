@@ -50,6 +50,7 @@ value = 50.0
 show_percentage = false
 
 [node name="CloseTimer" type="Timer" parent="."]
+unique_name_in_owner = true
 wait_time = 3.0
 
 [connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]

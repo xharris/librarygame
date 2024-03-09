@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://ct448fyer0i5q"]
+
+[ext_resource type="Script" path="res://scene/inspect_helper/inspect_property_helper.gd" id="1_g74dd"]
+
+[node name="InspectPropertyHelper" type="Node2D"]
+script = ExtResource("1_g74dd")

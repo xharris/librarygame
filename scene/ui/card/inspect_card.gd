@@ -13,7 +13,7 @@ static func get_existing(node:Node) -> InspectCard:
 	if not card:
 		card = scn_inspect_card.instantiate() as InspectCard
 		card._node = node
-		card.icon.set_icon(node)
+		#card.icon.set_icon(node)
 		_inspect_cards[node] = card
 	return card
 

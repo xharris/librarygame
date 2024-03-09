@@ -20,6 +20,7 @@ static func is_using_type(actor:Actor, type:STATION_TYPE) -> bool:
 		type = value
 		notify_property_list_changed()
 @export var center:Node2D
+@export var cost:int = 2
 var enabled = true
 var _previous_parent:Dictionary = {}
 var map_cell:Vector2i

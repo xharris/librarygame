@@ -34,7 +34,9 @@ func _update_navigation():
 	var stations = StationHelper.get_all()
 	var map_cells = _map.get_used_cells(0)
 	var rect = _map.get_used_rect()
-	grid.reserve_space(rect.size.x * rect.size.y)
+	var capacity = rect.size.x * rect.size.y
+	if capacity > grid.get_point_capacity():
+		grid.reserve_space(capacity)
 	grid.clear()
 	_point_ids = {}
 	# iterate all tiles

@@ -14,8 +14,10 @@ func get_card_objects() -> Array[Variant]:
 	return scenes
 	
 func _on_place_object(event:InputEvent, global_position:Vector2, map_position:Vector2i, map:Map, object:PackedScene):
-	if map.is_tile_empty(map_position):
-		var new_object := object.instantiate()
+	var manager = GameManager.get_current()
+	var new_object := object.instantiate()
+	var station := new_object as Station
+	if map.is_tile_empty(map_position) and (not station or manager.apply_money(-station.cost, 'PLACE_STATION')):
 		new_object.global_position = global_position
 		map.add_child(new_object)
 		

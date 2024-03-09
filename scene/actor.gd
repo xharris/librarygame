@@ -1,10 +1,8 @@
 class_name Actor
-extends CharacterBody2D
+extends Node2D
 
 static var GROUP = 'actors'
-static var scn_read = preload("res://task/read.tscn")
 static var scn_actor = preload('res://scene/actor.tscn')
-static var scn_task_mgr = preload('res://scene/task_manager.tscn')
 
 static var l = Log.new()
 
@@ -39,17 +37,20 @@ static func get_at_map_cell(cell:Vector2i) -> Array[Actor]:
 @export var task_manager:TaskManager
 @onready var ai:BeehaveTree = $AI
 
+var velocity:Vector2 = Vector2.ZERO
 var actor_name:String
-var role:ROLE = ROLE.PATRON
 var role_name:String
+var role:ROLE = ROLE.PATRON:
+	set(value):
+		role = value
+		role_name = ROLE.find_key(role)
 var mood:ACTOR_MOOD = ACTOR_MOOD.NONE
 var move_speed = 50
-var inspection:Array[Dictionary] = [
-	InspectText.build('actor_name'),
-	InspectText.build('role_name', 'ROLE_{0}'),
-	InspectProgress.build('happiness', 'HAPPINESS', true, 100),
-]
-var likes_genres:Array[Book.GENRE] = []
+var _likes_genres_str = ''
+var likes_genres:Array[Book.GENRE] = []:
+	set(value):
+		likes_genres = value
+		_likes_genres_str = ', '.join(likes_genres.map(func(g:Book.GENRE):return Book.GENRE.find_key(g)))
 # TODO var dislikes_genres:Array[Book.GENRE] = [] # also update ai/action/find_book
 var happiness:int = 100
 
@@ -96,26 +97,23 @@ func face_move_direction():
 		# face left/right
 		sprite_transform.scale.x = velocity.sign().x * -1
 
+func move_and_slide(delta):
+	position += velocity * delta
+
 func _ready():
 	actor_name = NameGenerator.actor_name.call()
 	add_to_group(GROUP)
-	InspectCard.add_properties(self, inspection)
 
-var _likes_genres_inspection = InspectText.build('_likes_genres_str')
-var _likes_genres_str = ''
 func _process(delta):
-	role_name = ROLE.find_key(role)
-	if likes_genres.size():
-		_likes_genres_str = ', '.join(likes_genres.map(func(g:Book.GENRE):return Book.GENRE.find_key(g)))
-		InspectCard.add_properties(self, [_likes_genres_inspection], self, 'LIKES')
-	else:
-		InspectCard.remove_properties(self, [_likes_genres_inspection])
+	pass
+	#var likes_property:InspectPropertyHelper = %Likes
+	#if likes_property:
+		#if likes_genres.size():
+			#likes_property.inspect_show()
+		#else:
+			#likes_property.inspect_hide()
 
-func _physics_process(_delta):
+func _physics_process(delta):
 	nav_move()
 	face_move_direction()
-	move_and_slide()
-
-func _on_input_event(viewport, event, shape_idx):
-	if event.is_action_pressed('select'):
-		InspectCard.show_card(self)
+	move_and_slide(delta)

@@ -59,6 +59,7 @@ var book_genre_name:Dictionary = {
 	Book.GENRE.DRAMA:build(_book_templates,{
 		adj=['sad','moody','desirable','lovely','little','gone'],
 		noun=['girl','boy','mom','dad','woman','man'],
+		plural=[''],
 		w=_w_list
 	})
 }
